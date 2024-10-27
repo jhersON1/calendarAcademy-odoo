@@ -1,0 +1,45 @@
+version: '3.1'
+services:
+  web:
+    image: odoo:latest
+    depends_on:
+      - db
+    ports:
+      - '8069:8069'
+    volumes:
+      - odoo-web-data:/var/lib/odoo
+      - ./config_odoo:/etc/odoo
+      - ./dev_addons:/mnt/extra-addons
+      - ./log:/var/log/odoo
+    environment:
+      - HOST=db
+      - USER=odoo
+      - PASSWORD=myodoo
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+          cpus: '2'
+        reservations:
+          memory: 2G
+    restart: unless-stopped
+  
+  db:
+    image: postgres:latest  
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD=myodoo
+      - POSTGRES_USER=odoo
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - odoo-db-data:/var/lib/postgresql/data
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '1'
+    restart: unless-stopped
+
+volumes:
+  odoo-web-data:
+  odoo-db-data:

@@ -1,0 +1,34 @@
+# Ignorar configuración local pero mantener el template
+config_odoo/odoo.conf
+!config_odoo/odoo.conf.template
+
+# Ignorar logs
+log/*
+!log/.gitkeep
+
+# Ignorar archivos de caché de Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Otros archivos que no deberían subirse
+.DS_Store
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
