@@ -5,7 +5,11 @@
     'summary': "Short (1 phrase/line) summary of the module's purpose",
 
     'description': """
-Long description of module's purpose
+        Sistema completo para la gestión de una academia:
+        - Gestión de períodos académicos
+        - Gestión de cursos
+        - Gestión de estudiantes
+        - Gestión de profesores
     """,
 
     'author': "My Company",
@@ -18,13 +22,26 @@ Long description of module's purpose
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'calendar'],
+    'depends': ['base', 'mail'],
 
     # always loaded
     'data': [
+        'security/security.xml',
         'security/ir.model.access.csv',
-        'views/views.xml',
-        'views/templates.xml',
+        # Vistas
+        'views/period_views.xml',
+        'views/level_views.xml',
+        'views/parallel_views.xml',
+        'views/course_views.xml',
+        'views/subject_views.xml',
+        'views/student_views.xml',
+        'views/teacher_views.xml',
+        'views/parent_views.xml',
+        'views/enrollment_views.xml',
+        'views/attendance_views.xml',
+        'views/grade_views.xml',
+        'views/schedule_views.xml',
+        'views/menu_views.xml'
     ],
     # only loaded in demonstration mode
     'demo': [

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Menú Principal -->
+    <menuitem id="menu_academy_root"
+              name="Academia"
+              sequence="10"
+              web_icon="calendar_academy,static/description/icon.png"/>
+
+    <!-- Submenús -->
+    <menuitem id="menu_academy_academic"
+              name="Académico"
+              parent="menu_academy_root"
+              sequence="10"/>
+
+    <menuitem id="menu_academy_enrollment"
+              name="Matrículas"
+              parent="menu_academy_root"
+              sequence="20"/>
+
+    <menuitem id="menu_academy_evaluation"
+              name="Evaluación"
+              parent="menu_academy_root"
+              sequence="30"/>
+
+    <menuitem id="menu_academy_config"
+              name="Configuración"
+              parent="menu_academy_root"
+              sequence="100"
+              groups="calendar_academy.group_academy_manager"/>
+
+    <!-- Items de Académico -->
+    <menuitem id="menu_academy_period"
+              name="Períodos"
+              action="action_academy_period"
+              parent="menu_academy_academic"
+              sequence="10"/>
+
+    <menuitem id="menu_academy_course"
+              name="Cursos"
+              action="action_academy_course"
+              parent="menu_academy_academic"
+              sequence="20"/>
+
+    <menuitem id="menu_academy_student"
+              name="Estudiantes"
+              action="action_academy_student"
+              parent="menu_academy_academic"
+              sequence="30"/>
+
+    <menuitem id="menu_academy_teacher"
+              name="Profesores"
+              action="action_academy_teacher"
+              parent="menu_academy_academic"
+              sequence="40"/>
+
+    <!-- Items de Matrícula -->
+    <menuitem id="menu_academy_enrollment_reg"
+              name="Matrículas"
+              action="action_academy_enrollment"
+              parent="menu_academy_enrollment"
+              sequence="10"/>
+
+    <menuitem id="menu_academy_parent"
+              name="Representantes"
+              action="action_academy_parent"
+              parent="menu_academy_enrollment"
+              sequence="20"/>
+
+    <!-- Items de Evaluación -->
+    <menuitem id="menu_academy_attendance"
+              name="Asistencia"
+              action="action_academy_attendance"
+              parent="menu_academy_evaluation"
+              sequence="10"/>
+
+    <menuitem id="menu_academy_grade"
+              name="Calificaciones"
+              action="action_academy_grade"
+              parent="menu_academy_evaluation"
+              sequence="20"/>
+
+    <!-- Items de Configuración -->
+    <menuitem id="menu_academy_level"
+              name="Niveles"
+              action="action_academy_level"
+              parent="menu_academy_config"
+              sequence="10"/>
+
+    <menuitem id="menu_academy_parallel"
+              name="Paralelos"
+              action="action_academy_parallel"
+              parent="menu_academy_config"
+              sequence="20"/>
+
+    <menuitem id="menu_academy_subject"
+              name="Materias"
+              action="action_academy_subject"
+              parent="menu_academy_config"
+              sequence="30"/>
+
+    <menuitem id="menu_academy_schedule"
+              name="Horarios"
+              action="action_academy_schedule"
+              parent="menu_academy_config"
+              sequence="40"/>
+</odoo>

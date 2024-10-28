@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Form View -->
+    <record id="view_academy_student_form" model="ir.ui.view">
+        <field name="name">academy.student.form</field>
+        <field name="model">academy.student</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_create_user"
+                            string="Crear Usuario"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="user_id"/>
+                    <button name="action_suspend"
+                            string="Suspender"
+                            type="object"
+                            invisible="status != 'enrolled'"/>
+                    <button name="action_reactivate"
+                            string="Reactivar"
+                            type="object"
+                            invisible="status != 'suspended'"/>
+                    <button name="action_graduate"
+                            string="Graduar"
+                            type="object"
+                            invisible="status != 'enrolled'"/>
+                    <field name="status" widget="statusbar"
+                           statusbar_visible="enrolled,suspended,graduated"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                            <field name="active" widget="boolean_button"/>
+                        </button>
+                        <button name="action_view_grades" type="object"
+                                class="oe_stat_button" icon="fa-graduation-cap">
+                            <span>Calificaciones</span>
+                        </button>
+                        <button name="action_view_attendance" type="object"
+                                class="oe_stat_button" icon="fa-calendar-check-o">
+                            <span>Asistencia</span>
+                        </button>
+                    </div>
+                    <field name="image" widget="image" class="oe_avatar"/>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Nombre Completo"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="identification"/>
+                            <field name="birth_date"/>
+                            <field name="gender"/>
+                            <field name="age"/>
+                            <field name="user_id" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="email"/>
+                            <field name="phone"/>
+                            <field name="address"/>
+                            <field name="enrollment_date"/>
+                            <field name="current_course_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Información Médica" name="medical">
+                            <group>
+                                <group>
+                                    <field name="blood_type"/>
+                                    <field name="medical_conditions"/>
+                                </group>
+                                <group>
+                                    <field name="allergies"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Representantes" name="parents">
+                            <group>
+                                <group>
+                                    <field name="parent_id"/>
+                                    <field name="secondary_parent_id"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Historial Académico" name="history">
+                            <field name="course_ids">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="period_id"/>
+                                    <field name="level_id"/>
+                                    <field name="parallel_id"/>
+                                    <field name="state"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- List View -->
+    <record id="view_academy_student_list" model="ir.ui.view">
+        <field name="name">academy.student.list</field>
+        <field name="model">academy.student</field>
+        <field name="arch" type="xml">
+            <list decoration-info="status == 'enrolled'"
+                  decoration-warning="status == 'suspended'"
+                  decoration-success="status == 'graduated'"
+                  decoration-danger="status == 'withdrawn'">
+                <field name="name"/>
+                <field name="identification"/>
+                <field name="current_course_id"/>
+                <field name="email"/>
+                <field name="phone"/>
+                <field name="parent_id"/>
+                <field name="status" widget="badge"
+                       decoration-info="status == 'enrolled'"
+                       decoration-warning="status == 'suspended'"
+                       decoration-success="status == 'graduated'"
+                       decoration-danger="status == 'withdrawn'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_academy_student_search" model="ir.ui.view">
+        <field name="name">academy.student.search</field>
+        <field name="model">academy.student</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="identification"/>
+                <field name="email"/>
+                <field name="current_course_id"/>
+                <field name="parent_id"/>
+                <separator/>
+                <filter string="Matriculados" name="enrolled" domain="[('status', '=', 'enrolled')]"/>
+                <filter string="Suspendidos" name="suspended" domain="[('status', '=', 'suspended')]"/>
+                <filter string="Graduados" name="graduated" domain="[('status', '=', 'graduated')]"/>
+                <filter string="Retirados" name="withdrawn" domain="[('status', '=', 'withdrawn')]"/>
+                <separator/>
+                <filter string="Con Usuario" name="with_user" domain="[('user_id', '!=', False)]"/>
+                <filter string="Sin Usuario" name="without_user" domain="[('user_id', '=', False)]"/>
+                <filter string="Archivado" name="inactive" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Agrupar Por">
+                    <filter string="Curso Actual" name="current_course" context="{'group_by': 'current_course_id'}"/>
+                    <filter string="Representante" name="parent" context="{'group_by': 'parent_id'}"/>
+                    <filter string="Estado" name="status" context="{'group_by': 'status'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Kanban View -->
+    <record id="view_academy_student_kanban" model="ir.ui.view">
+        <field name="name">academy.student.kanban</field>
+        <field name="model">academy.student</field>
+        <field name="arch" type="xml">
+            <kanban sample="1">
+                <field name="id"/>
+                <field name="name"/>
+                <field name="identification"/>
+                <field name="current_course_id"/>
+                <field name="email"/>
+                <field name="phone"/>
+                <field name="status"/>
+                <field name="image"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <div class="o_kanban_image">
+                                <img t-att-src="kanban_image('academy.student', 'image', record.id.raw_value)"
+                                     alt="Student"/>
+                            </div>
+                            <div class="oe_kanban_details">
+                                <strong class="o_kanban_record_title">
+                                    <field name="name"/>
+                                </strong>
+                                <div>
+                                    <field name="identification"/>
+                                </div>
+                                <div t-if="record.current_course_id.value">
+                                    <strong>Curso: </strong>
+                                    <field name="current_course_id"/>
+                                </div>
+                                <div t-if="record.email.value">
+                                    <i class="fa fa-envelope"/> <field name="email"/>
+                                </div>
+                                <div class="o_kanban_tags_section mt-2">
+                                    <span class="badge badge-pill"
+                                          t-attf-class="badge-#{record.status.raw_value == 'enrolled' ? 'info' :
+                                          record.status.raw_value == 'suspended' ? 'warning' :
+                                          record.status.raw_value == 'graduated' ? 'success' : 'danger'}">
+                                        <field name="status"/>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_academy_student" model="ir.actions.act_window">
+        <field name="name">Estudiantes</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">academy.student</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="view_academy_student_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Registra el primer estudiante
+            </p>
+            <p>
+                Crea un nuevo registro de estudiante.
+            </p>
+        </field>
+    </record>
+</odoo>

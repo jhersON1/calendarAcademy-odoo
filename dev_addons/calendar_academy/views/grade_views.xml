@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Form View -->
+    <record id="view_academy_grade_form" model="ir.ui.view">
+        <field name="name">academy.grade.form</field>
+        <field name="model">academy.grade</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_generate_grade_lines"
+                            string="Generar Líneas"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="state != 'draft'"/>
+                    <button name="action_submit"
+                            string="Ingresar"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="state != 'draft'"/>
+                    <button name="action_publish"
+                            string="Publicar"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="state != 'submitted'"/>
+                    <button name="action_draft"
+                            string="Volver a Borrador"
+                            type="object"
+                            invisible="state == 'published'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,submitted,published"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="course_id"/>
+                            <field name="subject_id"/>
+                            <field name="teacher_id"/>
+                            <field name="evaluation_type"/>
+                        </group>
+                        <group>
+                            <field name="evaluation_date"/>
+                            <field name="max_grade"/>
+                            <field name="weight"/>
+                            <field name="average_grade"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Calificaciones" name="grades">
+                            <field name="grade_line_ids">
+                                <list editable="bottom">
+                                    <field name="student_id"/>
+                                    <field name="grade"/>
+                                    <field name="max_grade" readonly="1"/>
+                                    <field name="comment"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- List View -->
+    <record id="view_academy_grade_list" model="ir.ui.view">
+        <field name="name">academy.grade.list</field>
+        <field name="model">academy.grade</field>
+        <field name="arch" type="xml">
+            <list decoration-info="state == 'draft'"
+                 decoration-warning="state == 'submitted'"
+                 decoration-success="state == 'published'">
+                <field name="name"/>
+                <field name="course_id"/>
+                <field name="subject_id"/>
+                <field name="teacher_id"/>
+                <field name="evaluation_type"/>
+                <field name="evaluation_date"/>
+                <field name="average_grade"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-warning="state == 'submitted'"
+                       decoration-success="state == 'published'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_academy_grade_search" model="ir.ui.view">
+        <field name="name">academy.grade.search</field>
+        <field name="model">academy.grade</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="course_id"/>
+                <field name="subject_id"/>
+                <field name="teacher_id"/>
+                <field name="evaluation_type"/>
+                <separator/>
+                <filter string="Borrador" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Ingresada" name="submitted" domain="[('state', '=', 'submitted')]"/>
+                <filter string="Publicada" name="published" domain="[('state', '=', 'published')]"/>
+                <group expand="0" string="Agrupar Por">
+                    <filter string="Curso" name="course" context="{'group_by': 'course_id'}"/>
+                    <filter string="Materia" name="subject" context="{'group_by': 'subject_id'}"/>
+                    <filter string="Profesor" name="teacher" context="{'group_by': 'teacher_id'}"/>
+                    <filter string="Tipo de Evaluación" name="eval_type" context="{'group_by': 'evaluation_type'}"/>
+                    <filter string="Estado" name="state" context="{'group_by': 'state'}"/>
+                    <filter string="Fecha" name="date" context="{'group_by': 'evaluation_date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Pivot View -->
+    <record id="view_academy_grade_pivot" model="ir.ui.view">
+        <field name="name">academy.grade.pivot</field>
+        <field name="model">academy.grade</field>
+        <field name="arch" type="xml">
+            <pivot string="Análisis de Calificaciones" sample="1">
+                <field name="course_id" type="row"/>
+                <field name="subject_id" type="row"/>
+                <field name="evaluation_type" type="col"/>
+                <field name="average_grade" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_academy_grade" model="ir.actions.act_window">
+        <field name="name">Calificaciones</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">academy.grade</field>
+        <field name="view_mode">list,form,pivot</field>
+        <field name="search_view_id" ref="view_academy_grade_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Registra la primera calificación
+            </p>
+            <p>
+                Aquí podrás registrar las calificaciones de los estudiantes por curso y materia.
+            </p>
+        </field>
+    </record>
+
+    <!-- Vista para Reporte de Calificaciones -->
+    <record id="view_student_grade_report_pivot" model="ir.ui.view">
+        <field name="name">academy.student.grade.report.pivot</field>
+        <field name="model">academy.student.grade.report</field>
+        <field name="arch" type="xml">
+            <pivot string="Reporte de Calificaciones" sample="1">
+                <field name="student_id" type="row"/>
+                <field name="subject_id" type="col"/>
+                <field name="final_grade" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_student_grade_report_graph" model="ir.ui.view">
+        <field name="name">academy.student.grade.report.graph</field>
+        <field name="model">academy.student.grade.report</field>
+        <field name="arch" type="xml">
+            <graph string="Análisis de Calificaciones" sample="1">
+                <field name="subject_id"/>
+                <field name="final_grade" type="measure"/>
+            </graph>
+        </field>
+    </record>
+</odoo>

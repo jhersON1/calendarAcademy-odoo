@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Form View -->
+    <record id="view_academy_schedule_form" model="ir.ui.view">
+        <field name="name">academy.schedule.form</field>
+        <field name="model">academy.schedule</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                            <field name="active" widget="boolean_button"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="display_name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="course_id"/>
+                            <field name="subject_id"/>
+                            <field name="teacher_id"/>
+                        </group>
+                        <group>
+                            <field name="day"/>
+                            <field name="start_hour" widget="float_time"/>
+                            <field name="end_hour" widget="float_time"/>
+                            <field name="duration" widget="float_time"/>
+                            <field name="classroom"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- List View -->
+    <record id="view_academy_schedule_list" model="ir.ui.view">
+        <field name="name">academy.schedule.list</field>
+        <field name="model">academy.schedule</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="course_id"/>
+                <field name="subject_id"/>
+                <field name="teacher_id"/>
+                <field name="day"/>
+                <field name="start_hour" widget="float_time"/>
+                <field name="end_hour" widget="float_time"/>
+                <field name="duration" widget="float_time"/>
+                <field name="classroom"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_academy_schedule_search" model="ir.ui.view">
+        <field name="name">academy.schedule.search</field>
+        <field name="model">academy.schedule</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="course_id"/>
+                <field name="subject_id"/>
+                <field name="teacher_id"/>
+                <field name="classroom"/>
+                <separator/>
+                <filter string="Lunes" name="monday" domain="[('day', '=', 'monday')]"/>
+                <filter string="Martes" name="tuesday" domain="[('day', '=', 'tuesday')]"/>
+                <filter string="Miércoles" name="wednesday" domain="[('day', '=', 'wednesday')]"/>
+                <filter string="Jueves" name="thursday" domain="[('day', '=', 'thursday')]"/>
+                <filter string="Viernes" name="friday" domain="[('day', '=', 'friday')]"/>
+                <separator/>
+                <filter string="Archivado" name="inactive" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Agrupar Por">
+                    <filter string="Curso" name="course" context="{'group_by': 'course_id'}"/>
+                    <filter string="Materia" name="subject" context="{'group_by': 'subject_id'}"/>
+                    <filter string="Profesor" name="teacher" context="{'group_by': 'teacher_id'}"/>
+                    <filter string="Día" name="day" context="{'group_by': 'day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Calendar View -->
+    <record id="view_academy_schedule_calendar" model="ir.ui.view">
+        <field name="name">academy.schedule.calendar</field>
+        <field name="model">academy.schedule</field>
+        <field name="arch" type="xml">
+            <calendar string="Horarios"
+                      date_start="start_hour"
+                      mode="week">
+                <field name="course_id"/>
+                <field name="subject_id"/>
+                <field name="teacher_id"/>
+                <field name="classroom"/>
+            </calendar>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_academy_schedule" model="ir.actions.act_window">
+        <field name="name">Horarios</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">academy.schedule</field>
+        <field name="view_mode">tree,form,calendar</field>
+    </record>
+</odoo>

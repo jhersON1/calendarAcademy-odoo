@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Form View -->
+    <record id="view_academy_enrollment_form" model="ir.ui.view">
+        <field name="name">academy.enrollment.form</field>
+        <field name="model">academy.enrollment</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_submit"
+                            string="Enviar"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="state != 'draft'"/>
+                    <button name="action_confirm"
+                            string="Confirmar"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="state != 'submitted'"/>
+                    <button name="action_cancel"
+                            string="Cancelar"
+                            type="object"
+                            invisible="state == 'cancelled'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,submitted,confirmed"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="toggle_active" type="object"
+                                class="oe_stat_button" icon="fa-archive">
+                            <field name="active" widget="boolean_button"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="student_id"/>
+                            <field name="course_id"/>
+                            <field name="period_id"/>
+                            <field name="enrollment_date"/>
+                        </group>
+                        <group>
+                            <field name="parent_id"/>
+                            <field name="parent_relationship"/>
+                            <field name="documents_complete"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Documentos" name="documents">
+                            <field name="document_ids">
+                                <list editable="bottom">
+                                    <field name="name"/>
+                                    <field name="document_type"/>
+                                    <field name="is_required"/>
+                                    <field name="is_submitted"/>
+                                    <field name="submission_date"/>
+                                    <field name="notes"/>
+                                    <field name="attachment_ids" widget="many2many_binary"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- List View -->
+    <record id="view_academy_enrollment_list" model="ir.ui.view">
+        <field name="name">academy.enrollment.list</field>
+        <field name="model">academy.enrollment</field>
+        <field name="arch" type="xml">
+            <list decoration-info="state == 'draft'"
+                 decoration-warning="state == 'submitted'"
+                 decoration-success="state == 'confirmed'"
+                 decoration-danger="state == 'cancelled'">
+                <field name="name"/>
+                <field name="student_id"/>
+                <field name="course_id"/>
+                <field name="period_id"/>
+                <field name="enrollment_date"/>
+                <field name="parent_id"/>
+                <field name="documents_complete" widget="boolean_toggle"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-warning="state == 'submitted'"
+                       decoration-success="state == 'confirmed'"
+                       decoration-danger="state == 'cancelled'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_academy_enrollment_search" model="ir.ui.view">
+        <field name="name">academy.enrollment.search</field>
+        <field name="model">academy.enrollment</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="student_id"/>
+                <field name="course_id"/>
+                <field name="period_id"/>
+                <field name="parent_id"/>
+                <separator/>
+                <filter string="Documentos Completos" name="docs_complete" domain="[('documents_complete', '=', True)]"/>
+                <filter string="Documentos Pendientes" name="docs_pending" domain="[('documents_complete', '=', False)]"/>
+                <separator/>
+                <filter string="Borrador" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Enviada" name="submitted" domain="[('state', '=', 'submitted')]"/>
+                <filter string="Confirmada" name="confirmed" domain="[('state', '=', 'confirmed')]"/>
+                <filter string="Cancelada" name="cancelled" domain="[('state', '=', 'cancelled')]"/>
+                <separator/>
+                <filter string="Archivado" name="inactive" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Agrupar Por">
+                    <filter string="Estudiante" name="student" context="{'group_by': 'student_id'}"/>
+                    <filter string="Curso" name="course" context="{'group_by': 'course_id'}"/>
+                    <filter string="Período" name="period" context="{'group_by': 'period_id'}"/>
+                    <filter string="Representante" name="parent" context="{'group_by': 'parent_id'}"/>
+                    <filter string="Estado" name="state" context="{'group_by': 'state'}"/>
+                    <filter string="Fecha" name="date" context="{'group_by': 'enrollment_date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Kanban View -->
+    <record id="view_academy_enrollment_kanban" model="ir.ui.view">
+        <field name="name">academy.enrollment.kanban</field>
+        <field name="model">academy.enrollment</field>
+        <field name="arch" type="xml">
+            <kanban sample="1" class="o_kanban_mobile">
+                <field name="name"/>
+                <field name="student_id"/>
+                <field name="course_id"/>
+                <field name="enrollment_date"/>
+                <field name="state"/>
+                <field name="documents_complete"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <div class="row">
+                                <div class="col-12">
+                                    <strong>
+                                        <field name="name"/> - <field name="student_id"/>
+                                    </strong>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-8">
+                                    <span>
+                                        <field name="course_id"/>
+                                    </span>
+                                </div>
+                                <div class="col-4 text-right">
+                                    <field name="enrollment_date"/>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <span class="badge badge-pill" t-attf-class="badge-#{record.state.raw_value == 'confirmed' ? 'success' : record.state.raw_value == 'draft' ? 'info' : record.state.raw_value == 'submitted' ? 'warning' : 'danger'}">
+                                        <field name="state"/>
+                                    </span>
+                                </div>
+                                <div class="col-6 text-right">
+                                    <span t-if="record.documents_complete.raw_value" class="badge badge-success">Documentos Completos</span>
+                                    <span t-else="" class="badge badge-warning">Documentos Pendientes</span>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_academy_enrollment" model="ir.actions.act_window">
+        <field name="name">Matrículas</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">academy.enrollment</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="view_academy_enrollment_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Registra la primera matrícula
+            </p>
+            <p>
+                Crea una nueva matrícula para asignar estudiantes a los cursos.
+            </p>
+        </field>
+    </record>
+</odoo>

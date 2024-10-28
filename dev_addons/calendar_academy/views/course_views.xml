@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Form View -->
+    <record id="view_academy_course_form" model="ir.ui.view">
+        <field name="name">academy.course.form</field>
+        <field name="model">academy.course</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_activate"
+                            string="Activar"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="state != 'draft'"/>
+                    <button name="action_finish"
+                            string="Finalizar"
+                            type="object"
+                            invisible="state != 'active'"/>
+                    <button name="action_cancel"
+                            string="Cancelar"
+                            type="object"
+                            invisible="state == 'cancelled'"/>
+                    <button name="action_draft"
+                            string="Volver a Borrador"
+                            type="object"
+                            invisible="state == 'draft'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,active,finished"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                            <field name="active" widget="boolean_button"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="complete_name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="code"/>
+                            <field name="period_id"/>
+                            <field name="level_id"/>
+                            <field name="parallel_id"/>
+                        </group>
+                        <group>
+                            <field name="capacity"/>
+                            <field name="min_students"/>
+                            <field name="enrolled_count"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Estudiantes" name="students">
+                            <field name="student_ids">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="identification"/>
+                                    <field name="email"/>
+                                    <field name="phone"/>
+                                    <field name="status" widget="badge"
+                                           decoration-info="status == 'enrolled'"
+                                           decoration-warning="status == 'suspended'"
+                                           decoration-success="status == 'graduated'"
+                                           decoration-danger="status == 'withdrawn'"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Materias" name="subjects">
+                            <field name="subject_ids">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="code"/>
+                                    <field name="hours_per_week"/>
+                                    <field name="credits"/>
+                                    <field name="is_mandatory" widget="boolean_toggle"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Horarios" name="schedules">
+                            <field name="schedule_ids">
+                                <list editable="bottom">
+                                    <field name="subject_id"/>
+                                    <field name="teacher_id"/>
+                                    <field name="day"/>
+                                    <field name="start_hour" widget="float_time"/>
+                                    <field name="end_hour" widget="float_time"/>
+                                    <field name="classroom"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- List View -->
+    <record id="view_academy_course_list" model="ir.ui.view">
+        <field name="name">academy.course.list</field>
+        <field name="model">academy.course</field>
+        <field name="arch" type="xml">
+            <list decoration-info="state == 'draft'"
+                 decoration-success="state == 'active'"
+                 decoration-warning="state == 'finished'"
+                 decoration-danger="state == 'cancelled'">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="period_id"/>
+                <field name="level_id"/>
+                <field name="parallel_id"/>
+                <field name="enrolled_count"/>
+                <field name="capacity"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-success="state == 'active'"
+                       decoration-warning="state == 'finished'"
+                       decoration-danger="state == 'cancelled'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_academy_course_search" model="ir.ui.view">
+        <field name="name">academy.course.search</field>
+        <field name="model">academy.course</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="period_id"/>
+                <field name="level_id"/>
+                <field name="parallel_id"/>
+                <separator/>
+                <filter string="Borrador" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Activo" name="active" domain="[('state', '=', 'active')]"/>
+                <filter string="Finalizado" name="finished" domain="[('state', '=', 'finished')]"/>
+                <filter string="Cancelado" name="cancelled" domain="[('state', '=', 'cancelled')]"/>
+                <separator/>
+                <filter string="Disponible" name="available" domain="[('enrolled_count', '&lt;', 'capacity')]"/>
+                <filter string="Lleno" name="full" domain="[('enrolled_count', '=', 'capacity')]"/>
+                <separator/>
+                <filter string="Archivado" name="inactive" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Agrupar Por">
+                    <filter string="Período" name="period" context="{'group_by': 'period_id'}"/>
+                    <filter string="Nivel" name="level" context="{'group_by': 'level_id'}"/>
+                    <filter string="Paralelo" name="parallel" context="{'group_by': 'parallel_id'}"/>
+                    <filter string="Estado" name="state" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Kanban View -->
+    <record id="view_academy_course_kanban" model="ir.ui.view">
+        <field name="name">academy.course.kanban</field>
+        <field name="model">academy.course</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile" sample="1">
+                <field name="id"/>
+                <field name="name"/>
+                <field name="complete_name"/>
+                <field name="code"/>
+                <field name="period_id"/>
+                <field name="level_id"/>
+                <field name="parallel_id"/>
+                <field name="enrolled_count"/>
+                <field name="capacity"/>
+                <field name="state"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <div class="oe_kanban_details">
+                                <strong class="o_kanban_record_title">
+                                    <field name="complete_name"/>
+                                </strong>
+                                <div class="text-muted">
+                                    <field name="period_id"/>
+                                </div>
+                                <div class="o_kanban_record_bottom">
+                                    <div class="oe_kanban_bottom_left">
+                                        <span>
+                                            <strong>Estudiantes: </strong>
+                                            <field name="enrolled_count"/>/<field name="capacity"/>
+                                        </span>
+                                    </div>
+                                    <div class="oe_kanban_bottom_right">
+                                        <field name="state" widget="label_selection"
+                                               options="{'classes': {
+                                                   'draft': 'info',
+                                                   'active': 'success',
+                                                   'finished': 'warning',
+                                                   'cancelled': 'danger'}}"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Calendar View -->
+    <record id="view_academy_course_calendar" model="ir.ui.view">
+        <field name="name">academy.course.calendar</field>
+        <field name="model">academy.course</field>
+        <field name="arch" type="xml">
+            <calendar string="Cursos" date_start="create_date" color="state" mode="month">
+                <field name="name"/>
+                <field name="level_id"/>
+                <field name="parallel_id"/>
+                <field name="enrolled_count"/>
+            </calendar>
+        </field>
+    </record>
+
+    <!-- Pivot View -->
+    <record id="view_academy_course_pivot" model="ir.ui.view">
+        <field name="name">academy.course.pivot</field>
+        <field name="model">academy.course</field>
+        <field name="arch" type="xml">
+            <pivot string="Análisis de Cursos" sample="1">
+                <field name="level_id" type="row"/>
+                <field name="parallel_id" type="row"/>
+                <field name="enrolled_count" type="measure"/>
+                <field name="capacity" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_academy_course" model="ir.actions.act_window">
+        <field name="name">Cursos</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">academy.course</field>
+        <field name="view_mode">kanban,list,form,calendar,pivot</field>
+        <field name="search_view_id" ref="view_academy_course_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Crea el primer curso
+            </p>
+            <p>
+                Crea un nuevo curso para organizar estudiantes y materias.
+            </p>
+        </field>
+    </record>
+</odoo>

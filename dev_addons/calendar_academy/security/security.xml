@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Categoría de Seguridad -->
+        <record id="module_category_academy" model="ir.module.category">
+            <field name="name">Academia</field>
+            <field name="description">Gestión del Sistema Académico</field>
+            <field name="sequence">20</field>
+        </record>
+
+        <!-- Grupos de Usuario -->
+        <record id="group_academy_student" model="res.groups">
+            <field name="name">Estudiante</field>
+            <field name="category_id" ref="module_category_academy"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_portal'))]"/>
+            <field name="comment">Acceso limitado a su información académica personal.</field>
+        </record>
+
+        <record id="group_academy_parent" model="res.groups">
+            <field name="name">Padre/Representante</field>
+            <field name="category_id" ref="module_category_academy"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_portal'))]"/>
+            <field name="comment">Acceso a la información de sus hijos/representados.</field>
+        </record>
+
+        <record id="group_academy_teacher" model="res.groups">
+            <field name="name">Profesor</field>
+            <field name="category_id" ref="module_category_academy"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+            <field name="comment">Gestión de cursos asignados, calificaciones y asistencia.</field>
+        </record>
+
+        <record id="group_academy_coordinator" model="res.groups">
+            <field name="name">Coordinador</field>
+            <field name="category_id" ref="module_category_academy"/>
+            <field name="implied_ids" eval="[(4, ref('group_academy_teacher'))]"/>
+            <field name="comment">Supervisión de nivel académico y profesores.</field>
+        </record>
+
+        <record id="group_academy_manager" model="res.groups">
+            <field name="name">Administrador Académico</field>
+            <field name="category_id" ref="module_category_academy"/>
+            <field name="implied_ids" eval="[(4, ref('group_academy_coordinator'))]"/>
+            <field name="users" eval="[(4, ref('base.user_admin'))]"/>
+            <field name="comment">Control total del sistema académico.</field>
+        </record>
+
+        <!-- Reglas de Registro -->
+        <record id="rule_student_own_records" model="ir.rule">
+            <field name="name">Estudiante: Solo registros propios</field>
+            <field name="model_id" ref="model_academy_student"/>
+            <field name="domain_force">[('user_id','=',user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_academy_student'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_parent_child_records" model="ir.rule">
+            <field name="name">Padre: Solo registros de sus hijos</field>
+            <field name="model_id" ref="model_academy_student"/>
+            <field name="domain_force">[('parent_id.user_id','=',user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_academy_parent'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_teacher_own_courses" model="ir.rule">
+            <field name="name">Profesor: Solo sus cursos asignados</field>
+            <field name="model_id" ref="model_academy_course"/>
+            <field name="domain_force">[('teacher_ids.user_id','=',user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_academy_teacher'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Form View -->
+    <record id="view_academy_level_form" model="ir.ui.view">
+        <field name="name">academy.level.form</field>
+        <field name="model">academy.level</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                            <field name="active" widget="boolean_button"/>
+                        </button>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="code"/>
+                            <field name="sequence"/>
+                            <field name="is_mandatory"/>
+                        </group>
+                        <group>
+                            <field name="min_age"/>
+                            <field name="max_age"/>
+                            <field name="total_students"/>
+                            <field name="total_courses"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Descripción" name="description">
+                            <field name="description" nolabel="1" placeholder="Describe el nivel académico..."/>
+                        </page>
+                        <page string="Materias" name="subjects">
+                            <field name="subject_ids">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="code"/>
+                                    <field name="hours_per_week"/>
+                                    <field name="is_mandatory"/>
+                                    <field name="credits"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Cursos" name="courses">
+                            <field name="course_ids" readonly="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="period_id"/>
+                                    <field name="parallel_id"/>
+                                    <field name="enrolled_count"/>
+                                    <field name="state"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- List View -->
+    <record id="view_academy_level_list" model="ir.ui.view">
+        <field name="name">academy.level.list</field>
+        <field name="model">academy.level</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="min_age"/>
+                <field name="max_age"/>
+                <field name="total_students"/>
+                <field name="total_courses"/>
+                <field name="is_mandatory" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_academy_level_search" model="ir.ui.view">
+        <field name="name">academy.level.search</field>
+        <field name="model">academy.level</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+                <separator/>
+                <filter string="Obligatorio" name="mandatory" domain="[('is_mandatory', '=', True)]"/>
+                <filter string="Opcional" name="optional" domain="[('is_mandatory', '=', False)]"/>
+                <separator/>
+                <filter string="Archivado" name="inactive" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Agrupar Por">
+                    <filter string="Obligatorio" name="group_mandatory" context="{'group_by': 'is_mandatory'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_academy_level" model="ir.actions.act_window">
+        <field name="name">Niveles</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">academy.level</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_academy_level_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Crea el primer nivel académico
+            </p>
+            <p>
+                Define los niveles académicos y sus materias correspondientes.
+            </p>
+        </field>
+    </record>
+</odoo>
