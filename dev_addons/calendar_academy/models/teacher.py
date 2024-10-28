@@ -109,11 +109,15 @@ class Teacher(models.Model):
         self.ensure_one()
         return {
             'name': _('Horario'),
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'res_model': 'academy.schedule',
             'type': 'ir.actions.act_window',
             'domain': [('teacher_id', '=', self.id)],
-            'context': {'default_teacher_id': self.id}
+            'context': {'default_teacher_id': self.id},
+            'views': [
+                (self.env.ref('calendar_academy.view_academy_schedule_list').id, 'list'),
+                (self.env.ref('calendar_academy.view_academy_schedule_form').id, 'form')
+            ]
         }
 
     def action_on_leave(self):

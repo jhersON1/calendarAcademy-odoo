@@ -103,6 +103,6 @@
         <field name="name">Horarios</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">academy.schedule</field>
-        <field name="view_mode">tree,form,calendar</field>
+        <field name="view_mode">list,form,calendar</field>
     </record>
 </odoo>

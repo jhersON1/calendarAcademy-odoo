@@ -1,30 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
-<!--
-          <record id="object0" model="calendar_academy.calendar_academy">
-            <field name="name">Object 0</field>
-            <field name="value">0</field>
-          </record>
+    <data noupdate="1">
+        <!-- Periodos Académicos -->
+        <record id="period_2024_1" model="academy.period">
+            <field name="start_date">2023-12-01</field>  <!-- Cambiado para incluir el periodo de matrículas -->
+            <field name="end_date">2024-06-30</field>
+            <field name="enrollment_start_date">2023-12-01</field>
+            <field name="enrollment_end_date">2023-12-31</field>
+            <field name="class_start_date">2024-01-08</field>
+            <field name="class_end_date">2024-06-21</field>
+            <field name="state">active</field>
+        </record>
 
-          <record id="object1" model="calendar_academy.calendar_academy">
-            <field name="name">Object 1</field>
-            <field name="value">10</field>
-          </record>
+        <!-- Niveles Académicos -->
+        <record id="level_1_basic" model="academy.level">
+            <field name="name">Primero Básico</field>
+            <field name="code">1B</field>
+            <field name="sequence">1</field>
+            <field name="min_age">6</field>
+            <field name="max_age">7</field>
+            <field name="is_mandatory">True</field>
+        </record>
 
-          <record id="object2" model="calendar_academy.calendar_academy">
-            <field name="name">Object 2</field>
-            <field name="value">20</field>
-          </record>
+        <!-- Paralelos -->
+        <record id="parallel_a" model="academy.parallel">
+            <field name="name">A</field>
+            <field name="code">A</field>
+        </record>
 
-          <record id="object3" model="calendar_academy.calendar_academy">
-            <field name="name">Object 3</field>
-            <field name="value">30</field>
-          </record>
+        <!-- Materias -->
+        <record id="subject_math" model="academy.subject">
+            <field name="name">Matemáticas</field>
+            <field name="code">MAT</field>
+            <field name="hours_per_week">6</field>
+            <field name="credits">4</field>
+            <field name="is_mandatory">True</field>
+            <field name="evaluation_method">numeric</field>
+        </record>
 
-          <record id="object4" model="calendar_academy.calendar_academy">
-            <field name="name">Object 4</field>
-            <field name="value">40</field>
-          </record>
--->
+        <!-- Cursos -->
+        <record id="course_1b_a" model="academy.course">
+            <field name="code">1BA-2024</field>
+            <field name="period_id" ref="period_2024_1"/>
+            <field name="level_id" ref="level_1_basic"/>
+            <field name="parallel_id" ref="parallel_a"/>
+            <field name="capacity">30</field>
+            <field name="min_students">15</field>
+            <field name="state">active</field>
+            <field name="subject_ids" eval="[(6, 0, [ref('subject_math')])]"/>
+        </record>
+
+        <!-- Profesores -->
+        <record id="teacher_1" model="academy.teacher">
+            <field name="name">María González</field>
+            <field name="identification">1234567890</field>
+            <field name="email">maria.gonzalez@demo.com</field>
+            <field name="education_level">master</field>
+            <field name="status">active</field>
+        </record>
+
+        <!-- Representantes -->
+        <record id="parent_1" model="academy.parent">
+            <field name="name">Ana Martínez</field>
+            <field name="identification">1111222233</field>
+            <field name="email">ana.martinez@demo.com</field>
+            <field name="phone">555-0201</field>
+        </record>
+
+        <!-- Estudiantes -->
+        <record id="student_1" model="academy.student">
+            <field name="name">Laura Martínez</field>
+            <field name="identification">2024001</field>
+            <field name="birth_date">2017-05-15</field>
+            <field name="gender">female</field>
+            <field name="email">laura.martinez@demo.com</field>
+            <field name="parent_id" ref="parent_1"/>
+            <field name="status">enrolled</field>
+        </record>
+
+        <!-- Horarios -->
+        <record id="schedule_1" model="academy.schedule">
+            <field name="course_id" ref="course_1b_a"/>
+            <field name="subject_id" ref="subject_math"/>
+            <field name="teacher_id" ref="teacher_1"/>
+            <field name="day">monday</field>
+            <field name="start_hour">8</field>
+            <field name="end_hour">9.5</field>
+            <field name="classroom">101</field>
+        </record>
+
+        <!-- Matrículas -->
+        <record id="enrollment_1" model="academy.enrollment">
+            <field name="student_id" ref="student_1"/>
+            <field name="course_id" ref="course_1b_a"/>
+            <field name="parent_id" ref="parent_1"/>
+            <field name="parent_relationship">mother</field>
+            <field name="enrollment_date">2023-12-15</field>
+            <field name="state">confirmed</field>
+        </record>
+
     </data>
 </odoo>

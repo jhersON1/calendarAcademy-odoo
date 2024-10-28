@@ -58,12 +58,20 @@ class Enrollment(models.Model):
     @api.constrains('enrollment_date')
     def _check_enrollment_date(self):
         for record in self:
-            if record.enrollment_date > fields.Date.today():
-                raise ValidationError(_('La fecha de matrícula no puede ser futura'))
-            if record.period_id:
-                if record.enrollment_date < record.period_id.start_date or \
-                        record.enrollment_date > record.period_id.end_date:
-                    raise ValidationError(_('La fecha de matrícula debe estar dentro del período académico'))
+            if record.enrollment_date and record.period_id:
+                if record.enrollment_date < record.period_id.enrollment_start_date or \
+                        record.enrollment_date > record.period_id.enrollment_end_date:
+                    raise ValidationError(_('La fecha de matrícula debe estar dentro del período de matrículas'))
+
+    # @api.constrains('enrollment_date')
+    # def _check_enrollment_date(self):
+    #     for record in self:
+    #         if record.enrollment_date > fields.Date.today():
+    #             raise ValidationError(_('La fecha de matrícula no puede ser futura'))
+    #         if record.period_id:
+    #             if record.enrollment_date < record.period_id.start_date or \
+    #                     record.enrollment_date > record.period_id.end_date:
+    #                 raise ValidationError(_('La fecha de matrícula debe estar dentro del período académico'))
 
     def action_submit(self):
         self.ensure_one()
