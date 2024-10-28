@@ -1,2 +1,2 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_calendar_academy_calendar_academy,calendar_academy.calendar_academy,model_calendar_academy_calendar_academy,base.group_user,1,1,1,1
+access_calendar_academy_calendar_academy,calendar.academy.calendar.academy,model_calendar_academy_calendar_academy,base.group_user,1,1,1,1
