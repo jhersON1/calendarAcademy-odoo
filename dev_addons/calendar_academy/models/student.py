@@ -104,6 +104,7 @@ class Student(models.Model):
                     'name': record.name,
                     'login': record.email,
                     'email': record.email,
+                    'password': record.identification,
                     'groups_id': [(6, 0, [self.env.ref('calendar_academy.group_academy_student').id
                     ])]
                 })
