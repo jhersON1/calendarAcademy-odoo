@@ -271,6 +271,10 @@
                 ref('subject_science'),
                 ref('subject_social')
             ])]"/>
+            <field name="student_ids" eval="[(6, 0, [
+                ref('student_1'),
+                ref('student_2')
+            ])]"/>
         </record>
 
         <!-- Horarios -->
