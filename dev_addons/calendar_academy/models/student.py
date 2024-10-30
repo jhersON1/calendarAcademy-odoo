@@ -113,7 +113,7 @@ class Student(models.Model):
         self.ensure_one()
         return {
             'name': _('Calificaciones'),
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'res_model': 'academy.grade.line',
             'type': 'ir.actions.act_window',
             'domain': [('student_id', '=', self.id)],
@@ -124,7 +124,7 @@ class Student(models.Model):
         self.ensure_one()
         return {
             'name': _('Asistencia'),
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'res_model': 'academy.attendance.line',
             'type': 'ir.actions.act_window',
             'domain': [('student_id', '=', self.id)],

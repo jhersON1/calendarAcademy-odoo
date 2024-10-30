@@ -15,12 +15,12 @@ access_academy_schedule_parent,academy.schedule.parent,model_academy_schedule,ca
 access_academy_schedule_student,academy.schedule.student,model_academy_schedule,calendar_academy.group_academy_student,1,0,0,0
 
 access_academy_parent_manager,academy.parent.manager,model_academy_parent,calendar_academy.group_academy_manager,1,1,1,1
-access_academy_parent_teacher,academy.parent.teacher,model_academy_parent,calendar_academy.group_academy_teacher,1,1,0,0
+access_academy_parent_teacher,academy.parent.teacher,model_academy_parent,calendar_academy.group_academy_teacher,1,1,1,0
 access_academy_parent_parent,academy.parent.parent,model_academy_parent,calendar_academy.group_academy_parent,1,1,0,0
 access_academy_parent_student,academy.parent.student,model_academy_parent,calendar_academy.group_academy_student,1,0,0,0
 
 access_academy_student_manager,academy.student.manager,model_academy_student,calendar_academy.group_academy_manager,1,1,1,1
-access_academy_student_teacher,academy.student.teacher,model_academy_student,calendar_academy.group_academy_teacher,1,1,0,0
+access_academy_student_teacher,academy.student.teacher,model_academy_student,calendar_academy.group_academy_teacher,1,1,1,0
 access_academy_student_parent,academy.student.parent,model_academy_student,calendar_academy.group_academy_parent,1,1,0,0
 access_academy_student_student,academy.student.student,model_academy_student,calendar_academy.group_academy_student,1,1,0,0
 
@@ -30,13 +30,13 @@ access_academy_teacher_parent,academy.teacher.parent,model_academy_teacher,calen
 access_academy_teacher_student,academy.teacher.student,model_academy_teacher,calendar_academy.group_academy_student,1,0,0,0
 
 access_academy_course_manager,academy.course.manager,model_academy_course,calendar_academy.group_academy_manager,1,1,1,1
-access_academy_course_teacher,academy.course.teacher,model_academy_course,calendar_academy.group_academy_teacher,1,1,0,0
+access_academy_course_teacher,academy.course.teacher,model_academy_course,calendar_academy.group_academy_teacher,1,1,1,0
 access_academy_course_parent,academy.course.parent,model_academy_course,calendar_academy.group_academy_parent,1,0,0,0
 access_academy_course_student,academy.course.student,model_academy_course,calendar_academy.group_academy_student,1,0,0,0
 
 access_academy_enrollment_manager,academy.enrollment.manager,model_academy_enrollment,calendar_academy.group_academy_manager,1,1,1,1
-access_academy_enrollment_teacher,academy.enrollment.teacher,model_academy_enrollment,calendar_academy.group_academy_teacher,1,1,0,0
-access_academy_enrollment_parent,academy.enrollment.parent,model_academy_enrollment,calendar_academy.group_academy_parent,1,1,0,0
+access_academy_enrollment_teacher,academy.enrollment.teacher,model_academy_enrollment,calendar_academy.group_academy_teacher,1,1,1,0
+access_academy_enrollment_parent,academy.enrollment.parent,model_academy_enrollment,calendar_academy.group_academy_parent,1,1,1,0
 access_academy_enrollment_student,academy.enrollment.student,model_academy_enrollment,calendar_academy.group_academy_student,1,0,0,0
 
 access_academy_grade_manager,academy.grade.manager,model_academy_grade,calendar_academy.group_academy_manager,1,1,1,1
@@ -58,3 +58,18 @@ access_academy_parallel_manager,academy.parallel.manager,model_academy_parallel,
 access_academy_parallel_teacher,academy.parallel.teacher,model_academy_parallel,calendar_academy.group_academy_teacher,1,0,0,0
 access_academy_parallel_parent,academy.parallel.parent,model_academy_parallel,calendar_academy.group_academy_parent,1,0,0,0
 access_academy_parallel_student,academy.parallel.student,model_academy_parallel,calendar_academy.group_academy_student,1,0,0,0
+
+access_academy_enrollment_document_manager,academy.enrollment.document.manager,model_academy_enrollment_document,calendar_academy.group_academy_manager,1,1,1,1
+access_academy_enrollment_document_teacher,academy.enrollment.document.teacher,model_academy_enrollment_document,calendar_academy.group_academy_teacher,1,1,1,0
+access_academy_enrollment_document_parent,academy.enrollment.document.parent,model_academy_enrollment_document,calendar_academy.group_academy_parent,1,1,1,0
+access_academy_enrollment_document_student,academy.enrollment.document.student,model_academy_enrollment_document,calendar_academy.group_academy_student,1,0,0,0
+
+access_academy_attendance_line_manager,academy.attendance.line.manager,model_academy_attendance_line,calendar_academy.group_academy_manager,1,1,1,1
+access_academy_attendance_line_teacher,academy.attendance.line.teacher,model_academy_attendance_line,calendar_academy.group_academy_teacher,1,1,1,0
+access_academy_attendance_line_parent,academy.attendance.line.parent,model_academy_attendance_line,calendar_academy.group_academy_parent,1,0,0,0
+access_academy_attendance_line_student,academy.attendance.line.student,model_academy_attendance_line,calendar_academy.group_academy_student,1,0,0,0
+
+access_academy_grade_line_manager,academy.grade.line.manager,model_academy_grade_line,calendar_academy.group_academy_manager,1,1,1,1
+access_academy_grade_line_teacher,academy.grade.line.teacher,model_academy_grade_line,calendar_academy.group_academy_teacher,1,1,1,0
+access_academy_grade_line_parent,academy.grade.line.parent,model_academy_grade_line,calendar_academy.group_academy_parent,1,0,0,0
+access_academy_grade_line_student,academy.grade.line.student,model_academy_grade_line,calendar_academy.group_academy_student,1,0,0,0

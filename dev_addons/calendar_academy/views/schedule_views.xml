@@ -82,14 +82,33 @@
         </field>
     </record>
 
+    <!--    &lt;!&ndash; Calendar View &ndash;&gt;-->
+    <!--    <record id="view_academy_schedule_calendar" model="ir.ui.view">-->
+    <!--        <field name="name">academy.schedule.calendar</field>-->
+    <!--        <field name="model">academy.schedule</field>-->
+    <!--        <field name="arch" type="xml">-->
+    <!--            <calendar string="Horarios"-->
+    <!--                      date_start="start_hour"-->
+    <!--                      mode="week">-->
+    <!--                <field name="course_id"/>-->
+    <!--                <field name="subject_id"/>-->
+    <!--                <field name="teacher_id"/>-->
+    <!--                <field name="classroom"/>-->
+    <!--            </calendar>-->
+    <!--        </field>-->
+    <!--    </record>-->
+
     <!-- Calendar View -->
     <record id="view_academy_schedule_calendar" model="ir.ui.view">
         <field name="name">academy.schedule.calendar</field>
         <field name="model">academy.schedule</field>
         <field name="arch" type="xml">
             <calendar string="Horarios"
-                      date_start="start_hour"
-                      mode="week">
+                      date_start="start_datetime"
+                      date_stop="end_datetime"
+                      mode="week"
+                      event_open_popup="true"
+                      color="course_id">
                 <field name="course_id"/>
                 <field name="subject_id"/>
                 <field name="teacher_id"/>
