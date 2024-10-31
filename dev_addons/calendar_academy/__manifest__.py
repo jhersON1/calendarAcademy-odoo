@@ -41,7 +41,18 @@
         'views/attendance_views.xml',
         'views/grade_views.xml',
         'views/schedule_views.xml',
-        'views/menu_views.xml'
+
+        # Data
+        'data/sequence.xml',
+        'data/mail_template.xml',
+
+        # Communication
+        'views/communication_views.xml',
+        'views/communication_template_views.xml',
+
+        # Menu
+        'views/menu_views.xml',
+
     ],
     # only loaded in demonstration mode
     'demo': [
@@ -50,4 +61,3 @@
     'application': True,
     'installable': True,
 }
-

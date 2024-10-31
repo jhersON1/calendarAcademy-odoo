@@ -103,4 +103,24 @@
               action="action_academy_schedule"
               parent="menu_academy_config"
               sequence="40"/>
+
+    <!-- Menú Principal de Comunicaciones -->
+    <menuitem id="menu_academy_communications"
+              name="Comunicaciones"
+              parent="calendar_academy.menu_academy_root"
+              sequence="25"/>
+
+    <!-- Submenús -->
+    <menuitem id="menu_academy_communication"
+              name="Comunicados"
+              action="action_academy_communication"
+              parent="menu_academy_communications"
+              sequence="10"/>
+
+    <menuitem id="menu_academy_communication_template"
+              name="Plantillas"
+              action="action_academy_communication_template"
+              parent="menu_academy_communications"
+              sequence="20"
+              groups="calendar_academy.group_academy_manager"/>
 </odoo>

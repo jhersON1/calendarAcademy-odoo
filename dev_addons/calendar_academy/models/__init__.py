@@ -12,3 +12,4 @@ from . import enrollment
 from . import attendance
 from . import grade
 from . import schedule
+from . import communication

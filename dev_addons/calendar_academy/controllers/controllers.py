@@ -18,5 +18,4 @@
 #     def object(self, obj, **kw):
 #         return http.request.render('calendar_academy.object', {
 #             'object': obj
-#         })
-
+#         })s
