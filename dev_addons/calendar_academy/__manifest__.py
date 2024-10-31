@@ -2,7 +2,7 @@
 {
     'name': "calendarAcademy",
 
-    'summary': "Short (1 phrase/line) summary of the module's purpose",
+    'summary': "Sistema de gestión de tareas académicas",
 
     'description': """
         Sistema completo para la gestión de una academia:
@@ -49,6 +49,10 @@
         # Communication
         'views/communication_views.xml',
         'views/communication_template_views.xml',
+
+        # Task
+        'views/task_views.xml',
+        'views/submission_views.xml',
 
         # Menu
         'views/menu_views.xml',

@@ -13,3 +13,5 @@ from . import attendance
 from . import grade
 from . import schedule
 from . import communication
+from . import submission
+from . import task

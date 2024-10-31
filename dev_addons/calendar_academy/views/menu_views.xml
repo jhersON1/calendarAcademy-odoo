@@ -4,7 +4,7 @@
     <menuitem id="menu_academy_root"
               name="Academia"
               sequence="10"
-              web_icon="calendar_academy,static/description/icon.png"/>
+              web_icon="calendar_academy,static/description/user.png"/>
 
     <!-- Submenús -->
     <menuitem id="menu_academy_academic"
@@ -17,9 +17,10 @@
               parent="menu_academy_root"
               sequence="20"/>
 
+    <!-- Actualizamos el menú de Evaluación -->
     <menuitem id="menu_academy_evaluation"
               name="Evaluación"
-              parent="menu_academy_root"
+              parent="calendar_academy.menu_academy_root"
               sequence="30"/>
 
     <menuitem id="menu_academy_config"
@@ -123,4 +124,23 @@
               parent="menu_academy_communications"
               sequence="20"
               groups="calendar_academy.group_academy_manager"/>
+
+    <!-- Menú de Tareas -->
+    <menuitem id="menu_academy_tasks"
+              name="Tareas"
+              parent="menu_academy_evaluation"
+              sequence="15"/>
+
+    <!-- Submenús de Tareas -->
+    <menuitem id="menu_academy_task_management"
+              name="Gestión de Tareas"
+              action="action_academy_task"
+              parent="menu_academy_tasks"
+              sequence="10"/>
+
+    <menuitem id="menu_academy_task_submission"
+              name="Entregas"
+              action="action_academy_task_submission"
+              parent="menu_academy_tasks"
+              sequence="20"/>
 </odoo>
