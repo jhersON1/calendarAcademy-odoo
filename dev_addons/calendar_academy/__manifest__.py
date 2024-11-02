@@ -54,6 +54,12 @@
         'views/task_views.xml',
         'views/submission_views.xml',
 
+        # Event
+        'views/academy_event_views.xml',
+
+        # Dashboard
+
+
         # Menu
         'views/menu_views.xml',
 

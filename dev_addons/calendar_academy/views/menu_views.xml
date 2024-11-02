@@ -6,30 +6,36 @@
               sequence="10"
               web_icon="calendar_academy,static/description/user.png"/>
 
-    <!-- Submenús -->
+    <!-- Dashboard -->
+    <menuitem id="menu_academy_dashboard"
+              name="Dashboard"
+              parent="menu_academy_root"
+              sequence="5"/>
+
+    <menuitem id="menu_academy_dashboard_calendar"
+              name="Calendario Global"
+              action="action_academy_event_dashboard"
+              parent="menu_academy_dashboard"
+              sequence="10"/>
+
+    <!-- Eventos -->
+    <menuitem id="menu_academy_event_root"
+              name="Eventos"
+              parent="menu_academy_root"
+              sequence="15"/>
+
+    <menuitem id="menu_academy_event"
+              name="Eventos Institucionales"
+              action="action_academy_event"
+              parent="menu_academy_event_root"
+              sequence="10"/>
+
+    <!-- Académico -->
     <menuitem id="menu_academy_academic"
               name="Académico"
               parent="menu_academy_root"
-              sequence="10"/>
-
-    <menuitem id="menu_academy_enrollment"
-              name="Matrículas"
-              parent="menu_academy_root"
               sequence="20"/>
 
-    <!-- Actualizamos el menú de Evaluación -->
-    <menuitem id="menu_academy_evaluation"
-              name="Evaluación"
-              parent="calendar_academy.menu_academy_root"
-              sequence="30"/>
-
-    <menuitem id="menu_academy_config"
-              name="Configuración"
-              parent="menu_academy_root"
-              sequence="100"
-              groups="calendar_academy.group_academy_manager"/>
-
-    <!-- Items de Académico -->
     <menuitem id="menu_academy_period"
               name="Períodos"
               action="action_academy_period"
@@ -54,7 +60,12 @@
               parent="menu_academy_academic"
               sequence="40"/>
 
-    <!-- Items de Matrícula -->
+    <!-- Matrículas -->
+    <menuitem id="menu_academy_enrollment"
+              name="Matrículas"
+              parent="menu_academy_root"
+              sequence="25"/>
+
     <menuitem id="menu_academy_enrollment_reg"
               name="Matrículas"
               action="action_academy_enrollment"
@@ -67,20 +78,68 @@
               parent="menu_academy_enrollment"
               sequence="20"/>
 
-    <!-- Items de Evaluación -->
+    <!-- Comunicaciones -->
+    <menuitem id="menu_academy_communications"
+              name="Comunicaciones"
+              parent="menu_academy_root"
+              sequence="30"/>
+
+    <menuitem id="menu_academy_communication"
+              name="Comunicados"
+              action="action_academy_communication"
+              parent="menu_academy_communications"
+              sequence="10"/>
+
+    <menuitem id="menu_academy_communication_template"
+              name="Plantillas"
+              action="action_academy_communication_template"
+              parent="menu_academy_communications"
+              sequence="20"
+              groups="calendar_academy.group_academy_manager"/>
+
+    <!-- Evaluación -->
+    <menuitem id="menu_academy_evaluation"
+              name="Evaluación"
+              parent="menu_academy_root"
+              sequence="35"/>
+
+    <!-- Tareas -->
+    <menuitem id="menu_academy_tasks"
+              name="Tareas"
+              parent="menu_academy_evaluation"
+              sequence="10"/>
+
+    <menuitem id="menu_academy_task_management"
+              name="Gestión de Tareas"
+              action="action_academy_task"
+              parent="menu_academy_tasks"
+              sequence="10"/>
+
+    <menuitem id="menu_academy_task_submission"
+              name="Entregas"
+              action="action_academy_task_submission"
+              parent="menu_academy_tasks"
+              sequence="20"/>
+
     <menuitem id="menu_academy_attendance"
               name="Asistencia"
               action="action_academy_attendance"
               parent="menu_academy_evaluation"
-              sequence="10"/>
+              sequence="30"/>
 
     <menuitem id="menu_academy_grade"
               name="Calificaciones"
               action="action_academy_grade"
               parent="menu_academy_evaluation"
-              sequence="20"/>
+              sequence="40"/>
 
-    <!-- Items de Configuración -->
+    <!-- Configuración -->
+    <menuitem id="menu_academy_config"
+              name="Configuración"
+              parent="menu_academy_root"
+              sequence="100"
+              groups="calendar_academy.group_academy_manager"/>
+
     <menuitem id="menu_academy_level"
               name="Niveles"
               action="action_academy_level"
@@ -104,43 +163,4 @@
               action="action_academy_schedule"
               parent="menu_academy_config"
               sequence="40"/>
-
-    <!-- Menú Principal de Comunicaciones -->
-    <menuitem id="menu_academy_communications"
-              name="Comunicaciones"
-              parent="calendar_academy.menu_academy_root"
-              sequence="25"/>
-
-    <!-- Submenús -->
-    <menuitem id="menu_academy_communication"
-              name="Comunicados"
-              action="action_academy_communication"
-              parent="menu_academy_communications"
-              sequence="10"/>
-
-    <menuitem id="menu_academy_communication_template"
-              name="Plantillas"
-              action="action_academy_communication_template"
-              parent="menu_academy_communications"
-              sequence="20"
-              groups="calendar_academy.group_academy_manager"/>
-
-    <!-- Menú de Tareas -->
-    <menuitem id="menu_academy_tasks"
-              name="Tareas"
-              parent="menu_academy_evaluation"
-              sequence="15"/>
-
-    <!-- Submenús de Tareas -->
-    <menuitem id="menu_academy_task_management"
-              name="Gestión de Tareas"
-              action="action_academy_task"
-              parent="menu_academy_tasks"
-              sequence="10"/>
-
-    <menuitem id="menu_academy_task_submission"
-              name="Entregas"
-              action="action_academy_task_submission"
-              parent="menu_academy_tasks"
-              sequence="20"/>
 </odoo>

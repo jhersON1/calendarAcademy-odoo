@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Form View -->
+    <record id="view_academy_event_form" model="ir.ui.view">
+        <field name="name">academy.event.form</field>
+        <field name="model">academy.event</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_confirm"
+                            string="Confirmar"
+                            type="object"
+                            class="oe_highlight"
+                            invisible-if="state != 'draft'"/>
+                    <button name="action_start"
+                            string="Iniciar"
+                            type="object"
+                            class="oe_highlight"
+                            invisible-if="state != 'confirmed'"/>
+                    <button name="action_mark_done"
+                            string="Marcar como Realizado"
+                            type="object"
+                            invisible-if="state != 'in_progress'"/>
+                    <button name="action_cancel"
+                            string="Cancelar"
+                            type="object"
+                            invisible-if="state in ['cancelled', 'done']"/>
+                    <button name="action_draft"
+                            string="Volver a Borrador"
+                            type="object"
+                            invisible-if="state == 'draft'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="toggle_active" type="object"
+                                class="oe_stat_button" icon="fa-archive">
+                            <field name="active" widget="boolean_button"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="reference" readonly="1"/>
+                        </h1>
+                        <h2>
+                            <field name="name" placeholder="Nombre del Evento"/>
+                        </h2>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="event_type"/>
+                            <field name="priority" widget="priority"/>
+                            <field name="responsible_id"/>
+                            <field name="location" invisible-if="is_virtual"/>
+                            <field name="is_virtual"/>
+                            <field name="virtual_location" invisible-if="not is_virtual"/>
+                        </group>
+                        <group>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                            <field name="duration" widget="float_time"/>
+                            <field name="all_day"/>
+                            <field name="color"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Descripción" name="description">
+                            <field name="description" placeholder="Describe el evento..."/>
+                        </page>
+                        <page string="Participantes" name="participants">
+                            <group>
+                                <group string="Académico">
+                                    <field name="course_ids" widget="many2many_tags"/>
+                                    <field name="level_ids" widget="many2many_tags"/>
+                                </group>
+                                <group string="Participantes">
+                                    <field name="teacher_ids" widget="many2many_tags"/>
+                                    <field name="student_ids" widget="many2many_tags"/>
+                                    <field name="parent_ids" widget="many2many_tags"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- List View -->
+    <record id="view_academy_event_list" model="ir.ui.view">
+        <field name="name">academy.event.list</field>
+        <field name="model">academy.event</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="reference"/>
+                <field name="name"/>
+                <field name="event_type"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="location"/>
+                <field name="responsible_id"/>
+                <field name="priority" widget="priority"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_academy_event_search" model="ir.ui.view">
+        <field name="name">academy.event.search</field>
+        <field name="model">academy.event</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="reference"/>
+                <field name="event_type"/>
+                <field name="location"/>
+                <field name="responsible_id"/>
+                <separator/>
+                <filter string="Mis Eventos" name="my_events"
+                        domain="[('responsible_id', '=', uid)]"/>
+                <filter string="Eventos Urgentes" name="urgent"
+                        domain="[('priority', '=', '2')]"/>
+                <separator/>
+                <filter string="Hoy" name="today"
+                        domain="[('start_date', '&lt;=', context_today()), ('end_date', '&gt;=', context_today())]"/>
+                <filter string="Esta Semana" name="this_week"
+                        domain="[('start_date', '&gt;=', context_today().strftime('%Y-%m-%d')),
+                                ('start_date', '&lt;=', (context_today() + relativedelta(days=6)).strftime('%Y-%m-%d'))]"/>
+                <group expand="0" string="Agrupar Por">
+                    <filter string="Tipo" name="type" context="{'group_by': 'event_type'}"/>
+                    <filter string="Responsable" name="responsible" context="{'group_by': 'responsible_id'}"/>
+                    <filter string="Estado" name="state" context="{'group_by': 'state'}"/>
+                    <filter string="Mes" name="month" context="{'group_by': 'start_date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Actions -->
+    <record id="action_academy_event" model="ir.actions.act_window">
+        <field name="name">Eventos Institucionales</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">academy.event</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_academy_event_search"/>
+        <field name="context">{'search_default_my_events': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                ¡Crea tu primer evento institucional!
+            </p>
+            <p>
+                Aquí podrás crear y gestionar todos los eventos académicos y administrativos.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_academy_event_dashboard" model="ir.actions.act_window">
+        <field name="name">Calendario Global</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">academy.event</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_academy_event_search"/>
+        <field name="context">{'search_default_upcoming': 1}</field>
+    </record>
+</odoo>

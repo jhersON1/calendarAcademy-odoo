@@ -223,5 +223,36 @@
             <field name="perm_create" eval="False"/>
             <field name="perm_unlink" eval="False"/>
         </record>
+
+        <!-- Reglas para Eventos -->
+        <record id="rule_event_admin" model="ir.rule">
+            <field name="name">Administrator: Full Access to Events</field>
+            <field name="model_id" ref="model_academy_event"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_academy_manager'))]"/>
+        </record>
+
+        <record id="rule_event_teacher" model="ir.rule">
+            <field name="name">Teacher: Own Events and Events for Their Courses</field>
+            <field name="model_id" ref="model_academy_event"/>
+            <field name="domain_force">['|',
+                                        ('responsible_id', '=', user.id),
+                                        ('course_ids.teacher_ids.user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_academy_teacher'))]"/>
+        </record>
+
+        <record id="rule_event_student" model="ir.rule">
+            <field name="name">Student: Events for Their Courses</field>
+            <field name="model_id" ref="model_academy_event"/>
+            <field name="domain_force">[('course_ids.student_ids.user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_academy_student'))]"/>
+        </record>
+
+        <record id="rule_event_parent" model="ir.rule">
+            <field name="name">Parent: Events for Their Children's Courses</field>
+            <field name="model_id" ref="model_academy_event"/>
+            <field name="domain_force">[('course_ids.student_ids.parent_id.user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_academy_parent'))]"/>
+        </record>
     </data>
 </odoo>

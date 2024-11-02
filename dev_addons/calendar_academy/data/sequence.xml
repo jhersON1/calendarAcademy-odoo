@@ -18,5 +18,14 @@
             <field name="padding">5</field>
             <field name="company_id" eval="False"/>
         </record>
+
+        <!-- Secuencia para Eventos -->
+        <record id="seq_academy_event" model="ir.sequence">
+            <field name="name">Secuencia de Eventos</field>
+            <field name="code">academy.event</field>
+            <field name="prefix">EVENT/%(year)s/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
     </data>
 </odoo>
