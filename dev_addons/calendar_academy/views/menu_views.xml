@@ -18,17 +18,24 @@
               parent="menu_academy_dashboard"
               sequence="10"/>
 
+    <!-- Menú para el Dashboard -->
+    <menuitem id="menu_academy_event_dashboard"
+              name="Dashboard de Eventos"
+              parent="menu_academy_dashboard"
+              action="action_academy_event_dashboard"
+              sequence="10"/>
+
     <!-- Eventos -->
     <menuitem id="menu_academy_event_root"
               name="Eventos"
               parent="menu_academy_root"
               sequence="15"/>
 
-    <menuitem id="menu_academy_event"
-              name="Eventos Institucionales"
-              action="action_academy_event"
-              parent="menu_academy_event_root"
-              sequence="10"/>
+    <!--    <menuitem id="menu_academy_event"-->
+    <!--              name="Eventos Institucionales"-->
+    <!--              action="action_academy_event"-->
+    <!--              parent="menu_academy_event_root"-->
+    <!--              sequence="10"/>-->
 
     <!-- Académico -->
     <menuitem id="menu_academy_academic"

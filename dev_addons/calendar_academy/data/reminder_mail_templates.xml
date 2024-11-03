@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Template base para recordatorios -->
+        <template id="reminder_template_base">
+            <div style="padding: 15px; background-color: #F8F9FA;">
+                <p style="margin-bottom: 15px;">
+                    Estimado/a <t t-esc="object.recipient_name"/>,
+                </p>
+                <p style="margin-bottom: 15px;">
+                    Este es un recordatorio para el siguiente evento:
+                </p>
+                <div style="padding: 15px; background-color: white; border-radius: 5px; margin-bottom: 15px;">
+                    <h3 style="color: #4A4A4A; margin-bottom: 10px;">
+                        <t t-esc="object.name"/>
+                    </h3>
+                    <p><strong>Fecha:</strong> <t t-esc="format_datetime(object.start_date, tz=user.tz)"/></p>
+                    <p><strong>Tipo:</strong> <t t-esc="object.event_type_display"/></p>
+                    <t t-if="object.location">
+                        <p><strong>Ubicación:</strong> <t t-esc="object.location"/></p>
+                    </t>
+                    <t t-if="object.virtual_location">
+                        <p><strong>Ubicación Virtual:</strong> <t t-esc="object.virtual_location"/></p>
+                    </t>
+                </div>
+                <t t-call="calendar_academy.reminder_template_${object.event_type}"/>
+                <p style="margin-top: 15px;">
+                    Saludos cordiales,
+                </p>
+                <p>
+                    <t t-esc="user.company_id.name"/>
+                </p>
+            </div>
+        </template>
+
+        <!-- Template para exámenes -->
+        <template id="reminder_template_exam">
+            <div style="background-color: #FFE8E8; padding: 10px; border-radius: 5px;">
+                <p><strong>Recordatorio de Examen</strong></p>
+                <t t-if="object.description">
+                    <p>Detalles del examen:</p>
+                    <p><t t-raw="object.description"/></p>
+                </t>
+                <p>Por favor, asegúrese de llegar a tiempo y traer los materiales necesarios.</p>
+            </div>
+        </template>
+
+        <!-- Template para actividades -->
+        <template id="reminder_template_activity">
+            <div style="background-color: #E8FFF8; padding: 10px; border-radius: 5px;">
+                <p><strong>Recordatorio de Actividad</strong></p>
+                <t t-if="object.description">
+                    <p>Detalles de la actividad:</p>
+                    <p><t t-raw="object.description"/></p>
+                </t>
+            </div>
+        </template>
+
+        <!-- Template para reuniones -->
+        <template id="reminder_template_meeting">
+            <div style="background-color: #E8F4FF; padding: 10px; border-radius: 5px;">
+                <p><strong>Recordatorio de Reunión</strong></p>
+                <t t-if="object.description">
+                    <p>Agenda de la reunión:</p>
+                    <p><t t-raw="object.description"/></p>
+                </t>
+            </div>
+        </template>
+
+        <!-- Template para eventos académicos -->
+        <template id="reminder_template_academic">
+            <div style="background-color: #E8FFE8; padding: 10px; border-radius: 5px;">
+                <p><strong>Recordatorio de Evento Académico</strong></p>
+                <t t-if="object.description">
+                    <p>Información del evento:</p>
+                    <p><t t-raw="object.description"/></p>
+                </t>
+            </div>
+        </template>
+
+        <!-- Template para eventos administrativos -->
+        <template id="reminder_template_administrative">
+            <div style="background-color: #FFF8E8; padding: 10px; border-radius: 5px;">
+                <p><strong>Recordatorio de Evento Administrativo</strong></p>
+                <t t-if="object.description">
+                    <p>Información importante:</p>
+                    <p><t t-raw="object.description"/></p>
+                </t>
+            </div>
+        </template>
+    </data>
+</odoo>

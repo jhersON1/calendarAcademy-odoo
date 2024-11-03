@@ -45,6 +45,8 @@
         # Data
         'data/sequence.xml',
         'data/mail_template.xml',
+        'data/reminder_cron.xml',
+        'data/reminder_mail_templates.xml',
 
         # Communication
         'views/communication_views.xml',
