@@ -72,14 +72,25 @@
         </record>
 
 
+        <!-- Secuencia para eventos -->
+        <record id="seq_academy_event" model="ir.sequence">
+            <field name="name">Secuencia de Eventos</field>
+            <field name="code">academy.event</field>
+            <field name="prefix">EVENT/%(year)s/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Regla de registro para eventos -->
         <record id="rule_event_parent_view" model="ir.rule">
             <field name="name">Padres: Ver eventos de sus hijos</field>
             <field name="model_id" ref="model_academy_event"/>
-            <field name="domain_force">['|', '|',
-                                        ('parent_ids.user_id', '=', user.id),
-                                        ('student_ids.parent_id.user_id', '=', user.id),
-                                        ('course_ids.student_ids.parent_id.user_id', '=', user.id)]</field>
-            <field name="groups" eval="[(4, ref('group_academy_parent'))]"/>
+            <field name="domain_force">[
+                '|',
+                    ('student_ids.parent_id.user_id', '=', user.id),
+                    ('course_ids.student_ids.parent_id.user_id', '=', user.id)
+            ]</field>
+            <field name="groups" eval="[(4, ref('calendar_academy.group_academy_parent'))]"/>
             <field name="perm_read" eval="True"/>
             <field name="perm_write" eval="False"/>
             <field name="perm_create" eval="False"/>

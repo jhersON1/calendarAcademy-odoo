@@ -1,181 +1,136 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <!-- Form View -->
+    <record id="view_academy_event_form" model="ir.ui.view">
+        <field name="name">academy.event.form</field>
+        <field name="model">academy.event</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_confirm"
+                            string="Confirmar"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="state != 'draft'"/>
+                    <button name="action_mark_done"
+                            string="Marcar Realizado"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="state != 'confirmed'"/>
+                    <button name="action_cancel"
+                            string="Cancelar"
+                            type="object"
+                            invisible="state in ('done','cancelled')"/>
+                    <button name="action_draft"
+                            string="Volver a Borrador"
+                            type="object"
+                            invisible="state != 'cancelled'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Nombre del evento..."/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="event_type"/>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                            <field name="responsible_id"/>
+                        </group>
+                        <group>
+                            <field name="is_virtual"/>
+                            <field name="location" invisible="is_virtual"/>
+                            <field name="virtual_url" invisible="not is_virtual"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Descripción" name="description">
+                            <field name="description" placeholder="Detalles del evento..."/>
+                        </page>
+                        <page string="Participantes" name="participants">
+                            <group>
+                                <field name="course_ids" widget="many2many_tags"/>
+                                <field name="teacher_ids" widget="many2many_tags"/>
+                                <field name="student_ids" widget="many2many_tags"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
 
-    <!-- Vista Calendario -->
+    <!-- List View -->
+    <record id="view_academy_event_list" model="ir.ui.view">
+        <field name="name">academy.event.list</field>
+        <field name="model">academy.event</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="event_type"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="responsible_id"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Calendar View - Simplificada -->
     <record id="view_academy_event_calendar" model="ir.ui.view">
         <field name="name">academy.event.calendar</field>
         <field name="model">academy.event</field>
         <field name="arch" type="xml">
-            <calendar string="Eventos"
-                     date_start="start_date"
-                     date_stop="end_date"
-                     date_delay="duration"
-                     all_day="all_day"
-                     mode="month"
-                     color="event_type"
-                     event_open_popup="true">
+            <calendar date_start="start_date" date_stop="end_date" color="event_type">
                 <field name="name"/>
-                <field name="event_type"/>
-                <field name="priority" widget="priority"/>
-                <field name="location"/>
-                <field name="responsible_id" avatar_field="image_128"/>
-                <field name="state" invisible="1"/>
-                <field name="display_color" invisible="1"/>
+                <field name="responsible_id"/>
             </calendar>
         </field>
     </record>
 
-    <!-- Vista Kanban -->
-    <record id="view_academy_event_kanban" model="ir.ui.view">
-        <field name="name">academy.event.kanban</field>
-        <field name="model">academy.event</field>
-        <field name="arch" type="xml">
-            <kanban default_group_by="state"
-                    class="o_kanban_small_column"
-                    sample="1"
-                    records_draggable="1">
-                <field name="name"/>
-                <field name="event_type"/>
-                <field name="priority"/>
-                <field name="start_date"/>
-                <field name="end_date"/>
-                <field name="state"/>
-                <field name="responsible_id"/>
-                <field name="participant_count"/>
-                <field name="has_reminders"/>
-                <field name="display_color"/>
-                <field name="next_reminder"/>
-
-                <templates>
-                    <t t-name="kanban-box">
-                        <div t-attf-class="oe_kanban_global_click">
-                            <div t-attf-class="o_kanban_card_header mb-2"
-                                 t-attf-style="background-color: #{record.display_color.raw_value};">
-                                <div class="o_kanban_card_header_title">
-                                    <div class="o_primary">
-                                        <span class="o_priority_star" invisible="priority == '0'">
-                                            <i t-if="record.priority.raw_value == '1'" class="fa fa-star text-warning"/>
-                                            <i t-if="record.priority.raw_value == '2'" class="fa fa-star text-danger"/>
-                                        </span>
-                                        <strong><field name="name"/></strong>
-                                    </div>
-                                    <div class="o_secondary">
-                                        <field name="event_type"/>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="o_kanban_card_content">
-                                <div class="o_kanban_record_bottom">
-                                    <div class="oe_kanban_bottom_left">
-                                        <field name="start_date" widget="date"/>
-                                        <span t-if="!record.all_day.raw_value">
-                                            <field name="start_date" widget="time"/>
-                                        </span>
-                                    </div>
-                                    <div class="oe_kanban_bottom_right">
-                                        <field name="responsible_id" widget="many2one_avatar_user"/>
-                                    </div>
-                                </div>
-                                <div class="o_kanban_record_body mt-2">
-                                    <div t-if="record.location.raw_value">
-                                        <i class="fa fa-map-marker"/> <field name="location"/>
-                                    </div>
-                                    <div class="mt-2">
-                                        <span class="badge badge-pill badge-primary">
-                                            <i class="fa fa-users"/> <field name="participant_count"/>
-                                        </span>
-                                        <span t-if="record.has_reminders.raw_value"
-                                              class="badge badge-pill badge-info ml-2">
-                                            <i class="fa fa-bell"/> Recordatorios
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </t>
-                </templates>
-            </kanban>
-        </field>
-    </record>
-
-    <!-- Vista Búsqueda -->
+    <!-- Search View -->
     <record id="view_academy_event_search" model="ir.ui.view">
         <field name="name">academy.event.search</field>
         <field name="model">academy.event</field>
         <field name="arch" type="xml">
             <search>
                 <field name="name"/>
-                <field name="event_type"/>
                 <field name="responsible_id"/>
-                <field name="location"/>
                 <separator/>
                 <filter string="Mis Eventos" name="my_events"
                         domain="[('responsible_id', '=', uid)]"/>
                 <filter string="Próximos" name="upcoming"
                         domain="[('start_date', '>=', context_today().strftime('%Y-%m-%d'))]"/>
-                <filter string="Alta Prioridad" name="high_priority"
-                        domain="[('priority', '=', '2')]"/>
-                <separator/>
-                <filter string="Borrador" name="draft" domain="[('state', '=', 'draft')]"/>
-                <filter string="Confirmado" name="confirmed" domain="[('state', '=', 'confirmed')]"/>
-                <filter string="En Proceso" name="in_progress" domain="[('state', '=', 'in_progress')]"/>
-                <filter string="Realizado" name="done" domain="[('state', '=', 'done')]"/>
-                <filter string="Cancelado" name="cancelled" domain="[('state', '=', 'cancelled')]"/>
                 <group expand="0" string="Agrupar Por">
-                    <filter string="Tipo de Evento" name="group_type" context="{'group_by': 'event_type'}"/>
+                    <filter string="Tipo" name="group_type" context="{'group_by': 'event_type'}"/>
                     <filter string="Responsable" name="group_responsible" context="{'group_by': 'responsible_id'}"/>
                     <filter string="Estado" name="group_state" context="{'group_by': 'state'}"/>
-                    <filter string="Fecha" name="group_date" context="{'group_by': 'start_date:month'}"/>
                 </group>
             </search>
         </field>
     </record>
 
-    <!-- Vista Gráfica -->
-    <record id="view_academy_event_graph" model="ir.ui.view">
-        <field name="name">academy.event.graph</field>
-        <field name="model">academy.event</field>
-        <field name="arch" type="xml">
-            <graph string="Análisis de Eventos" type="bar" sample="1">
-                <field name="start_date" type="row" interval="day"/>
-                <field name="event_type" type="col"/>
-                <field name="participant_count" type="measure"/>
-            </graph>
-        </field>
-    </record>
-
-    <!-- Vista Pivot -->
-    <record id="view_academy_event_pivot" model="ir.ui.view">
-        <field name="name">academy.event.pivot</field>
-        <field name="model">academy.event</field>
-        <field name="arch" type="xml">
-            <pivot string="Análisis de Eventos" sample="1">
-                <field name="event_type" type="col"/>
-                <field name="start_date" type="row" interval="week"/>
-                <field name="participant_count" type="measure"/>
-                <field name="attendance_rate" type="measure"/>
-            </pivot>
-        </field>
-    </record>
-
-    <!-- Acción Principal -->
-    <record id="action_academy_event_dashboard" model="ir.actions.act_window">
-        <field name="name">Dashboard de Eventos</field>
+    <!-- Action -->
+    <record id="action_academy_event" model="ir.actions.act_window">
+        <field name="name">Eventos</field>
         <field name="res_model">academy.event</field>
-        <field name="view_mode">kanban,calendar,list,form,graph,pivot</field>
-        <field name="search_view_id" ref="view_academy_event_search"/>
-        <field name="context">{
-            'search_default_upcoming': 1,
-            'search_default_my_events': 1
-        }</field>
+        <field name="view_mode">list,calendar,form</field>
+        <field name="context">{'search_default_upcoming': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                ¡No hay eventos programados!
+                ¡Crear primer evento!
             </p>
             <p>
-                Crea tu primer evento para comenzar a gestionar el calendario institucional.
+                Gestiona los eventos académicos, administrativos y extracurriculares de forma simple.
             </p>
         </field>
     </record>
-
 </odoo>
