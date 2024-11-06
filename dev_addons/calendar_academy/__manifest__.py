@@ -22,7 +22,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'mail'],
+    'depends': ['base', 'mail', 'portal', 'website'],
 
     # always loaded
     'data': [
@@ -41,6 +41,8 @@
         'views/attendance_views.xml',
         'views/grade_views.xml',
         'views/schedule_views.xml',
+
+        'views/portal_templates.xml',
 
         # Data
         'data/sequence.xml',
