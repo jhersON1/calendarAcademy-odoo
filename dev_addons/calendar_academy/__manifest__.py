@@ -60,7 +60,7 @@
         'views/academy_event_views.xml',
 
         # Dashboard
-
+        'views/dashboard/academy_dashboard.xml',
 
         # Menu
         'views/menu_views.xml',
