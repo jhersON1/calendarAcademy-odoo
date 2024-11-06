@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Form View -->
+    <record id="view_academy_period_form" model="ir.ui.view">
+        <field name="name">academy.period.form</field>
+        <field name="model">academy.period</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_start_enrollment"
+                            string="Iniciar Matrículas"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="state != 'draft'"/>
+                    <button name="action_start_classes"
+                            string="Iniciar Clases"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="state != 'enrollment'"/>
+                    <button name="action_finish"
+                            string="Finalizar"
+                            type="object"
+                            invisible="state != 'active'"/>
+                    <button name="action_close"
+                            string="Cerrar"
+                            type="object"
+                            invisible="state != 'finished'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,enrollment,active,finished,closed"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                            <field name="active" widget="boolean_button"/>
+                        </button>
+                        <button name="action_view_courses" type="object" class="oe_stat_button" icon="fa-book">
+                            <div class="o_stat_info">
+                                <field name="course_count" class="o_stat_value"/>
+                                <span class="o_stat_text">Cursos</span>
+                            </div>
+                        </button>
+                        <button class="oe_stat_button" icon="fa-users" disabled="1">
+                            <div class="o_stat_info">
+                                <field name="student_count" class="o_stat_value"/>
+                                <span class="o_stat_text">Estudiantes</span>
+                            </div>
+                        </button>
+                        <button class="oe_stat_button" icon="fa-user" disabled="1">
+                            <div class="o_stat_info">
+                                <field name="teacher_count" class="o_stat_value"/>
+                                <span class="o_stat_text">Profesores</span>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Período">
+                            <field name="code"/>
+                            <field name="year"/>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                        </group>
+                        <group string="Matrículas">
+                            <field name="enrollment_start_date"/>
+                            <field name="enrollment_end_date"/>
+                            <field name="class_start_date"/>
+                            <field name="class_end_date"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Cursos" name="courses">
+                            <field name="course_ids">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="level_id"/>
+                                    <field name="parallel_id"/>
+                                    <field name="enrolled_count"/>
+                                    <field name="capacity"/>
+                                    <field name="state" widget="badge"
+                                           decoration-info="state == 'draft'"
+                                           decoration-success="state == 'active'"
+                                           decoration-warning="state == 'finished'"
+                                           decoration-danger="state == 'cancelled'"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- List View -->
+    <record id="view_academy_period_list" model="ir.ui.view">
+        <field name="name">academy.period.list</field>
+        <field name="model">academy.period</field>
+        <field name="arch" type="xml">
+            <list decoration-info="state == 'draft'"
+                 decoration-warning="state == 'enrollment'"
+                 decoration-success="state == 'active'"
+                 decoration-muted="state in ['finished', 'closed']">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="year"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="course_count"/>
+                <field name="student_count"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-warning="state == 'enrollment'"
+                       decoration-success="state == 'active'"
+                       decoration-muted="state in ['finished', 'closed']"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_academy_period_search" model="ir.ui.view">
+        <field name="name">academy.period.search</field>
+        <field name="model">academy.period</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="year"/>
+                <separator/>
+                <filter string="Borrador" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="En Matrículas" name="enrollment" domain="[('state', '=', 'enrollment')]"/>
+                <filter string="Activo" name="active" domain="[('state', '=', 'active')]"/>
+                <filter string="Finalizado" name="finished" domain="[('state', '=', 'finished')]"/>
+                <filter string="Cerrado" name="closed" domain="[('state', '=', 'closed')]"/>
+                <separator/>
+                <filter string="Archivado" name="inactive" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Agrupar Por">
+                    <filter string="Año" name="year" context="{'group_by': 'year'}"/>
+                    <filter string="Estado" name="state" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Calendar View -->
+    <record id="view_academy_period_calendar" model="ir.ui.view">
+        <field name="name">academy.period.calendar</field>
+        <field name="model">academy.period</field>
+        <field name="arch" type="xml">
+            <calendar string="Períodos Académicos"
+                     date_start="start_date"
+                     date_stop="end_date"
+                     color="state"
+                     mode="year">
+                <field name="name"/>
+                <field name="state"/>
+                <field name="course_count"/>
+            </calendar>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_academy_period" model="ir.actions.act_window">
+        <field name="name">Períodos Académicos</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">academy.period</field>
+        <field name="view_mode">list,form,calendar</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Crea el primer período académico
+            </p>
+            <p>
+                Define los períodos académicos para organizar los cursos y matrículas.
+            </p>
+        </field>
+    </record>
+</odoo>

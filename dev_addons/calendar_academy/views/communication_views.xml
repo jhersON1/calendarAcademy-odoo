@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Form View -->
+    <record id="view_academy_communication_form" model="ir.ui.view">
+        <field name="name">academy.communication.form</field>
+        <field name="model">academy.communication</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_send"
+                            string="Enviar"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="state != 'draft'"/>
+                    <button name="action_archive"
+                            string="Archivar"
+                            type="object"
+                            invisible="state != 'sent'"/>
+                    <button name="action_draft"
+                            string="Volver a Borrador"
+                            type="object"
+                            invisible="state == 'draft'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,sent,archived"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="reference" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="type"/>
+                            <field name="date"/>
+                            <field name="priority" widget="priority"/>
+                            <field name="require_confirmation"/>
+                        </group>
+                        <group>
+                            <field name="author_id"/>
+                            <field name="read_count"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Contenido" name="content">
+                            <field name="content" widget="html"/>
+                        </page>
+                        <page string="Destinatarios" name="recipients">
+                            <group>
+                                <field name="course_ids" widget="many2many_tags"/>
+                                <field name="student_ids" widget="many2many_tags"/>
+                                <field name="teacher_ids" widget="many2many_tags"/>
+                                <field name="parent_ids" widget="many2many_tags"/>
+                            </group>
+                        </page>
+                        <page string="Estado de Lectura" name="read_status">
+                            <field name="read_status_ids">
+                                <list>
+                                    <field name="user_id"/>
+                                    <field name="is_read"/>
+                                    <field name="read_date"/>
+                                    <field name="confirmation_date"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- List View -->
+    <record id="view_academy_communication_list" model="ir.ui.view">
+        <field name="name">academy.communication.list</field>
+        <field name="model">academy.communication</field>
+        <field name="arch" type="xml">
+            <list decoration-info="state == 'draft'"
+                  decoration-success="state == 'sent'"
+                  decoration-muted="state == 'archived'">
+                <field name="reference"/>
+                <field name="name"/>
+                <field name="type"/>
+                <field name="date"/>
+                <field name="author_id"/>
+                <field name="priority" widget="priority"/>
+                <field name="read_count"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-success="state == 'sent'"
+                       decoration-muted="state == 'archived'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_academy_communication_search" model="ir.ui.view">
+        <field name="name">academy.communication.search</field>
+        <field name="model">academy.communication</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="reference"/>
+                <field name="name"/>
+                <field name="author_id"/>
+                <field name="content"/>
+                <separator/>
+                <filter string="Mis Comunicados" name="my_communications"
+                        domain="[('author_id', '=', uid)]"/>
+                <filter string="Urgentes" name="urgent"
+                        domain="[('priority', '=', '2')]"/>
+                <separator/>
+                <filter string="Borrador" name="draft"
+                        domain="[('state', '=', 'draft')]"/>
+                <filter string="Enviados" name="sent"
+                        domain="[('state', '=', 'sent')]"/>
+                <filter string="Archivados" name="archived"
+                        domain="[('state', '=', 'archived')]"/>
+                <separator/>
+                <filter string="Institucionales" name="institutional"
+                        domain="[('type', '=', 'institutional')]"/>
+                <filter string="De Curso" name="course"
+                        domain="[('type', '=', 'course')]"/>
+                <filter string="Académicos" name="academic"
+                        domain="[('type', '=', 'academic')]"/>
+                <filter string="Administrativos" name="administrative"
+                        domain="[('type', '=', 'administrative')]"/>
+                <group expand="0" string="Agrupar Por">
+                    <filter string="Autor" name="author"
+                            context="{'group_by': 'author_id'}"/>
+                    <filter string="Tipo" name="type"
+                            context="{'group_by': 'type'}"/>
+                    <filter string="Estado" name="state"
+                            context="{'group_by': 'state'}"/>
+                    <filter string="Fecha" name="date"
+                            context="{'group_by': 'date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Kanban View -->
+    <record id="view_academy_communication_kanban" model="ir.ui.view">
+        <field name="name">academy.communication.kanban</field>
+        <field name="model">academy.communication</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile" sample="1">
+                <field name="reference"/>
+                <field name="name"/>
+                <field name="type"/>
+                <field name="date"/>
+                <field name="author_id"/>
+                <field name="priority"/>
+                <field name="state"/>
+                <field name="read_count"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <div class="oe_kanban_details">
+                                <div class="o_kanban_record_top">
+                                    <div class="o_kanban_record_headings">
+                                        <strong class="o_kanban_record_title">
+                                            <field name="name"/>
+                                        </strong>
+                                    </div>
+                                    <div class="o_dropdown_kanban dropdown">
+                                        <field name="priority" widget="priority"/>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_record_bottom">
+                                    <div class="oe_kanban_bottom_left">
+                                        <span><t t-esc="record.date.value"/></span>
+                                    </div>
+                                    <div class="oe_kanban_bottom_right">
+                                        <field name="state" widget="label_selection"
+                                               options="{'classes': {
+                                                   'draft': 'default',
+                                                   'sent': 'success',
+                                                   'archived': 'secondary'}}"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Action Window -->
+    <record id="action_academy_communication" model="ir.actions.act_window">
+        <field name="name">Comunicados</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">academy.communication</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="context">{'search_default_my_communications': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                ¡Crea tu primer comunicado!
+            </p>
+            <p>
+                Aquí podrás crear y gestionar todos los comunicados para la comunidad académica.
+            </p>
+        </field>
+    </record>
+</odoo>

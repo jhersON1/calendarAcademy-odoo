@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Form View -->
+    <record id="view_academy_attendance_form" model="ir.ui.view">
+        <field name="name">academy.attendance.form</field>
+        <field name="model">academy.attendance</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_generate_attendance_lines"
+                            string="Generar Lista"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="state != 'draft'"/>
+                    <button name="action_confirm"
+                            string="Confirmar"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="state != 'taken'"/>
+                    <button name="action_draft"
+                            string="Volver a Borrador"
+                            type="object"
+                            invisible="state == 'confirmed'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,taken,confirmed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="date"/>
+                            <field name="course_id"/>
+                            <field name="subject_id"/>
+                        </group>
+                        <group>
+                            <field name="teacher_id"/>
+                            <field name="total_present"/>
+                            <field name="total_absent"/>
+                            <field name="total_late"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Asistencia" name="attendance_lines">
+                            <field name="attendance_line_ids">
+                                <list editable="bottom">
+                                    <field name="student_id"/>
+                                    <field name="attendance_status"/>
+                                    <field name="arrival_time" widget="float_time"/>
+                                    <field name="justification"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- List View -->
+    <record id="view_academy_attendance_list" model="ir.ui.view">
+        <field name="name">academy.attendance.list</field>
+        <field name="model">academy.attendance</field>
+        <field name="arch" type="xml">
+            <list decoration-info="state == 'draft'"
+                 decoration-warning="state == 'taken'"
+                 decoration-success="state == 'confirmed'">
+                <field name="name"/>
+                <field name="date"/>
+                <field name="course_id"/>
+                <field name="subject_id"/>
+                <field name="teacher_id"/>
+                <field name="total_present"/>
+                <field name="total_absent"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-warning="state == 'taken'"
+                       decoration-success="state == 'confirmed'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_academy_attendance_search" model="ir.ui.view">
+        <field name="name">academy.attendance.search</field>
+        <field name="model">academy.attendance</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="course_id"/>
+                <field name="subject_id"/>
+                <field name="teacher_id"/>
+                <field name="date"/>
+                <filter string="Hoy" name="today" domain="[('date', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter string="Esta Semana" name="this_week" domain="[('date', '>=', (context_today() - relativedelta(days=context_today().weekday())).strftime('%Y-%m-%d'))]"/>
+                <filter string="Borrador" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Tomada" name="taken" domain="[('state', '=', 'taken')]"/>
+                <filter string="Confirmada" name="confirmed" domain="[('state', '=', 'confirmed')]"/>
+                <group expand="0" string="Agrupar Por">
+                    <filter string="Curso" name="course" context="{'group_by': 'course_id'}"/>
+                    <filter string="Materia" name="subject" context="{'group_by': 'subject_id'}"/>
+                    <filter string="Profesor" name="teacher" context="{'group_by': 'teacher_id'}"/>
+                    <filter string="Estado" name="state" context="{'group_by': 'state'}"/>
+                    <filter string="Fecha" name="date" context="{'group_by': 'date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Calendar View -->
+    <record id="view_academy_attendance_calendar" model="ir.ui.view">
+        <field name="name">academy.attendance.calendar</field>
+        <field name="model">academy.attendance</field>
+        <field name="arch" type="xml">
+            <calendar string="Asistencia" date_start="date" color="course_id" mode="month">
+                <field name="course_id"/>
+                <field name="subject_id"/>
+                <field name="teacher_id"/>
+                <field name="total_present"/>
+            </calendar>
+        </field>
+    </record>
+
+    <!-- Pivot View -->
+    <record id="view_academy_attendance_pivot" model="ir.ui.view">
+        <field name="name">academy.attendance.pivot</field>
+        <field name="model">academy.attendance</field>
+        <field name="arch" type="xml">
+            <pivot string="Análisis de Asistencia" sample="1">
+                <field name="date" type="row"/>
+                <field name="course_id" type="row"/>
+                <field name="total_present" type="measure"/>
+                <field name="total_absent" type="measure"/>
+                <field name="total_late" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_academy_attendance" model="ir.actions.act_window">
+        <field name="name">Control de Asistencia</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">academy.attendance</field>
+        <field name="view_mode">list,form,calendar,pivot</field>
+        <field name="search_view_id" ref="view_academy_attendance_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Registra la primera asistencia
+            </p>
+            <p>
+                Aquí podrás llevar el control de asistencia de los estudiantes por curso y materia.
+            </p>
+        </field>
+    </record>
+</odoo>

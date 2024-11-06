@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!--Comunicados-->
+        <record id="seq_academy_communication" model="ir.sequence">
+            <field name="name">Secuencia de Comunicados</field>
+            <field name="code">academy.communication</field>
+            <field name="prefix">COM/%(year)s/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!--Tareas-->
+        <record id="seq_academy_task" model="ir.sequence">
+            <field name="name">Secuencia de Tareas</field>
+            <field name="code">academy.task</field>
+            <field name="prefix">TASK/%(year)s/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Nuevos Grupos de Seguridad para Eventos -->
+        <record id="group_academy_event_user" model="res.groups">
+            <field name="name">Usuario de Eventos</field>
+            <field name="category_id" ref="module_category_academy"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+            <field name="comment">Puede ver y crear eventos básicos.</field>
+        </record>
+
+        <record id="group_academy_event_manager" model="res.groups">
+            <field name="name">Gestor de Eventos</field>
+            <field name="category_id" ref="module_category_academy"/>
+            <field name="implied_ids" eval="[(4, ref('group_academy_event_user'))]"/>
+            <field name="comment">Control total sobre la gestión de eventos.</field>
+        </record>
+
+        <!-- Agregar permisos de eventos a grupos existentes -->
+        <record id="group_academy_teacher" model="res.groups">
+            <field name="implied_ids" eval="[(4, ref('group_academy_event_user'))]"/>
+        </record>
+
+        <record id="group_academy_coordinator" model="res.groups">
+            <field name="implied_ids" eval="[(4, ref('group_academy_event_manager'))]"/>
+        </record>
+
+        <!-- Reglas de Registro para Eventos -->
+        <record id="rule_event_teacher_own" model="ir.rule">
+            <field name="name">Profesores: Solo sus eventos y eventos de sus cursos</field>
+            <field name="model_id" ref="model_academy_event"/>
+            <field name="domain_force">['|', '|',
+                                        ('responsible_id', '=', user.id),
+                                        ('teacher_ids.user_id', '=', user.id),
+                                        ('course_ids.teacher_ids.user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_academy_teacher'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_event_student_view" model="ir.rule">
+            <field name="name">Estudiantes: Ver eventos de sus cursos</field>
+            <field name="model_id" ref="model_academy_event"/>
+            <field name="domain_force">['|',
+                                        ('student_ids.user_id', '=', user.id),
+                                        ('course_ids.student_ids.user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_academy_student'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+
+        <!-- Secuencia para eventos -->
+        <record id="seq_academy_event" model="ir.sequence">
+            <field name="name">Secuencia de Eventos</field>
+            <field name="code">academy.event</field>
+            <field name="prefix">EVENT/%(year)s/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Regla de registro para eventos -->
+        <record id="rule_event_parent_view" model="ir.rule">
+            <field name="name">Padres: Ver eventos de sus hijos</field>
+            <field name="model_id" ref="model_academy_event"/>
+            <field name="domain_force">[
+                '|',
+                    ('student_ids.parent_id.user_id', '=', user.id),
+                    ('course_ids.student_ids.parent_id.user_id', '=', user.id)
+            ]</field>
+            <field name="groups" eval="[(4, ref('calendar_academy.group_academy_parent'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_event_coordinator_all" model="ir.rule">
+            <field name="name">Coordinadores: Acceso total a eventos</field>
+            <field name="model_id" ref="model_academy_event"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_academy_coordinator'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <!-- Reglas para Recordatorios -->
+        <record id="rule_reminder_user_own" model="ir.rule">
+            <field name="name">Usuario: Ver sus recordatorios</field>
+            <field name="model_id" ref="model_academy_event_reminder"/>
+            <field name="domain_force">[('event_id.responsible_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_academy_event_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <!-- Permisos de acceso al modelo -->
+        <record id="access_academy_event_user" model="ir.model.access">
+            <field name="name">academy.event.user</field>
+            <field name="model_id" ref="model_academy_event"/>
+            <field name="group_id" ref="group_academy_event_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+
+        <record id="access_academy_event_manager" model="ir.model.access">
+            <field name="name">academy.event.manager</field>
+            <field name="model_id" ref="model_academy_event"/>
+            <field name="group_id" ref="group_academy_event_manager"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+
+        <record id="access_academy_event_reminder_user" model="ir.model.access">
+            <field name="name">academy.event.reminder.user</field>
+            <field name="model_id" ref="model_academy_event_reminder"/>
+            <field name="group_id" ref="group_academy_event_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+
+        <record id="access_academy_event_reminder_manager" model="ir.model.access">
+            <field name="name">academy.event.reminder.manager</field>
+            <field name="model_id" ref="model_academy_event_reminder"/>
+            <field name="group_id" ref="group_academy_event_manager"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+    </data>
+</odoo>

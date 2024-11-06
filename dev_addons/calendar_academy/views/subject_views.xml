@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Form View -->
+    <record id="view_academy_subject_form" model="ir.ui.view">
+        <field name="name">academy.subject.form</field>
+        <field name="model">academy.subject</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                            <field name="active" widget="boolean_button"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Nombre de la materia"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="code"/>
+                            <field name="credits"/>
+                            <field name="hours_per_week"/>
+                            <field name="min_grade"/>
+                        </group>
+                        <group>
+                            <field name="weight"/>
+                            <field name="is_mandatory"/>
+                            <field name="evaluation_method"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Descripción" name="description">
+                            <field name="description" placeholder="Describe la materia..."/>
+                        </page>
+                        <page string="Niveles" name="levels">
+                            <field name="level_ids"/>
+                        </page>
+                        <page string="Prerrequisitos" name="prerequisites">
+                            <field name="prerequisite_ids"/>
+                        </page>
+                        <page string="Evaluación" name="evaluation">
+                            <group>
+                                <group>
+                                    <field name="has_homework"/>
+                                    <field name="has_projects"/>
+                                </group>
+                                <group>
+                                    <field name="has_midterm"/>
+                                    <field name="has_final"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- List View -->
+    <record id="view_academy_subject_list" model="ir.ui.view">
+        <field name="name">academy.subject.list</field>
+        <field name="model">academy.subject</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="hours_per_week"/>
+                <field name="credits"/>
+                <field name="min_grade"/>
+                <field name="evaluation_method"/>
+                <field name="is_mandatory" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_academy_subject_search" model="ir.ui.view">
+        <field name="name">academy.subject.search</field>
+        <field name="model">academy.subject</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+                <separator/>
+                <filter string="Obligatoria" name="mandatory" domain="[('is_mandatory', '=', True)]"/>
+                <filter string="Opcional" name="optional" domain="[('is_mandatory', '=', False)]"/>
+                <separator/>
+                <filter string="Con Tareas" name="with_homework" domain="[('has_homework', '=', True)]"/>
+                <filter string="Con Proyectos" name="with_projects" domain="[('has_projects', '=', True)]"/>
+                <filter string="Con Parcial" name="with_midterm" domain="[('has_midterm', '=', True)]"/>
+                <filter string="Con Final" name="with_final" domain="[('has_final', '=', True)]"/>
+                <separator/>
+                <filter string="Archivado" name="inactive" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Agrupar Por">
+                    <filter string="Método de Evaluación" name="eval_method" context="{'group_by': 'evaluation_method'}"/>
+                    <filter string="Obligatorio" name="group_mandatory" context="{'group_by': 'is_mandatory'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_academy_subject" model="ir.actions.act_window">
+        <field name="name">Materias</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">academy.subject</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Crea la primera materia
+            </p>
+            <p>
+                Define las materias que se impartirán en los diferentes niveles.
+            </p>
+        </field>
+    </record>
+</odoo>

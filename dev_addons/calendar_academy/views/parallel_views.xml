@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Form View -->
+    <record id="view_academy_parallel_form" model="ir.ui.view">
+        <field name="name">academy.parallel.form</field>
+        <field name="model">academy.parallel</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                            <field name="active" widget="boolean_button"/>
+                        </button>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="code"/>
+                        </group>
+                        <group>
+                            <field name="total_courses"/>
+                            <field name="total_students"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Descripción" name="description">
+                            <field name="description" nolabel="1" placeholder="Describe el paralelo..."/>
+                        </page>
+                        <page string="Cursos" name="courses">
+                            <field name="course_ids" readonly="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="level_id"/>
+                                    <field name="period_id"/>
+                                    <field name="enrolled_count"/>
+                                    <field name="state"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- List View -->
+    <record id="view_academy_parallel_list" model="ir.ui.view">
+        <field name="name">academy.parallel.list</field>
+        <field name="model">academy.parallel</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="total_courses"/>
+                <field name="total_students"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_academy_parallel_search" model="ir.ui.view">
+        <field name="name">academy.parallel.search</field>
+        <field name="model">academy.parallel</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+                <separator/>
+                <filter string="Archivado" name="inactive" domain="[('active', '=', False)]"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_academy_parallel" model="ir.actions.act_window">
+        <field name="name">Paralelos</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">academy.parallel</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Crea el primer paralelo
+            </p>
+            <p>
+                Define los paralelos para organizar los cursos.
+            </p>
+        </field>
+    </record>
+</odoo>

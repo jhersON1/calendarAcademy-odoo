@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Form View -->
+    <record id="view_academy_parent_form" model="ir.ui.view">
+        <field name="name">academy.parent.form</field>
+        <field name="model">academy.parent</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_create_user"
+                            string="Crear Usuario"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="user_id"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                            <field name="active" widget="boolean_button"/>
+                        </button>
+                        <button name="action_view_students" type="object" class="oe_stat_button" icon="fa-users">
+                            <field name="student_ids" widget="statinfo" string="Estudiantes"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Nombre Completo"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="identification"/>
+                            <field name="email"/>
+                            <field name="phone"/>
+                            <field name="mobile"/>
+                            <field name="user_id" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="occupation"/>
+                            <field name="workplace"/>
+                            <field name="work_phone"/>
+                            <field name="address"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Contacto de Emergencia" name="emergency">
+                            <group>
+                                <group>
+                                    <field name="emergency_contact"/>
+                                    <field name="emergency_phone"/>
+                                </group>
+                                <group>
+                                    <field name="emergency_relation"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Estudiantes" name="students">
+                            <field name="student_ids">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="identification"/>
+                                    <field name="current_course_id"/>
+                                    <field name="status"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- List View -->
+    <record id="view_academy_parent_list" model="ir.ui.view">
+        <field name="name">academy.parent.list</field>
+        <field name="model">academy.parent</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="identification"/>
+                <field name="email"/>
+                <field name="phone"/>
+                <field name="occupation"/>
+                <field name="workplace"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_academy_parent_search" model="ir.ui.view">
+        <field name="name">academy.parent.search</field>
+        <field name="model">academy.parent</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="identification"/>
+                <field name="email"/>
+                <field name="phone"/>
+                <field name="occupation"/>
+                <separator/>
+                <filter string="Con Usuario" name="with_user" domain="[('user_id', '!=', False)]"/>
+                <filter string="Sin Usuario" name="without_user" domain="[('user_id', '=', False)]"/>
+                <filter string="Archivado" name="inactive" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Agrupar Por">
+                    <filter string="Ocupación" name="occupation" context="{'group_by': 'occupation'}"/>
+                    <filter string="Lugar de Trabajo" name="workplace" context="{'group_by': 'workplace'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Kanban View -->
+    <record id="view_academy_parent_kanban" model="ir.ui.view">
+        <field name="name">academy.parent.kanban</field>
+        <field name="model">academy.parent</field>
+        <field name="arch" type="xml">
+            <kanban sample="1">
+                <field name="id"/>
+                <field name="name"/>
+                <field name="identification"/>
+                <field name="email"/>
+                <field name="phone"/>
+                <field name="occupation"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <div class="oe_kanban_details">
+                                <strong class="o_kanban_record_title">
+                                    <field name="name"/>
+                                </strong>
+                                <div>
+                                    <t t-if="record.identification.raw_value">
+                                        <span><field name="identification"/></span>
+                                    </t>
+                                </div>
+                                <div>
+                                    <t t-if="record.email.raw_value">
+                                        <span><i class="fa fa-envelope"/> <field name="email"/></span>
+                                    </t>
+                                </div>
+                                <div>
+                                    <t t-if="record.phone.raw_value">
+                                        <span><i class="fa fa-phone"/> <field name="phone"/></span>
+                                    </t>
+                                </div>
+                                <div>
+                                    <t t-if="record.occupation.raw_value">
+                                        <span><i class="fa fa-briefcase"/> <field name="occupation"/></span>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_academy_parent" model="ir.actions.act_window">
+        <field name="name">Representantes</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">academy.parent</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Registra el primer representante
+            </p>
+            <p>
+                Crea representantes para los estudiantes.
+            </p>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Form View -->
+    <record id="view_academy_task_submission_form" model="ir.ui.view">
+        <field name="name">academy.task.submission.form</field>
+        <field name="model">academy.task.submission</field>
+        <field name="arch" type="xml">
+            <form>s
+                <header>
+                    <button name="action_submit"
+                            string="Entregar"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="state not in ['pending', 'late']"/>
+                    <button name="action_grade"
+                            string="Calificar"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="state not in ['submitted', 'late']"/>
+                    <button name="action_reset"
+                            string="Reiniciar"
+                            type="object"
+                            invisible="state == 'pending'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="task_id" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="student_id" readonly="1"/>
+                            <field name="deadline" readonly="1"/>
+                            <field name="submission_date" readonly="1"/>
+                            <field name="is_late" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="score"/>
+                            <field name="max_score" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Contenido" name="content">
+                            <field name="content" widget="html"/>
+                        </page>
+                        <page string="Archivos" name="attachments">
+                            <field name="attachment_ids" widget="many2many_binary"/>
+                        </page>
+                        <page string="Retroalimentación" name="feedback">
+                            <field name="feedback"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- List View -->
+    <record id="view_academy_task_submission_list" model="ir.ui.view">
+        <field name="name">academy.task.submission.list</field>
+        <field name="model">academy.task.submission</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="state == 'late'"
+                  decoration-success="state == 'graded'"
+                  decoration-info="state == 'submitted'">
+                <field name="task_id"/>
+                <field name="student_id"/>
+                <field name="deadline"/>
+                <field name="submission_date"/>
+                <field name="is_late"/>
+                <field name="score"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'submitted'"
+                       decoration-success="state == 'graded'"
+                       decoration-danger="state == 'late'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_academy_task_submission_search" model="ir.ui.view">
+        <field name="name">academy.task.submission.search</field>
+        <field name="model">academy.task.submission</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="task_id"/>
+                <field name="student_id"/>
+                <separator/>
+                <filter string="Pendientes" name="pending"
+                        domain="[('state', '=', 'pending')]"/>
+                <filter string="Entregadas" name="submitted"
+                        domain="[('state', '=', 'submitted')]"/>
+                <filter string="Calificadas" name="graded"
+                        domain="[('state', '=', 'graded')]"/>
+                <filter string="Tardías" name="late"
+                        domain="[('is_late', '=', True)]"/>
+                <group expand="0" string="Agrupar Por">
+                    <filter string="Tarea" name="task"
+                            context="{'group_by': 'task_id'}"/>
+                    <filter string="Estudiante" name="student"
+                            context="{'group_by': 'student_id'}"/>
+                    <filter string="Estado" name="state"
+                            context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action Window -->
+    <record id="action_academy_task_submission" model="ir.actions.act_window">
+        <field name="name">Entregas</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">academy.task.submission</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No hay entregas disponibles
+            </p>
+            <p>
+                Las entregas se crearán automáticamente cuando se publiquen las tareas.
+            </p>
+        </field>
+    </record>
+</odoo>

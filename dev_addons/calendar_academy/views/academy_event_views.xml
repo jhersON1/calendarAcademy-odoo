@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Form View -->
+    <record id="view_academy_event_form" model="ir.ui.view">
+        <field name="name">academy.event.form</field>
+        <field name="model">academy.event</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_confirm"
+                            string="Confirmar"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="state != 'draft'"/>
+                    <button name="action_mark_done"
+                            string="Marcar Realizado"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="state != 'confirmed'"/>
+                    <button name="action_cancel"
+                            string="Cancelar"
+                            type="object"
+                            invisible="state in ('done','cancelled')"/>
+                    <button name="action_draft"
+                            string="Volver a Borrador"
+                            type="object"
+                            invisible="state != 'cancelled'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Nombre del evento..."/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="event_type"/>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                            <field name="responsible_id"/>
+                        </group>
+                        <group>
+                            <field name="is_virtual"/>
+                            <field name="location" invisible="is_virtual"/>
+                            <field name="virtual_url" invisible="not is_virtual"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Descripción" name="description">
+                            <field name="description" placeholder="Detalles del evento..."/>
+                        </page>
+                        <page string="Participantes" name="participants">
+                            <group>
+                                <!-- Botones de acción rápida -->
+                                <div class="oe_button_box" name="action_buttons">
+                                    <button name="action_add_all_active_courses"
+                                            string="Añadir Todos los Cursos Activos"
+                                            type="object"
+                                            class="oe_link"
+                                            help="Añadir todos los cursos del período activo"/>
+                                </div>
+                                <field name="course_ids" widget="many2many_tags"/>
+
+                                <!-- Botones para participantes -->
+                                <div class="oe_button_box">
+                                    <button name="action_add_course_students"
+                                            string="Añadir Estudiantes del Curso"
+                                            type="object"
+                                            class="oe_link"
+                                            help="Añadir todos los estudiantes de los cursos seleccionados"/>
+                                    <button name="action_add_course_teachers"
+                                            string="Añadir Profesores del Curso"
+                                            type="object"
+                                            class="oe_link"
+                                            help="Añadir todos los profesores de los cursos seleccionados"/>
+                                </div>
+                                <field name="teacher_ids" widget="many2many_tags"/>
+                                <field name="student_ids" widget="many2many_tags"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- List View -->
+    <record id="view_academy_event_list" model="ir.ui.view">
+        <field name="name">academy.event.list</field>
+        <field name="model">academy.event</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="event_type"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="responsible_id"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Calendar View - Simplificada -->
+    <record id="view_academy_event_calendar" model="ir.ui.view">
+        <field name="name">academy.event.calendar</field>
+        <field name="model">academy.event</field>
+        <field name="arch" type="xml">
+            <calendar date_start="start_date" date_stop="end_date" color="event_type">
+                <field name="name"/>
+                <field name="responsible_id"/>
+            </calendar>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_academy_event_search" model="ir.ui.view">
+        <field name="name">academy.event.search</field>
+        <field name="model">academy.event</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="responsible_id"/>
+                <separator/>
+                <filter string="Mis Eventos" name="my_events"
+                        domain="[('responsible_id', '=', uid)]"/>
+                <filter string="Próximos" name="upcoming"
+                        domain="[('start_date', '>=', context_today().strftime('%Y-%m-%d'))]"/>
+                <group expand="0" string="Agrupar Por">
+                    <filter string="Tipo" name="group_type" context="{'group_by': 'event_type'}"/>
+                    <filter string="Responsable" name="group_responsible" context="{'group_by': 'responsible_id'}"/>
+                    <filter string="Estado" name="group_state" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_academy_event" model="ir.actions.act_window">
+        <field name="name">Eventos</field>
+        <field name="res_model">academy.event</field>
+        <field name="view_mode">list,calendar,form</field>
+        <field name="context">{'search_default_upcoming': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                ¡Crear primer evento!
+            </p>
+            <p>
+                Gestiona los eventos académicos, administrativos y extracurriculares de forma simple.
+            </p>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Form View -->
+    <record id="view_academy_teacher_form" model="ir.ui.view">
+        <field name="name">academy.teacher.form</field>
+        <field name="model">academy.teacher</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_create_user"
+                            string="Crear Usuario"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="user_id"/>
+                    <button name="action_on_leave"
+                            string="Poner en Permiso"
+                            type="object"
+                            invisible="status != 'active'"/>
+                    <button name="action_activate"
+                            string="Activar"
+                            type="object"
+                            invisible="status == 'active'"/>
+                    <field name="status" widget="statusbar"
+                           statusbar_visible="active,on_leave,inactive"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                            <field name="active" widget="boolean_button"/>
+                        </button>
+                        <button name="action_view_schedule" type="object"
+                                class="oe_stat_button" icon="fa-calendar">
+                            <span>Horario</span>
+                        </button>
+                    </div>
+                    <field name="image" widget="image" class="oe_avatar"/>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Nombre Completo"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="identification"/>
+                            <field name="birth_date"/>
+                            <field name="gender"/>
+                            <field name="education_level"/>
+                            <field name="years_experience"/>
+                            <field name="user_id" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="email"/>
+                            <field name="phone"/>
+                            <field name="mobile"/>
+                            <field name="address"/>
+                            <field name="hire_date"/>
+                            <field name="max_hours"/>
+                            <field name="current_hours"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Especialidades" name="specialties">
+                            <field name="specialty">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="code"/>
+                                    <field name="hours_per_week"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Cursos Asignados" name="courses">
+                            <field name="course_ids">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="period_id"/>
+                                    <field name="level_id"/>
+                                    <field name="parallel_id"/>
+                                    <field name="state"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Horario" name="schedule">
+                            <field name="schedule_ids">
+                                <list>
+                                    <field name="course_id"/>
+                                    <field name="subject_id"/>
+                                    <field name="day"/>
+                                    <field name="start_hour" widget="float_time"/>
+                                    <field name="end_hour" widget="float_time"/>
+                                    <field name="classroom"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- List View -->
+    <record id="view_academy_teacher_list" model="ir.ui.view">
+        <field name="name">academy.teacher.list</field>
+        <field name="model">academy.teacher</field>
+        <field name="arch" type="xml">
+            <list decoration-info="status == 'active'"
+                 decoration-warning="status == 'on_leave'"
+                 decoration-muted="status == 'inactive'">
+                <field name="name"/>
+                <field name="identification"/>
+                <field name="email"/>
+                <field name="phone"/>
+                <field name="education_level"/>
+                <field name="current_hours"/>
+                <field name="max_hours"/>
+                <field name="status" widget="badge"
+                       decoration-info="status == 'active'"
+                       decoration-warning="status == 'on_leave'"
+                       decoration-muted="status == 'inactive'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_academy_teacher_search" model="ir.ui.view">
+        <field name="name">academy.teacher.search</field>
+        <field name="model">academy.teacher</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="identification"/>
+                <field name="email"/>
+                <field name="specialty"/>
+                <separator/>
+                <filter string="Activos" name="active_teachers" domain="[('status', '=', 'active')]"/>
+                <filter string="En Permiso" name="on_leave" domain="[('status', '=', 'on_leave')]"/>
+                <filter string="Inactivos" name="inactive_teachers" domain="[('status', '=', 'inactive')]"/>
+                <separator/>
+                <filter string="Con Usuario" name="with_user" domain="[('user_id', '!=', False)]"/>
+                <filter string="Sin Usuario" name="without_user" domain="[('user_id', '=', False)]"/>
+                <filter string="Archivado" name="inactive" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Agrupar Por">
+                    <filter string="Nivel Educativo" name="education" context="{'group_by': 'education_level'}"/>
+                    <filter string="Estado" name="status" context="{'group_by': 'status'}"/>
+                    <filter string="Especialidad" name="specialty" context="{'group_by': 'specialty'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Kanban View -->
+    <record id="view_academy_teacher_kanban" model="ir.ui.view">
+        <field name="name">academy.teacher.kanban</field>
+        <field name="model">academy.teacher</field>
+        <field name="arch" type="xml">
+            <kanban sample="1">
+                <field name="id"/>
+                <field name="name"/>
+                <field name="identification"/>
+                <field name="email"/>
+                <field name="phone"/>
+                <field name="education_level"/>
+                <field name="status"/>
+                <field name="image"/>
+                <field name="current_hours"/>
+                <field name="max_hours"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <div class="o_kanban_image">
+                                <img t-att-src="kanban_image('academy.teacher', 'image', record.id.raw_value)"
+                                     alt="Teacher"/>
+                            </div>
+                            <div class="oe_kanban_details">
+                                <strong class="o_kanban_record_title">
+                                    <field name="name"/>
+                                </strong>
+                                <div>
+                                    <field name="education_level"/>
+                                </div>
+                                <div t-if="record.email.value">
+                                    <i class="fa fa-envelope"/> <field name="email"/>
+                                </div>
+                                <div>
+                                    <strong>Horas: </strong>
+                                    <field name="current_hours"/>/<field name="max_hours"/>
+                                </div>
+                                <div class="o_kanban_tags_section mt-2">
+                                    <span class="badge badge-pill"
+                                          t-attf-class="badge-#{record.status.raw_value == 'active' ? 'info' :
+                                          record.status.raw_value == 'on_leave' ? 'warning' : 'secondary'}">
+                                        <field name="status"/>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_academy_teacher" model="ir.actions.act_window">
+        <field name="name">Profesores</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">academy.teacher</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="view_academy_teacher_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Registra el primer profesor
+            </p>
+            <p>
+                Crea un nuevo registro de profesor.
+            </p>
+        </field>
+    </record>
+</odoo>

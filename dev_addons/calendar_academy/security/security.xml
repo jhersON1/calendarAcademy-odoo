@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Categoría de Seguridad Existente -->
+        <record id="module_category_academy" model="ir.module.category">
+            <field name="name">Academia</field>
+            <field name="description">Gestión del Sistema Académico</field>
+            <field name="sequence">20</field>
+        </record>
+
+        <!-- Grupos de Usuario Existentes -->
+        <record id="group_academy_student" model="res.groups">
+            <field name="name">Estudiante</field>
+            <field name="category_id" ref="module_category_academy"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_portal'))]"/>
+            <field name="comment">Acceso limitado a su información académica personal.</field>
+        </record>
+
+        <record id="group_academy_parent" model="res.groups">
+            <field name="name">Padre/Representante</field>
+            <field name="category_id" ref="module_category_academy"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_portal'))]"/>
+            <field name="comment">Acceso a la información de sus hijos/representados.</field>
+        </record>
+
+        <record id="group_academy_teacher" model="res.groups">
+            <field name="name">Profesor</field>
+            <field name="category_id" ref="module_category_academy"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+            <field name="comment">Gestión de cursos asignados, calificaciones y asistencia.</field>
+        </record>
+
+        <record id="group_academy_coordinator" model="res.groups">
+            <field name="name">Coordinador</field>
+            <field name="category_id" ref="module_category_academy"/>
+            <field name="implied_ids" eval="[(4, ref('group_academy_teacher'))]"/>
+            <field name="comment">Supervisión de nivel académico y profesores.</field>
+        </record>
+
+        <record id="group_academy_manager" model="res.groups">
+            <field name="name">Administrador Académico</field>
+            <field name="category_id" ref="module_category_academy"/>
+            <field name="implied_ids" eval="[(4, ref('group_academy_coordinator'))]"/>
+            <field name="users" eval="[(4, ref('base.user_admin'))]"/>
+            <field name="comment">Control total del sistema académico.</field>
+        </record>
+
+        <!-- Reglas de Registro Existentes -->
+        <record id="rule_student_own_records" model="ir.rule">
+            <field name="name">Estudiante: Solo registros propios</field>
+            <field name="model_id" ref="model_academy_student"/>
+            <field name="domain_force">[('user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_academy_student'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_parent_child_records" model="ir.rule">
+            <field name="name">Padre: Solo registros de sus hijos</field>
+            <field name="model_id" ref="model_academy_student"/>
+            <field name="domain_force">[('parent_id.user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_academy_parent'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_teacher_own_courses" model="ir.rule">
+            <field name="name">Profesor: Solo sus cursos asignados</field>
+            <field name="model_id" ref="model_academy_course"/>
+            <field name="domain_force">[('teacher_ids.user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_academy_teacher'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_admin_all_courses" model="ir.rule">
+            <field name="name">Admin: Acceso total a cursos</field>
+            <field name="model_id" ref="model_academy_course"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_academy_manager'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <!-- Nuevas Reglas para Comunicaciones -->
+        <record id="rule_communication_teacher" model="ir.rule">
+            <field name="name">Profesor: Sus comunicados y recibidos</field>
+            <field name="model_id" ref="model_academy_communication"/>
+            <field name="domain_force">['|', '|',
+                                        ('author_id', '=', user.id),
+                                        ('teacher_ids.user_id', '=', user.id),
+                                        ('course_ids.teacher_ids.user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_academy_teacher'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_communication_student" model="ir.rule">
+            <field name="name">Estudiante: Solo comunicados recibidos</field>
+            <field name="model_id" ref="model_academy_communication"/>
+            <field name="domain_force">['|',
+                                        ('student_ids.user_id', '=', user.id),
+                                        ('course_ids.student_ids.user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_academy_student'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_communication_parent" model="ir.rule">
+            <field name="name">Padre: Solo comunicados de sus hijos</field>
+            <field name="model_id" ref="model_academy_communication"/>
+            <field name="domain_force">['|', '|',
+                                        ('parent_ids.user_id', '=', user.id),
+                                        ('student_ids.parent_id.user_id', '=', user.id),
+                                        ('course_ids.student_ids.parent_id.user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_academy_parent'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_communication_coordinator" model="ir.rule">
+            <field name="name">Coordinador: Todos los comunicados de sus niveles</field>
+            <field name="model_id" ref="model_academy_communication"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_academy_coordinator'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <!-- Reglas para Plantillas de Comunicados -->
+        <record id="rule_template_teacher" model="ir.rule">
+            <field name="name">Profesor: Solo lectura de plantillas</field>
+            <field name="model_id" ref="model_academy_communication_template"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_academy_teacher'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_template_coordinator" model="ir.rule">
+            <field name="name">Coordinador: Gestión de plantillas</field>
+            <field name="model_id" ref="model_academy_communication_template"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_academy_coordinator'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <!-- Reglas para Estados de Lectura -->
+        <record id="rule_communication_status_own" model="ir.rule">
+            <field name="name">Usuario: Ver sus estados de lectura</field>
+            <field name="model_id" ref="model_academy_communication_status"/>
+            <field name="domain_force">[('user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Reglas para Tareas -->
+        <record id="rule_task_teacher" model="ir.rule">
+            <field name="name">Profesor: Ver y gestionar sus tareas</field>
+            <field name="model_id" ref="model_academy_task"/>
+            <field name="domain_force">[('teacher_id.user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('calendar_academy.group_academy_teacher'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <record id="rule_task_student" model="ir.rule">
+            <field name="name">Estudiante: Ver tareas de sus cursos</field>
+            <field name="model_id" ref="model_academy_task"/>
+            <field name="domain_force">[('course_id.student_ids.user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('calendar_academy.group_academy_student'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Reglas para Entregas -->
+        <record id="rule_submission_teacher" model="ir.rule">
+            <field name="name">Profesor: Ver y calificar entregas de sus tareas</field>
+            <field name="model_id" ref="model_academy_task_submission"/>
+            <field name="domain_force">[('task_id.teacher_id.user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('calendar_academy.group_academy_teacher'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_submission_student" model="ir.rule">
+            <field name="name">Estudiante: Ver y gestionar sus entregas</field>
+            <field name="model_id" ref="model_academy_task_submission"/>
+            <field name="domain_force">[('student_id.user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('calendar_academy.group_academy_student'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Reglas para Eventos -->
+        <record id="rule_event_admin" model="ir.rule">
+            <field name="name">Administrator: Full Access to Events</field>
+            <field name="model_id" ref="model_academy_event"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_academy_manager'))]"/>
+        </record>
+
+        <record id="rule_event_teacher" model="ir.rule">
+            <field name="name">Teacher: Own Events and Events for Their Courses</field>
+            <field name="model_id" ref="model_academy_event"/>
+            <field name="domain_force">['|',
+                                        ('responsible_id', '=', user.id),
+                                        ('course_ids.teacher_ids.user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_academy_teacher'))]"/>
+        </record>
+
+        <record id="rule_event_student" model="ir.rule">
+            <field name="name">Student: Events for Their Courses</field>
+            <field name="model_id" ref="model_academy_event"/>
+            <field name="domain_force">[('course_ids.student_ids.user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_academy_student'))]"/>
+        </record>
+
+        <record id="rule_event_parent" model="ir.rule">
+            <field name="name">Parent: Events for Their Children's Courses</field>
+            <field name="model_id" ref="model_academy_event"/>
+            <field name="domain_force">[('course_ids.student_ids.parent_id.user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_academy_parent'))]"/>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Form View -->
+    <record id="view_academy_communication_template_form" model="ir.ui.view">
+        <field name="name">academy.communication.template.form</field>
+        <field name="model">academy.communication.template</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="toggle_active" type="object"
+                                class="oe_stat_button" icon="fa-archive">
+                            <field name="active" widget="boolean_button"/>
+                        </button>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="type"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Contenido" name="content">
+                            <field name="content" widget="html"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- List View -->
+    <record id="view_academy_communication_template_list" model="ir.ui.view">
+        <field name="name">academy.communication.template.list</field>
+        <field name="model">academy.communication.template</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="type"/>
+                <button name="action_use_template" type="object"
+                        string="Usar Plantilla" class="btn btn-link"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_academy_communication_template_search" model="ir.ui.view">
+        <field name="name">academy.communication.template.search</field>
+        <field name="model">academy.communication.template</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="type"/>
+                <separator/>
+                <filter string="Institucionales" name="institutional"
+                        domain="[('type', '=', 'institutional')]"/>
+                <filter string="De Curso" name="course"
+                        domain="[('type', '=', 'course')]"/>
+                <filter string="Académicos" name="academic"
+                        domain="[('type', '=', 'academic')]"/>
+                <filter string="Administrativos" name="administrative"
+                        domain="[('type', '=', 'administrative')]"/>
+                <separator/>
+                <filter string="Archivado" name="inactive"
+                        domain="[('active', '=', False)]"/>
+                <group expand="0" string="Agrupar Por">
+                    <filter string="Tipo" name="type"
+                            context="{'group_by': 'type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action Window -->
+    <record id="action_academy_communication_template" model="ir.actions.act_window">
+        <field name="name">Plantillas de Comunicados</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">academy.communication.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                ¡Crea tu primera plantilla de comunicado!
+            </p>
+            <p>
+                Las plantillas te ayudarán a crear comunicados de manera más rápida y consistente.
+            </p>
+        </field>
+    </record>
+</odoo>

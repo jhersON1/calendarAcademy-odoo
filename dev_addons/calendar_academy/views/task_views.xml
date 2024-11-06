@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Form View -->
+    <record id="view_academy_task_form" model="ir.ui.view">
+        <field name="name">academy.task.form</field>
+        <field name="model">academy.task</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_publish"
+                            string="Publicar"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="state != 'draft'"/>
+                    <button name="action_close"
+                            string="Cerrar"
+                            type="object"
+                            invisible="state != 'in_progress'"/>
+                    <button name="action_reopen"
+                            string="Reabrir"
+                            type="object"
+                            invisible="state != 'closed'"/>
+                    <button name="action_archive"
+                            string="Archivar"
+                            type="object"
+                            invisible="state == 'draft'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_submissions" type="object"
+                                class="oe_stat_button" icon="fa-tasks">
+                            <field name="submission_count" widget="statinfo" string="Entregas"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Título de la Tarea"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="course_id"/>
+                            <field name="subject_id"/>
+                            <field name="teacher_id"/>
+                            <field name="submission_type"/>
+                        </group>
+                        <group>
+                            <field name="assign_date"/>
+                            <field name="available_from"/>
+                            <field name="deadline"/>
+                            <field name="reference" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Descripción" name="description">
+                            <field name="description" widget="html"/>
+                        </page>
+                        <page string="Configuración" name="settings">
+                            <group>
+                                <group>
+                                    <field name="max_score"/>
+                                    <field name="weight"/>
+                                </group>
+                                <group>
+                                    <field name="allow_late_submission"/>
+                                    <field name="late_submission_penalty" invisible="not allow_late_submission"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Archivos" name="attachments">
+                            <field name="attachment_ids" widget="many2many_binary"/>
+                        </page>
+                        <page string="Entregas" name="submissions">
+                            <field name="submission_ids">
+                                <list>
+                                    <field name="student_id"/>
+                                    <field name="submission_date"/>
+                                    <field name="is_late"/>
+                                    <field name="score"/>
+                                    <field name="state" widget="badge"
+                                           decoration-info="state == 'submitted'"
+                                           decoration-success="state == 'graded'"
+                                           decoration-danger="state == 'late'"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+
+    <!-- List View -->
+    <record id="view_academy_task_list" model="ir.ui.view">
+        <field name="name">academy.task.list</field>
+        <field name="model">academy.task</field>
+        <field name="arch" type="xml">
+            <list decoration-info="state == 'draft'"
+                  decoration-success="state == 'published'"
+                  decoration-warning="state == 'in_progress'"
+                  decoration-muted="state in ['closed', 'archived']">
+                <field name="reference"/>
+                <field name="name"/>
+                <field name="course_id"/>
+                <field name="subject_id"/>
+                <field name="deadline"/>
+                <field name="submission_count"/>
+                <field name="graded_count"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-success="state == 'published'"
+                       decoration-warning="state == 'in_progress'"
+                       decoration-danger="state == 'closed'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Kanban View -->
+    <record id="view_academy_task_kanban" model="ir.ui.view">
+        <field name="name">academy.task.kanban</field>
+        <field name="model">academy.task</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" class="o_kanban_small_column">
+                <field name="name"/>
+                <field name="course_id"/>
+                <field name="subject_id"/>
+                <field name="deadline"/>
+                <field name="submission_count"/>
+                <field name="graded_count"/>
+                <field name="state"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <div class="oe_kanban_details">
+                                <strong class="o_kanban_record_title">
+                                    <field name="name"/>
+                                </strong>
+                                <div class="o_kanban_record_subtitle">
+                                    <field name="course_id"/> - <field name="subject_id"/>
+                                </div>
+                                <div class="o_kanban_tags_section">
+                                    Fecha límite: <field name="deadline"/>
+                                </div>
+                                <div class="o_kanban_record_bottom">
+                                    <div class="oe_kanban_bottom_left">
+                                        <span><t t-esc="record.graded_count.value"/>/<t
+                                                t-esc="record.submission_count.value"/> calificadas</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_academy_task_search" model="ir.ui.view">
+        <field name="name">academy.task.search</field>
+        <field name="model">academy.task</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="course_id"/>
+                <field name="subject_id"/>
+                <field name="teacher_id"/>
+                <separator/>
+                <filter string="Mis Tareas" name="my_tasks"
+                        domain="[('teacher_id.user_id', '=', uid)]"/>
+                <filter string="Próximas a Vencer" name="upcoming"
+                        domain="[('deadline', '>=', context_today().strftime('%Y-%m-%d')),
+                                ('deadline', '&lt;=', (context_today() + datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                <separator/>
+                <filter string="Borrador" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Publicadas" name="published" domain="[('state', '=', 'published')]"/>
+                <filter string="En Curso" name="in_progress" domain="[('state', '=', 'in_progress')]"/>
+                <filter string="Cerradas" name="closed" domain="[('state', '=', 'closed')]"/>
+                <group expand="0" string="Agrupar Por">
+                    <filter string="Curso" name="course" context="{'group_by': 'course_id'}"/>
+                    <filter string="Materia" name="subject" context="{'group_by': 'subject_id'}"/>
+                    <filter string="Profesor" name="teacher" context="{'group_by': 'teacher_id'}"/>
+                    <filter string="Estado" name="state" context="{'group_by': 'state'}"/>
+                    <filter string="Fecha Límite" name="deadline" context="{'group_by': 'deadline:week'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Calendar View -->
+    <record id="view_academy_task_calendar" model="ir.ui.view">
+        <field name="name">academy.task.calendar</field>
+        <field name="model">academy.task</field>
+        <field name="arch" type="xml">
+            <calendar string="Tareas" date_start="deadline" color="course_id">
+                <field name="name"/>
+                <field name="course_id"/>
+                <field name="subject_id"/>
+                <field name="submission_count"/>
+            </calendar>
+        </field>
+    </record>
+
+    <!-- Action Window -->
+    <record id="action_academy_task" model="ir.actions.act_window">
+        <field name="name">Tareas</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">academy.task</field>
+        <field name="view_mode">kanban,list,form,calendar</field>
+        <field name="context">{'search_default_my_tasks': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                ¡Crea tu primera tarea!
+            </p>
+            <p>
+                Crea y gestiona las tareas para tus cursos y estudiantes.
+            </p>
+        </field>
+    </record>
+</odoo>
