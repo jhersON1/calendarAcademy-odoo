@@ -52,7 +52,29 @@
                         </page>
                         <page string="Participantes" name="participants">
                             <group>
+                                <!-- Botones de acción rápida -->
+                                <div class="oe_button_box" name="action_buttons">
+                                    <button name="action_add_all_active_courses"
+                                            string="Añadir Todos los Cursos Activos"
+                                            type="object"
+                                            class="oe_link"
+                                            help="Añadir todos los cursos del período activo"/>
+                                </div>
                                 <field name="course_ids" widget="many2many_tags"/>
+
+                                <!-- Botones para participantes -->
+                                <div class="oe_button_box">
+                                    <button name="action_add_course_students"
+                                            string="Añadir Estudiantes del Curso"
+                                            type="object"
+                                            class="oe_link"
+                                            help="Añadir todos los estudiantes de los cursos seleccionados"/>
+                                    <button name="action_add_course_teachers"
+                                            string="Añadir Profesores del Curso"
+                                            type="object"
+                                            class="oe_link"
+                                            help="Añadir todos los profesores de los cursos seleccionados"/>
+                                </div>
                                 <field name="teacher_ids" widget="many2many_tags"/>
                                 <field name="student_ids" widget="many2many_tags"/>
                             </group>

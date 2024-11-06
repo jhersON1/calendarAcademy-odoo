@@ -129,3 +129,41 @@ class AcademyEvent(models.Model):
     def action_draft(self):
         """Volver a borrador"""
         self.write({'state': 'draft'})
+
+    def action_add_course_students(self):
+        """Añade todos los estudiantes de los cursos seleccionados"""
+        for record in self:
+            if record.course_ids:
+                students = record.course_ids.mapped('student_ids')
+                record.student_ids = [(6, 0, students.ids)]
+        return True
+
+    def action_add_course_teachers(self):
+        """Añade todos los profesores de los cursos seleccionados"""
+        for record in self:
+            if record.course_ids:
+                teachers = record.course_ids.mapped('teacher_ids')
+                record.teacher_ids = [(6, 0, teachers.ids)]
+        return True
+
+    def action_add_all_active_courses(self):
+        """Añade todos los cursos activos del período actual"""
+        active_period = self.env['academy.period'].search([
+            ('state', '=', 'active')
+        ], limit=1)
+
+        if active_period:
+            active_courses = self.env['academy.course'].search([
+                ('period_id', '=', active_period.id),
+                ('state', '=', 'active')
+            ])
+
+            if active_courses:
+                self.write({
+                    'course_ids': [(6, 0, active_courses.ids)]
+                })
+                # Opcional: añadir automáticamente estudiantes y profesores
+                self.action_add_course_students()
+                self.action_add_course_teachers()
+
+        return True
