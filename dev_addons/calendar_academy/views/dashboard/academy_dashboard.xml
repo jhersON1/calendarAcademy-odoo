@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Panel Lateral como Vista Kanban -->
+    <record id="view_academy_dashboard_kanban" model="ir.ui.view">
+        <field name="name">academy.event.dashboard.kanban</field>
+        <field name="model">academy.event</field>
+        <field name="arch" type="xml">
+            <kanban create="false" class="o_dashboard_kanban h-100">
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="container p-3">
+                            <!-- Sección de Próximos Eventos -->
+                            <div class="mb-4">
+                                <h5 class="mb-3">Próximos Eventos</h5>
+                                <div t-if="record.start_date.raw_value" class="o_event_list">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <span t-attf-class="badge me-2 #{record.event_type.raw_value == 'academic' ? 'bg-primary' : 'bg-info'}">
+                                            <field name="event_type"/>
+                                        </span>
+                                        <strong class="me-auto"><field name="name"/></strong>
+                                        <small class="text-muted"><field name="start_date"/></small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Sección de Acciones Rápidas -->
+                            <div class="mb-4">
+                                <h5 class="mb-3">Acciones Rápidas</h5>
+                                <div class="btn-group-vertical w-100">
+                                    <button name="%(action_academy_event)d"
+                                            type="action"
+                                            class="btn btn-primary mb-2"
+                                            context="{'default_event_type': 'academic'}">
+                                        Nuevo Evento Académico
+                                    </button>
+                                    <button name="%(action_academy_event)d"
+                                            type="action"
+                                            class="btn btn-info mb-2"
+                                            context="{'default_event_type': 'administrative'}">
+                                        Nuevo Evento Administrativo
+                                    </button>
+                                    <button name="action_add_all_active_courses"
+                                            type="object"
+                                            class="btn btn-secondary">
+                                        Añadir Cursos Activos
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Acción Window Combinada -->
+    <record id="action_academy_dashboard" model="ir.actions.act_window">
+        <field name="name">Dashboard Académico</field>
+        <field name="res_model">academy.event</field>
+        <field name="view_mode">calendar,kanban</field>
+        <field name="domain">[('start_date', '>=', context_today().strftime('%Y-%m-%d'))]</field>
+        <field name="context">{
+            'search_default_upcoming': 1,
+            'calendar_view': True
+        }</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No hay eventos programados
+            </p>
+            <p>
+                Crea tu primer evento académico o administrativo.
+            </p>
+        </field>
+    </record>
+</odoo>

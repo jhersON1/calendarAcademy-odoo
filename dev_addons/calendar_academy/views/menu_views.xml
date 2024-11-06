@@ -12,6 +12,13 @@
               parent="menu_academy_root"
               sequence="5"/>
 
+    <!-- Nuevo ítem para el Dashboard Académico -->
+    <menuitem id="menu_academy_dashboard_calendar"
+              name="Calendario Académico"
+              parent="menu_academy_dashboard"
+              action="action_academy_dashboard"
+              sequence="1"/>
+
     <!-- Eventos - Entrada única simplificada -->
     <menuitem id="menu_academy_event"
               name="Eventos"
