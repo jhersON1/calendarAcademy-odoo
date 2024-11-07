@@ -13,7 +13,7 @@
               sequence="5"/>
 
     <!-- Nuevo ítem para el Dashboard Académico -->
-<menuitem id="menu_academy_dashboard_calendar"
+    <menuitem id="menu_academy_dashboard_calendar"
               name="Calendario Administrativo"
               parent="menu_academy_dashboard"
               action="action_academy_dashboard"
@@ -26,13 +26,6 @@
               action="action_teacher_dashboard"
               sequence="2"
               groups="calendar_academy.group_academy_teacher"/>
-
-    <!-- Eventos - Entrada única simplificada -->
-    <menuitem id="menu_academy_event"
-              name="Eventos"
-              parent="menu_academy_root"
-              action="action_academy_event"
-              sequence="15"/>
 
     <!-- Académico -->
     <menuitem id="menu_academy_academic"
@@ -81,25 +74,6 @@
               action="action_academy_parent"
               parent="menu_academy_enrollment"
               sequence="20"/>
-
-    <!-- Comunicaciones -->
-    <menuitem id="menu_academy_communications"
-              name="Comunicaciones"
-              parent="menu_academy_root"
-              sequence="30"/>
-
-    <menuitem id="menu_academy_communication"
-              name="Comunicados"
-              action="action_academy_communication"
-              parent="menu_academy_communications"
-              sequence="10"/>
-
-    <menuitem id="menu_academy_communication_template"
-              name="Plantillas"
-              action="action_academy_communication_template"
-              parent="menu_academy_communications"
-              sequence="20"
-              groups="calendar_academy.group_academy_manager"/>
 
     <!-- Evaluación -->
     <menuitem id="menu_academy_evaluation"
