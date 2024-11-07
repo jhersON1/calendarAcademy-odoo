@@ -4,24 +4,42 @@ from datetime import datetime, timedelta
 
 class AcademyEvent(models.Model):
     _name = 'academy.event'
-    _description = 'Academic Event'
+    _description = 'Administrative Reminders and Events'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'start_date desc'
 
     name = fields.Char(
-        string='Nombre',
+        string='Título',
         required=True,
         tracking=True
     )
+
+    reminder_type = fields.Selection([
+        ('event', 'Evento'),
+        ('note', 'Nota'),
+        ('meeting', 'Reunión'),
+        ('task', 'Tarea'),
+        ('deadline', 'Fecha Límite'),
+        ('reminder', 'Recordatorio General')
+    ], string='Tipo de Recordatorio',
+        required=True,
+        default='event',
+        tracking=True)
 
     event_type = fields.Selection([
         ('academic', 'Académico'),
         ('administrative', 'Administrativo'),
         ('extracurricular', 'Extracurricular')
-    ], string='Tipo de Evento',
-       required=True,
-       default='academic',
-       tracking=True)
+    ], string='Categoría',
+        required=True,
+        default='administrative',
+        tracking=True)
+
+    priority = fields.Selection([
+        ('0', 'Normal'),
+        ('1', 'Importante'),
+        ('2', 'Urgente')
+    ], string='Prioridad', default='0', tracking=True)
 
     start_date = fields.Datetime(
         string='Fecha Inicio',
@@ -66,7 +84,7 @@ class AcademyEvent(models.Model):
     # Participantes
     course_ids = fields.Many2many(
         'academy.course',
-        string='Cursos'
+        string='Cursos Relacionados'
     )
 
     teacher_ids = fields.Many2many(
@@ -85,25 +103,36 @@ class AcademyEvent(models.Model):
         ('done', 'Realizado'),
         ('cancelled', 'Cancelado')
     ], string='Estado',
-       default='draft',
-       tracking=True)
+        default='draft',
+        tracking=True)
 
-    # Computed fields
     color = fields.Integer(
         string='Color',
         compute='_compute_color',
         store=True
     )
 
-    @api.depends('event_type')
+    @api.depends('reminder_type', 'priority')
     def _compute_color(self):
         for record in self:
+            # Colores base por tipo de recordatorio
             colors = {
-                'academic': 1,      # Azul
-                'administrative': 2, # Verde
-                'extracurricular': 4 # Rojo
+                'event': 1,  # Azul
+                'note': 2,  # Verde
+                'meeting': 3,  # Amarillo
+                'task': 4,  # Rojo
+                'deadline': 5,  # Morado
+                'reminder': 6  # Naranja
             }
-            record.color = colors.get(record.event_type, 0)
+            base_color = colors.get(record.reminder_type, 0)
+
+            # Modificar color según prioridad
+            if record.priority == '2':  # Urgente
+                base_color += 3
+            elif record.priority == '1':  # Importante
+                base_color += 1
+
+            record.color = base_color
 
     @api.constrains('start_date', 'end_date')
     def _check_dates(self):

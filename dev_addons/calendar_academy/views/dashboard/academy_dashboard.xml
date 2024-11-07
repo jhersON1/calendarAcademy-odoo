@@ -9,13 +9,17 @@
                 <templates>
                     <t t-name="kanban-box">
                         <div class="container p-3">
-                            <!-- Sección de Próximos Eventos -->
+                            <!-- Sección de Próximos Recordatorios -->
                             <div class="mb-4">
-                                <h5 class="mb-3">Próximos Eventos</h5>
+                                <h5 class="mb-3">Próximos Recordatorios</h5>
                                 <div t-if="record.start_date.raw_value" class="o_event_list">
                                     <div class="d-flex align-items-center mb-2">
-                                        <span t-attf-class="badge me-2 #{record.event_type.raw_value == 'academic' ? 'bg-primary' : 'bg-info'}">
-                                            <field name="event_type"/>
+                                        <span t-attf-class="badge me-2 #{record.reminder_type.raw_value == 'event' ? 'bg-primary' :
+                                            record.reminder_type.raw_value == 'meeting' ? 'bg-warning' :
+                                            record.reminder_type.raw_value == 'note' ? 'bg-success' :
+                                            record.reminder_type.raw_value == 'task' ? 'bg-danger' :
+                                            record.reminder_type.raw_value == 'deadline' ? 'bg-info' : 'bg-secondary'}">
+                                            <field name="reminder_type"/>
                                         </span>
                                         <strong class="me-auto"><field name="name"/></strong>
                                         <small class="text-muted"><field name="start_date"/></small>
@@ -30,19 +34,26 @@
                                     <button name="%(action_academy_event)d"
                                             type="action"
                                             class="btn btn-primary mb-2"
-                                            context="{'default_event_type': 'academic'}">
-                                        Nuevo Evento Académico
+                                            context="{'default_reminder_type': 'event', 'default_event_type': 'administrative'}">
+                                        Nuevo Evento
+                                    </button>
+                                    <button name="%(action_academy_event)d"
+                                            type="action"
+                                            class="btn btn-warning mb-2"
+                                            context="{'default_reminder_type': 'meeting', 'default_event_type': 'administrative'}">
+                                        Nueva Reunión
+                                    </button>
+                                    <button name="%(action_academy_event)d"
+                                            type="action"
+                                            class="btn btn-success mb-2"
+                                            context="{'default_reminder_type': 'note', 'default_event_type': 'administrative'}">
+                                        Nueva Nota
                                     </button>
                                     <button name="%(action_academy_event)d"
                                             type="action"
                                             class="btn btn-info mb-2"
-                                            context="{'default_event_type': 'administrative'}">
-                                        Nuevo Evento Administrativo
-                                    </button>
-                                    <button name="action_add_all_active_courses"
-                                            type="object"
-                                            class="btn btn-secondary">
-                                        Añadir Cursos Activos
+                                            context="{'default_reminder_type': 'task', 'default_event_type': 'administrative'}">
+                                        Nueva Tarea
                                     </button>
                                 </div>
                             </div>
@@ -55,7 +66,7 @@
 
     <!-- Acción Window Combinada -->
     <record id="action_academy_dashboard" model="ir.actions.act_window">
-        <field name="name">Dashboard Académico</field>
+        <field name="name">Dashboard Administrativo</field>
         <field name="res_model">academy.event</field>
         <field name="view_mode">calendar,kanban</field>
         <field name="domain">[('start_date', '>=', context_today().strftime('%Y-%m-%d'))]</field>
@@ -65,10 +76,10 @@
         }</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                No hay eventos programados
+                No hay recordatorios programados
             </p>
             <p>
-                Crea tu primer evento académico o administrativo.
+                Crea tu primer recordatorio o evento administrativo.
             </p>
         </field>
     </record>
