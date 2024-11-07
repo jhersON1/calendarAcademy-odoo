@@ -12,6 +12,7 @@ class Student(models.Model):
     image = fields.Binary(string='Imagen', attachment=True)
 
     # Información personal
+    enrollment_ids = fields.One2many('academy.enrollment', 'student_id', string='Matrículas')
     name = fields.Char(string='Nombre Completo', required=True, tracking=True)
     identification = fields.Char(string='Identificación', required=True, tracking=True)
     birth_date = fields.Date(string='Fecha de Nacimiento', required=True)
