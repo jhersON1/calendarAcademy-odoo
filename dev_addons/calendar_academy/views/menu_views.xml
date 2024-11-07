@@ -13,11 +13,19 @@
               sequence="5"/>
 
     <!-- Nuevo ítem para el Dashboard Académico -->
-    <menuitem id="menu_academy_dashboard_calendar"
-              name="Calendario Académico"
+<menuitem id="menu_academy_dashboard_calendar"
+              name="Calendario Administrativo"
               parent="menu_academy_dashboard"
               action="action_academy_dashboard"
-              sequence="1"/>
+              sequence="1"
+              groups="calendar_academy.group_academy_manager"/>
+
+    <menuitem id="menu_academy_teacher_dashboard"
+              name="Dashboard del Profesor"
+              parent="menu_academy_dashboard"
+              action="action_teacher_dashboard"
+              sequence="2"
+              groups="calendar_academy.group_academy_teacher"/>
 
     <!-- Eventos - Entrada única simplificada -->
     <menuitem id="menu_academy_event"
