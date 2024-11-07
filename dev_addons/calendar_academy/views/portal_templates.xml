@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Agregar elementos al menú del portal -->
+    <template id="portal_my_home_menu_academy" name="Portal Menu Academy" inherit_id="portal.portal_breadcrumbs" priority="20">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'academics'" class="breadcrumb-item active">Académico</li>
+            <li t-if="page_name == 'grades'" class="breadcrumb-item active">Calificaciones</li>
+            <li t-if="page_name == 'tasks'" class="breadcrumb-item active">Tareas</li>
+            <li t-if="page_name == 'attendance'" class="breadcrumb-item active">Asistencia</li>
+        </xpath>
+    </template>
+
+    <!-- Modificar la página principal del portal -->
+    <template id="portal_my_home_academy" name="Portal My Home Academy" inherit_id="portal.portal_my_home" priority="20">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-if="student">
+                <div class="o_portal_docs list-group">
+                    <a href="/my/academics" class="list-group-item list-group-item-action d-flex align-items-center justify-content-between">
+                        <div>
+                            <span class="d-block">Información Académica</span>
+                            <small class="text-muted">Ver información del curso actual</small>
+                        </div>
+                    </a>
+                    <a href="/my/grades" class="list-group-item list-group-item-action d-flex align-items-center justify-content-between">
+                        <div>
+                            <span class="d-block">Calificaciones</span>
+                            <small class="text-muted">Ver calificaciones y evaluaciones</small>
+                        </div>
+                        <span t-if="grade_count" class="badge badge-secondary"><t t-esc="grade_count"/></span>
+                    </a>
+                    <a href="/my/tasks" class="list-group-item list-group-item-action d-flex align-items-center justify-content-between">
+                        <div>
+                            <span class="d-block">Tareas</span>
+                            <small class="text-muted">Ver y entregar tareas</small>
+                        </div>
+                        <span t-if="task_count" class="badge badge-secondary"><t t-esc="task_count"/></span>
+                    </a>
+                    <a href="/my/attendance" class="list-group-item list-group-item-action d-flex align-items-center justify-content-between">
+                        <div>
+                            <span class="d-block">Asistencia</span>
+                            <small class="text-muted">Ver registro de asistencia</small>
+                        </div>
+                        <span t-if="attendance_count" class="badge badge-secondary"><t t-esc="attendance_count"/></span>
+                    </a>
+                </div>
+            </t>
+        </xpath>
+    </template>
+
+    <!-- Plantilla para información académica -->
+    <template id="portal_my_academics" name="My Academics">
+        <t t-call="portal.portal_layout">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <h3>Información Académica</h3>
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-12 col-md-6">
+                                        <strong>Estudiante:</strong> <span t-field="student.name"/>
+                                        <br/>
+                                        <strong>Curso Actual:</strong> <span t-field="current_course.name"/>
+                                        <br/>
+                                        <strong>Período:</strong> <span t-field="current_course.period_id.name"/>
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                        <strong>Estado:</strong> <span t-field="student.status"/>
+                                        <br/>
+                                        <strong>Nivel:</strong> <span t-field="current_course.level_id.name"/>
+                                        <br/>
+                                        <strong>Paralelo:</strong> <span t-field="current_course.parallel_id.name"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Plantilla para calificaciones -->
+    <template id="portal_my_grades" name="My Grades">
+        <t t-call="portal.portal_layout">
+            <div class="container">
+                <h3>Mis Calificaciones</h3>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Materia</th>
+                                <th>Evaluación</th>
+                                <th>Fecha</th>
+                                <th>Calificación</th>
+                                <th>Máximo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="grades" t-as="grade">
+                                <tr>
+                                    <td><span t-field="grade.grade_id.subject_id.name"/></td>
+                                    <td><span t-field="grade.grade_id.evaluation_type"/></td>
+                                    <td><span t-field="grade.grade_id.evaluation_date"/></td>
+                                    <td><span t-field="grade.grade"/></td>
+                                    <td><span t-field="grade.max_grade"/></td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Plantilla para tareas -->
+    <template id="portal_my_tasks" name="My Tasks">
+        <t t-call="portal.portal_layout">
+            <div class="container">
+                <h3>Mis Tareas</h3>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Tarea</th>
+                                <th>Materia</th>
+                                <th>Fecha Entrega</th>
+                                <th>Estado</th>
+                                <th>Calificación</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="tasks" t-as="task">
+                                <tr>
+                                    <td><span t-field="task.task_id.name"/></td>
+                                    <td><span t-field="task.task_id.subject_id.name"/></td>
+                                    <td><span t-field="task.deadline"/></td>
+                                    <td>
+                                        <span t-field="task.state"
+                                              t-attf-class="badge badge-pill badge-#{task.state == 'submitted' and 'success' or task.state == 'pending' and 'warning' or 'danger'}"/>
+                                    </td>
+                                    <td><span t-field="task.score"/></td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Plantilla para asistencia -->
+    <template id="portal_my_attendance" name="My Attendance">
+        <t t-call="portal.portal_layout">
+            <div class="container">
+                <h3>Mi Asistencia</h3>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Materia</th>
+                                <th>Estado</th>
+                                <th>Justificación</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="attendance" t-as="record">
+                                <tr>
+                                    <td><span t-field="record.attendance_id.date"/></td>
+                                    <td><span t-field="record.attendance_id.subject_id.name"/></td>
+                                    <td>
+                                        <span t-field="record.attendance_status"
+                                              t-attf-class="badge badge-pill badge-#{record.attendance_status == 'present' and 'success' or record.attendance_status == 'late' and 'warning' or 'danger'}"/>
+                                    </td>
+                                    <td><span t-field="record.justification"/></td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>
