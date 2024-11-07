@@ -203,6 +203,16 @@ class AcademyEvent(models.Model):
         self.ensure_one()
 
         try:
+            current_user = self.env.user
+            current_teacher = self.env['academy.teacher'].search([('user_id', '=', current_user.id)], limit=1)
+
+            # Si el creador es un profesor, añadirlo automáticamente
+            if current_teacher:
+                self.write({
+                    'teacher_ids': [(4, current_teacher.id)],
+                    'responsible_id': current_user.id
+                })
+
             # Obtener todos los profesores activos
             teachers = self.env['academy.teacher'].search([('active', '=', True)])
 
@@ -249,3 +259,17 @@ class AcademyEvent(models.Model):
                     'sticky': True,
                 }
             }
+
+    @api.model
+    def default_get(self, fields_list):
+        defaults = super().default_get(fields_list)
+
+        # Si el usuario actual es un profesor, añadirlo automáticamente
+        current_user = self.env.user
+        current_teacher = self.env['academy.teacher'].search([('user_id', '=', current_user.id)], limit=1)
+
+        if current_teacher:
+            defaults['teacher_ids'] = [(4, current_teacher.id)]
+            defaults['responsible_id'] = current_user.id
+
+        return defaults

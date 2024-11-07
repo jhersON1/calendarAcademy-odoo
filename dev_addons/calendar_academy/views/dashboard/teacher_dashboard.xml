@@ -66,13 +66,27 @@
         <field name="name">Dashboard del Profesor</field>
         <field name="res_model">academy.event</field>
         <field name="view_mode">calendar,kanban</field>
-        <field name="domain">[('start_date', '>=', context_today().strftime('%Y-%m-%d')),
-                            '|',
-                            ('teacher_ids.user_id', '=', uid),
-                            ('course_ids.teacher_ids.user_id', '=', uid)]</field>
+        <field name="domain">[
+            ('start_date', '>=', context_today().strftime('%Y-%m-%d')),
+            '|', '|',
+            ('responsible_id', '=', uid),
+            ('teacher_ids.user_id', '=', uid),
+            ('course_ids.teacher_ids.user_id', '=', uid)
+        ]</field>
         <field name="context">{
             'search_default_upcoming': 1,
-            'calendar_view': True
+            'calendar_view': True,
+            'default_responsible_id': uid,
+            'default_reminder_type': 'event',
+            'default_event_type': 'academic'
         }</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No hay recordatorios programados
+            </p>
+            <p>
+                Crea tu primer recordatorio o evento académico.
+            </p>
+        </field>
     </record>
 </odoo>
