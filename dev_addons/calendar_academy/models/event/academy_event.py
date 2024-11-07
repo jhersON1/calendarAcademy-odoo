@@ -142,6 +142,7 @@ class AcademyEvent(models.Model):
                     raise ValueError(
                         _('La fecha de fin no puede ser anterior a la fecha de inicio'))
 
+
     # Simple workflow
     def action_confirm(self):
         """Confirmar evento"""
@@ -196,3 +197,55 @@ class AcademyEvent(models.Model):
                 self.action_add_course_teachers()
 
         return True
+
+    def action_add_all_participants(self):
+        """Añade todos los participantes activos"""
+        self.ensure_one()
+
+        try:
+            # Obtener todos los profesores activos
+            teachers = self.env['academy.teacher'].search([('active', '=', True)])
+
+            # Obtener todos los estudiantes activos
+            students = self.env['academy.student'].search([('active', '=', True)])
+
+            # Obtener todos los cursos activos del período actual
+            active_period = self.env['academy.period'].search([('state', '=', 'active')], limit=1)
+            active_courses = False
+            if active_period:
+                active_courses = self.env['academy.course'].search([
+                    ('period_id', '=', active_period.id),
+                    ('state', '=', 'active')
+                ])
+
+            # Actualizar los campos
+            vals = {
+                'teacher_ids': [(6, 0, teachers.ids)],
+                'student_ids': [(6, 0, students.ids)]
+            }
+
+            if active_courses:
+                vals['course_ids'] = [(6, 0, active_courses.ids)]
+
+            self.write(vals)
+
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'message': 'Se han añadido todos los participantes',
+                    'type': 'success',
+                    'sticky': False,
+                }
+            }
+
+        except Exception as e:
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'message': f'Error al añadir participantes: {str(e)}',
+                    'type': 'danger',
+                    'sticky': True,
+                }
+            }
