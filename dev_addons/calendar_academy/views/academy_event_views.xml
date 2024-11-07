@@ -73,6 +73,13 @@
                         </page>
                         <page string="Participantes" name="participants">
                             <group>
+                                <div class="oe_button_box" name="participants_buttons">
+                                    <button name="action_add_all_participants"
+                                            string="Añadir Todos"
+                                            type="object"
+                                            class="btn btn-primary"
+                                            icon="fa-users"/>
+                                </div>
                                 <field name="course_ids" widget="many2many_tags"/>
                                 <field name="teacher_ids" widget="many2many_tags"/>
                                 <field name="student_ids" widget="many2many_tags"/>
