@@ -225,12 +225,12 @@
         </record>
 
         <!-- Reglas para Eventos -->
-        <record id="rule_event_admin" model="ir.rule">
-            <field name="name">Administrator: Full Access to Events</field>
-            <field name="model_id" ref="model_academy_event"/>
-            <field name="domain_force">[(1, '=', 1)]</field>
-            <field name="groups" eval="[(4, ref('group_academy_manager'))]"/>
-        </record>
+<!--        <record id="rule_event_admin" model="ir.rule">-->
+<!--            <field name="name">Administrator: Full Access to Events</field>-->
+<!--            <field name="model_id" ref="model_academy_event"/>-->
+<!--            <field name="domain_force">[(1, '=', 1)]</field>-->
+<!--            <field name="groups" eval="[(4, ref('group_academy_manager'))]"/>-->
+<!--        </record>-->
 
         <record id="rule_event_teacher" model="ir.rule">
             <field name="name">Teacher: Own Events and Events for Their Courses</field>
@@ -253,6 +253,24 @@
             <field name="model_id" ref="model_academy_event"/>
             <field name="domain_force">[('course_ids.student_ids.parent_id.user_id', '=', user.id)]</field>
             <field name="groups" eval="[(4, ref('group_academy_parent'))]"/>
+        </record>
+
+        <!-- En security.xml -->
+        <record id="rule_event_teacher_own" model="ir.rule">
+            <field name="name">Profesores: Solo sus eventos</field>
+            <field name="model_id" ref="model_academy_event"/>
+            <field name="domain_force">['|',
+                                        ('is_teacher_event', '=', True),
+                                        ('is_admin_event', '=', True)
+                                        ]</field>
+            <field name="groups" eval="[(4, ref('calendar_academy.group_academy_teacher'))]"/>
+        </record>
+
+        <record id="rule_event_admin" model="ir.rule">
+            <field name="name">Administrador: Todos los eventos</field>
+            <field name="model_id" ref="model_academy_event"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('calendar_academy.group_academy_manager'))]"/>
         </record>
     </data>
 </odoo>
