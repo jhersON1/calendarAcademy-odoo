@@ -64,11 +64,35 @@
         </field>
     </record>
 
+    <!-- Vista de Lista -->
+    <record id="view_academy_dashboard_list" model="ir.ui.view">
+        <field name="name">academy.event.dashboard.list</field>
+        <field name="model">academy.event</field>
+        <field name="arch" type="xml">
+            <list string="Recordatorios y Eventos" default_order="start_date desc">
+                <field name="name"/>
+                <field name="reminder_type" decoration-info="reminder_type == 'event'"
+                       decoration-success="reminder_type == 'note'"
+                       decoration-warning="reminder_type == 'meeting'"
+                       decoration-danger="reminder_type == 'task'"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="responsible_id"/>
+                <field name="priority" widget="priority"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-success="state == 'confirmed'"
+                       decoration-warning="state == 'done'"
+                       decoration-danger="state == 'cancelled'"/>
+            </list>
+        </field>
+    </record>
+
     <!-- Acción Window Combinada -->
     <record id="action_academy_dashboard" model="ir.actions.act_window">
         <field name="name">Dashboard Administrativo</field>
         <field name="res_model">academy.event</field>
-        <field name="view_mode">calendar,kanban</field>
+        <field name="view_mode">calendar,list,kanban</field>
         <field name="domain">[('start_date', '>=', context_today().strftime('%Y-%m-%d'))]</field>
         <field name="context">{
             'search_default_upcoming': 1,
