@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vista Form para estudiantes -->
+    <record id="view_student_event_form" model="ir.ui.view">
+        <field name="name">academy.event.student.form</field>
+        <field name="model">academy.event</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="state" widget="statusbar" options="{'clickable': '1'}"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Título..."/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="reminder_type"/>
+                            <field name="event_type" invisible="1" force_save="1"/>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                        </group>
+                        <group>
+                            <field name="priority" widget="priority"/>
+                            <field name="responsible_id" invisible="1" force_save="1"/>
+                            <field name="is_virtual"/>
+                            <field name="virtual_url"
+                                   invisible="not is_virtual"
+                                   required="is_virtual"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Descripción" name="description">
+                            <field name="description" placeholder="Detalles del recordatorio..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vista Calendar específica para estudiantes -->
+    <record id="view_student_event_calendar" model="ir.ui.view">
+        <field name="name">academy.event.student.calendar</field>
+        <field name="model">academy.event</field>
+        <field name="arch" type="xml">
+            <calendar string="Recordatorios y Eventos"
+                     date_start="start_date"
+                     date_stop="end_date"
+                     color="reminder_type"
+                     create="1"
+                     event_open_popup="1"
+                     mode="month">
+                <field name="name"/>
+                <field name="reminder_type"/>
+                <field name="state"/>
+                <field name="priority"/>
+            </calendar>
+        </field>
+    </record>
+
+    <!-- Vista Kanban para el dashboard -->
+    <record id="view_student_dashboard_event_kanban" model="ir.ui.view">
+        <field name="name">academy.event.student.dashboard.kanban</field>
+        <field name="model">academy.event</field>
+        <field name="arch" type="xml">
+            <kanban class="o_dashboard_kanban h-100" sample="1">
+                <field name="name"/>
+                <field name="reminder_type"/>
+                <field name="start_date"/>
+                <field name="state"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="container p-3">
+                            <div class="mb-4">
+                                <h5 class="mb-3">Próximos Recordatorios</h5>
+                                <div class="o_event_list">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <span class="badge me-2" t-attf-class="bg-#{record.reminder_type.raw_value == 'event' and 'primary' or record.reminder_type.raw_value == 'meeting' and 'warning' or record.reminder_type.raw_value == 'note' and 'success' or record.reminder_type.raw_value == 'task' and 'danger' or 'secondary'}">
+                                            <field name="reminder_type"/>
+                                        </span>
+                                        <strong class="me-auto"><field name="name"/></strong>
+                                        <small class="text-muted"><field name="start_date"/></small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <h5 class="mb-3">Acciones Rápidas</h5>
+                                <div class="btn-group-vertical w-100">
+                                    <button name="%(calendar_academy.action_academy_grade)d"
+                                            type="action"
+                                            class="btn btn-primary mb-2">
+                                        Ver Calificaciones
+                                    </button>
+                                    <button name="%(calendar_academy.action_academy_attendance)d"
+                                            type="action"
+                                            class="btn btn-info mb-2">
+                                        Ver Asistencia
+                                    </button>
+                                    <button name="%(calendar_academy.action_academy_task_submission)d"
+                                            type="action"
+                                            class="btn btn-success mb-2">
+                                        Ver Tareas Pendientes
+                                    </button>
+                                    <button type="object"
+                                            name="action_create_reminder"
+                                            class="btn btn-warning mb-2">
+                                        Nuevo Recordatorio
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Acción del Dashboard -->
+    <record id="action_student_dashboard" model="ir.actions.act_window">
+        <field name="name">Dashboard del Estudiante</field>
+        <field name="res_model">academy.event</field>
+        <field name="view_mode">calendar,kanban,form</field>
+        <field name="domain">[
+            '|', '|',
+            ('responsible_id', '=', uid),
+            ('student_ids.user_id', '=', uid),
+            ('course_ids.student_ids.user_id', '=', uid)
+        ]</field>
+        <field name="context">{
+            'default_event_type': 'academic',
+            'default_responsible_id': uid,
+            'default_reminder_type': 'note'
+        }</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                ¡Crea tu primer recordatorio!
+            </p>
+            <p>
+                Aquí podrás gestionar tus recordatorios personales.
+            </p>
+        </field>
+    </record>
+
+</odoo>

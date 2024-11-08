@@ -278,25 +278,55 @@ class AcademyEvent(models.Model):
                 }
             }
 
-    # En academy_event.py
+
     @api.model
     def default_get(self, fields_list):
         defaults = super().default_get(fields_list)
 
+        # Si el usuario actual es un estudiante
+        if self.env.user.has_group('calendar_academy.group_academy_student'):
+            current_student = self.env['academy.student'].search([('user_id', '=', self.env.user.id)], limit=1)
+            if current_student:
+                defaults.update({
+                    'event_type': 'academic',  # Forzar tipo académico
+                    'responsible_id': self.env.user.id,
+                    'student_ids': [(4, current_student.id)],
+                })
         # Si el usuario actual es un profesor
-        if self.env.user.has_group('calendar_academy.group_academy_teacher') and \
-                not self.env.user.has_group('calendar_academy.group_academy_manager'):
+        elif self.env.user.has_group('calendar_academy.group_academy_teacher'):
             current_teacher = self.env['academy.teacher'].search([('user_id', '=', self.env.user.id)], limit=1)
             if current_teacher:
                 defaults.update({
                     'teacher_ids': [(4, current_teacher.id)],
                     'responsible_id': self.env.user.id,
-                    'event_type': 'academic'  # Forzar tipo académico para profesores
+                    'event_type': 'academic'
                 })
         # Si es administrador
         elif self.env.user.has_group('calendar_academy.group_academy_manager'):
             defaults.update({
-                'event_type': 'administrative'  # Tipo administrativo por defecto
+                'event_type': 'administrative'
             })
 
         return defaults
+
+    @api.onchange('reminder_type', 'event_type')
+    def _onchange_type_student(self):
+        """Asegura que los estudiantes no puedan cambiar el tipo de evento"""
+        if self.env.user.has_group('calendar_academy.group_academy_student'):
+            self.event_type = 'academic'
+
+    def action_create_reminder(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Nuevo Recordatorio',
+            'res_model': 'academy.event',
+            'view_mode': 'form',
+            'view_id': self.env.ref('calendar_academy.view_student_event_form').id,
+            'target': 'new',
+            'context': {
+                'default_event_type': 'academic',
+                'default_responsible_id': self.env.user.id,
+                'default_reminder_type': 'note'
+            }
+        }

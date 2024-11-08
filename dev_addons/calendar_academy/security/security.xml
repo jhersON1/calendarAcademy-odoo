@@ -260,6 +260,20 @@
             <field name="groups" eval="[(4, ref('calendar_academy.group_academy_teacher'))]"/>
         </record>
 
+        <record id="rule_event_student_own" model="ir.rule">
+            <field name="name">Estudiantes: Propios Eventos y Eventos de sus Cursos</field>
+            <field name="model_id" ref="model_academy_event"/>
+            <field name="domain_force">['|', '|',
+                                        ('responsible_id', '=', user.id),
+                                        ('student_ids.user_id', '=', user.id),
+                                        ('course_ids.student_ids.user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('calendar_academy.group_academy_student'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
         <record id="rule_event_admin" model="ir.rule">
             <field name="name">Administrador: Todos los eventos</field>
             <field name="model_id" ref="model_academy_event"/>

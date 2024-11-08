@@ -27,6 +27,13 @@
               sequence="2"
               groups="calendar_academy.group_academy_teacher"/>
 
+    <menuitem id="menu_academy_student_dashboard"
+              name="Dashboard del Estudiante"
+              parent="menu_academy_dashboard"
+              action="action_student_dashboard"
+              sequence="3"
+              groups="calendar_academy.group_academy_student"/>
+
     <!-- Académico -->
     <menuitem id="menu_academy_academic"
               name="Académico"
