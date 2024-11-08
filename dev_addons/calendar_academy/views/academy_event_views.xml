@@ -71,7 +71,9 @@
                         <page string="Descripción" name="description">
                             <field name="description" placeholder="Detalles..."/>
                         </page>
-                        <page string="Participantes" name="participants">
+                        <page string="Participantes"
+                              name="participants"
+                              groups="calendar_academy.group_academy_manager,calendar_academy.group_academy_teacher">
                             <group>
                                 <div class="oe_button_box" name="participants_buttons">
                                     <button name="action_add_all_participants"
@@ -81,7 +83,9 @@
                                             icon="fa-users"/>
                                 </div>
                                 <field name="course_ids" widget="many2many_tags"/>
-                                <field name="teacher_ids" widget="many2many_tags"/>
+                                <field name="teacher_ids"
+                                       widget="many2many_tags"
+                                       groups="calendar_academy.group_academy_manager"/>
                                 <field name="student_ids" widget="many2many_tags"/>
                             </group>
                         </page>
