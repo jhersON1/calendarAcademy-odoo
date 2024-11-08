@@ -65,17 +65,13 @@
     <record id="action_teacher_dashboard" model="ir.actions.act_window">
         <field name="name">Dashboard del Profesor</field>
         <field name="res_model">academy.event</field>
-        <field name="view_mode">calendar,kanban</field>
-        <field name="domain">[
-            ('start_date', '>=', context_today().strftime('%Y-%m-%d')),
-            ('is_teacher_event', '=', True)
-        ]</field>
+        <field name="view_mode">calendar,kanban,form</field>
+        <field name="domain">[(1, '=', 1)]</field>  <!-- El dominio se aplicará dinámicamente -->
         <field name="context">{
             'search_default_upcoming': 1,
-            'calendar_view': True,
+            'default_event_type': 'academic',
             'default_responsible_id': uid,
-            'default_reminder_type': 'event',
-            'default_event_type': 'academic'
+            'default_creator_type': 'teacher'
         }</field>
     </record>
 </odoo>

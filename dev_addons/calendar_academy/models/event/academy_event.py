@@ -1,6 +1,4 @@
 from odoo import models, fields, api, _
-from datetime import datetime, timedelta
-
 
 class AcademyEvent(models.Model):
     _name = 'academy.event'
@@ -112,15 +110,22 @@ class AcademyEvent(models.Model):
         store=True
     )
 
+    creator_type = fields.Selection([
+        ('student', 'Estudiante'),
+        ('teacher', 'Profesor'),
+        ('admin', 'Administrativo')
+    ], string='Tipo de Creador', default='admin', required=True)
+
     is_admin_event = fields.Boolean(compute='_compute_is_admin_event', store=True)
     is_teacher_event = fields.Boolean(compute='_compute_is_teacher_event', store=True)
+    student_creator_id = fields.Many2one('academy.student', string='Estudiante Creador')
 
     @api.depends('event_type', 'responsible_id')
     def _compute_is_admin_event(self):
         for record in self:
             record.is_admin_event = (
-                record.event_type == 'administrative' and
-                record.responsible_id.has_group('calendar_academy.group_academy_manager')
+                    record.event_type == 'administrative' and
+                    record.responsible_id.has_group('calendar_academy.group_academy_manager')
             )
 
     @api.depends('responsible_id', 'teacher_ids', 'course_ids')
@@ -278,7 +283,6 @@ class AcademyEvent(models.Model):
                 }
             }
 
-
     @api.model
     def default_get(self, fields_list):
         defaults = super().default_get(fields_list)
@@ -315,7 +319,30 @@ class AcademyEvent(models.Model):
         if self.env.user.has_group('calendar_academy.group_academy_student'):
             self.event_type = 'academic'
 
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Sobrescribir create para establecer el tipo de creador y relación"""
+        for vals in vals_list:
+            if self.env.user.has_group('calendar_academy.group_academy_student'):
+                student = self.env['academy.student'].search([('user_id', '=', self.env.user.id)], limit=1)
+                if student:
+                    vals.update({
+                        'creator_type': 'student',
+                        'student_creator_id': student.id,
+                        'event_type': 'academic'  # Forzar tipo académico
+                    })
+            elif self.env.user.has_group('calendar_academy.group_academy_teacher'):
+                vals.update({
+                    'creator_type': 'teacher'
+                })
+            else:
+                vals.update({
+                    'creator_type': 'admin'
+                })
+        return super().create(vals_list)
+
     def action_create_reminder(self):
+        """Acción para crear nuevo recordatorio desde el dashboard"""
         self.ensure_one()
         return {
             'type': 'ir.actions.act_window',
@@ -327,6 +354,39 @@ class AcademyEvent(models.Model):
             'context': {
                 'default_event_type': 'academic',
                 'default_responsible_id': self.env.user.id,
-                'default_reminder_type': 'note'
+                'default_reminder_type': 'note',
+                'default_creator_type': 'student'
             }
         }
+
+    @api.model
+    def _get_student_domain(self):
+        """Dominio para eventos visibles para estudiantes"""
+        student = self.env['academy.student'].search([('user_id', '=', self.env.user.id)], limit=1)
+        return [
+            '|',
+            ('student_creator_id', '=', student.id),
+            '&',
+            ('creator_type', '!=', 'student'),
+            '|',
+            ('student_ids', '=', student.id),
+            '&',
+            ('course_ids.student_ids', '=', student.id),
+            ('creator_type', 'in', ['teacher', 'admin'])
+        ]
+
+    @api.model
+    def _get_teacher_domain(self):
+        """Dominio para eventos visibles para profesores"""
+        teacher = self.env['academy.teacher'].search([('user_id', '=', self.env.user.id)], limit=1)
+        return [
+            '|',
+            '&',
+            ('creator_type', '=', 'teacher'),
+            ('responsible_id', '=', self.env.user.id),
+            '&',
+            ('creator_type', '=', 'admin'),
+            '|',
+            ('teacher_ids', '=', teacher.id),
+            ('course_ids.teacher_ids', '=', teacher.id)
+        ]

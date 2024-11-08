@@ -129,25 +129,15 @@
         <field name="name">Dashboard del Estudiante</field>
         <field name="res_model">academy.event</field>
         <field name="view_mode">calendar,kanban,form</field>
-        <field name="domain">[
-            '|', '|',
-            ('responsible_id', '=', uid),
-            ('student_ids.user_id', '=', uid),
-            ('course_ids.student_ids.user_id', '=', uid)
-        ]</field>
+        <field name="domain">[(1, '=', 1)]</field>  <!-- El dominio se aplicará dinámicamente -->
         <field name="context">{
+            'search_default_upcoming': 1,
             'default_event_type': 'academic',
             'default_responsible_id': uid,
-            'default_reminder_type': 'note'
+            'default_reminder_type': 'note',
+            'default_creator_type': 'student'
         }</field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-                ¡Crea tu primer recordatorio!
-            </p>
-            <p>
-                Aquí podrás gestionar tus recordatorios personales.
-            </p>
-        </field>
     </record>
+
 
 </odoo>
