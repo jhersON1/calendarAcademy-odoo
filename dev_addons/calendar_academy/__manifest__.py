@@ -63,6 +63,7 @@
         'views/dashboard/academy_dashboard.xml',
         'views/dashboard/teacher_dashboard.xml',
         'views/dashboard/student_dashboard.xml',
+        'views/dashboard/parent_dashboard.xml',
 
         # Menu
         'views/menu_views.xml',
