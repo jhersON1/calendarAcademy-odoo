@@ -46,16 +46,20 @@ class Parent(models.Model):
                 raise ValidationError(_('Por favor ingrese un correo electrónico válido'))
 
     def action_create_user(self):
-        """Crea un usuario del portal para el padre"""
+        """Crea un usuario para el padre"""
         for record in self:
             if not record.user_id:
-                user = self.env['res.users'].create({
+                # Primero creamos el usuario básico
+                user = self.env['res.users'].with_context(no_reset_password=True).create({
                     'name': record.name,
                     'login': record.email,
                     'email': record.email,
                     'password': record.identification,
-                    'groups_id': [(6, 0, [self.env.ref('calendar_academy.group_academy_parent').id])]
                 })
+                # Luego asignamos el grupo
+                self.env['res.groups'].browse(
+                    self.env.ref('calendar_academy.group_academy_parent').id
+                ).write({'users': [(4, user.id)]})
                 record.user_id = user.id
 
     def action_view_students(self):
