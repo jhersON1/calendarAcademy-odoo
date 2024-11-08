@@ -98,17 +98,20 @@ class Student(models.Model):
                 raise ValidationError(_('La fecha de nacimiento no puede ser futura'))
 
     def action_create_user(self):
-        """Crea un usuario del portal para el estudiante"""
+        """Crea un usuario para el estudiante"""
         for record in self:
-            if not record.user_id and record.email:
-                user = self.env['res.users'].create({
+            if not record.user_id:
+                # Primero creamos el usuario básico
+                user = self.env['res.users'].with_context(no_reset_password=True).create({
                     'name': record.name,
                     'login': record.email,
                     'email': record.email,
                     'password': record.identification,
-                    'groups_id': [(6, 0, [self.env.ref('calendar_academy.group_academy_student').id
-                    ])]
                 })
+                # Luego asignamos el grupo
+                self.env['res.groups'].browse(
+                    self.env.ref('calendar_academy.group_academy_student').id
+                ).write({'users': [(4, user.id)]})
                 record.user_id = user.id
 
     def action_view_grades(self):

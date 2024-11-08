@@ -129,3 +129,27 @@ class Teacher(models.Model):
 
     def action_inactivate(self):
         return self.write({'status': 'inactive'})
+
+    def action_view_dashboard(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Dashboard del Profesor',
+            'res_model': 'academy.event',
+            'view_mode': 'calendar,kanban',
+            'domain': [
+                ('start_date', '>=', fields.Date.today()),
+                '|', '|',
+                ('responsible_id', '=', self.user_id.id),
+                ('teacher_ids', 'in', [self.id]),
+                ('course_ids.teacher_ids', 'in', [self.id])
+            ],
+            'context': {
+                'search_default_upcoming': 1,
+                'calendar_view': True,
+                'default_responsible_id': self.user_id.id,
+                'default_teacher_ids': [(4, self.id)],
+                'default_reminder_type': 'event',
+                'default_event_type': 'academic'
+            }
+        }
