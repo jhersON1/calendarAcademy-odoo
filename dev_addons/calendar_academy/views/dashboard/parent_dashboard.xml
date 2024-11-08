@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vista Kanban para el Panel Lateral del Padre -->
+    <record id="view_parent_dashboard_event_kanban" model="ir.ui.view">
+        <field name="name">academy.event.parent.dashboard.kanban</field>
+        <field name="model">academy.event</field>
+        <field name="arch" type="xml">
+            <kanban create="false" class="o_dashboard_kanban h-100">
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="container p-3">
+                            <!-- Sección de Próximos Recordatorios -->
+                            <div class="mb-4">
+                                <h5 class="mb-3">Próximos Recordatorios</h5>
+                                <div t-if="record.start_date.raw_value" class="o_event_list">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <span t-attf-class="badge me-2 #{record.reminder_type.raw_value == 'event' ? 'bg-primary' :
+                                            record.reminder_type.raw_value == 'meeting' ? 'bg-warning' :
+                                            record.reminder_type.raw_value == 'note' ? 'bg-success' :
+                                            record.reminder_type.raw_value == 'task' ? 'bg-danger' :
+                                            record.reminder_type.raw_value == 'deadline' ? 'bg-info' : 'bg-secondary'}">
+                                            <field name="reminder_type"/>
+                                        </span>
+                                        <strong class="me-auto"><field name="name"/></strong>
+                                        <small class="text-muted"><field name="start_date"/></small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Accesos Rápidos -->
+                            <div class="mb-4">
+                                <h5 class="mb-3">Accesos Rápidos</h5>
+                                <div class="btn-group-vertical w-100">
+                                    <button name="%(calendar_academy.action_academy_grade)d"
+                                            type="action"
+                                            class="btn btn-primary mb-2">
+                                        Ver Calificaciones
+                                    </button>
+                                    <button name="%(calendar_academy.action_academy_attendance)d"
+                                            type="action"
+                                            class="btn btn-info mb-2">
+                                        Ver Asistencia
+                                    </button>
+                                    <button name="%(calendar_academy.action_academy_student)d"
+                                            type="action"
+                                            class="btn btn-success mb-2">
+                                        Ver Estudiantes
+                                    </button>
+                                    <button name="%(calendar_academy.action_academy_communication)d"
+                                            type="action"
+                                            class="btn btn-warning mb-2">
+                                        Ver Comunicados
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Vista Calendar específica para padres -->
+    <record id="view_parent_event_calendar" model="ir.ui.view">
+        <field name="name">academy.event.parent.calendar</field>
+        <field name="model">academy.event</field>
+        <field name="arch" type="xml">
+            <calendar string="Recordatorios y Eventos"
+                     date_start="start_date"
+                     date_stop="end_date"
+                     color="reminder_type"
+                     create="0"
+                     edit="0"
+                     delete="0"
+                     mode="month">
+                <field name="name"/>
+                <field name="reminder_type"/>
+                <field name="state"/>
+                <field name="priority"/>
+            </calendar>
+        </field>
+    </record>
+
+    <!-- Vista Form específica para padres (solo lectura) -->
+    <record id="view_parent_event_form" model="ir.ui.view">
+        <field name="name">academy.event.parent.form</field>
+        <field name="model">academy.event</field>
+        <field name="arch" type="xml">
+            <form create="0" edit="0" delete="0">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="reminder_type" readonly="1"/>
+                            <field name="event_type" readonly="1"/>
+                            <field name="start_date" readonly="1"/>
+                            <field name="end_date" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="priority" widget="priority" readonly="1"/>
+                            <field name="responsible_id" readonly="1"/>
+                            <field name="is_virtual" readonly="1"/>
+                            <field name="virtual_url" readonly="1" invisible="not is_virtual"/>
+                            <field name="location" readonly="1" invisible="is_virtual"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Descripción" name="description">
+                            <field name="description" readonly="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Acción del Dashboard -->
+    <record id="action_parent_dashboard" model="ir.actions.act_window">
+        <field name="name">Dashboard del Representante</field>
+        <field name="res_model">academy.event</field>
+        <field name="view_mode">calendar,kanban,form</field>
+        <field name="domain">[(1, '=', 1)]</field>  <!-- El dominio se aplicará dinámicamente -->
+        <field name="context">{
+            'search_default_upcoming': 1,
+            'calendar_view': True
+        }</field>
+        <field name="view_ids" eval="[
+            (5, 0, 0),
+            (0, 0, {'view_mode': 'calendar', 'view_id': ref('view_parent_event_calendar')}),
+            (0, 0, {'view_mode': 'kanban', 'view_id': ref('view_parent_dashboard_event_kanban')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_parent_event_form')})
+        ]"/>
+    </record>
+</odoo>
