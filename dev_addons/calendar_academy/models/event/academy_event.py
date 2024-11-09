@@ -5,6 +5,7 @@ import logging
 
 _logger = logging.getLogger(__name__)
 
+
 class AcademyEvent(models.Model):
     _name = 'academy.event'
     _description = 'Administrative Reminders and Events'
@@ -183,46 +184,41 @@ class AcademyEvent(models.Model):
         """
         self.ensure_one()
 
-        # Log para depuración
         _logger.info("Iniciando notify_event_read para evento %s y usuario %s", self.id, user_id)
-
-        # Verificar que el usuario existe
-        user = self.env['res.users'].browse(user_id).exists()
-        if not user:
-            raise ValidationError(_('Usuario no válido'))
 
         try:
             EventReadStatus = self.env['academy.event.read.status']
 
-            # Buscar o crear el registro de estado de lectura
+            # Buscar registro existente
             read_status = EventReadStatus.search([
                 ('event_id', '=', self.id),
                 ('user_id', '=', user_id)
             ], limit=1)
 
-            vals = {
-                'read_status': 'read',
-                'read_date': fields.Datetime.now()
-            }
+            current_time = fields.Datetime.now()
 
             if read_status:
                 if read_status.read_status != 'read':
-                    read_status.write(vals)
+                    read_status.write({
+                        'read_status': 'read',
+                        'read_date': current_time
+                    })
             else:
-                vals.update({
+                # Crear nuevo registro
+                EventReadStatus.create({
                     'event_id': self.id,
                     'user_id': user_id,
+                    'read_status': 'read',
+                    'read_date': current_time
                 })
-                EventReadStatus.create(vals)
 
             # Notificar al creador si es diferente del lector
             if self.responsible_id and self.responsible_id.id != user_id:
-                reader = self.env['res.users'].browse(user_id).name
+                reader_name = self.env['res.users'].browse(user_id).name
                 self.message_post(
-                    body=_("%s ha leído el evento.") % reader,
+                    body=_("%s ha leído el evento.") % reader_name,
                     message_type='notification',
-                    subtype_xmlid='mail.mt_note',
-                    partner_ids=[self.responsible_id.partner_id.id]
+                    subtype_xmlid='mail.mt_note'
                 )
 
             return True

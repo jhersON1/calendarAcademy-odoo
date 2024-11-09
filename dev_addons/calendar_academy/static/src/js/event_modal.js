@@ -48,6 +48,7 @@ class EventModalFormController extends FormController {
                 return;
             }
 
+            console.log('Antes de result')
             const result = await this.orm.call(
                 'academy.event',
                 'notify_event_read',
@@ -57,6 +58,7 @@ class EventModalFormController extends FormController {
                 }
             );
 
+            console.log('Después de result')
             if (result) {
                 this.notification.add(
                     "Evento marcado como leído",
