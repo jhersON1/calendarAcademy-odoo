@@ -1,4 +1,9 @@
 from odoo import models, fields, api, _
+from odoo.exceptions import ValidationError
+
+import logging
+
+_logger = logging.getLogger(__name__)
 
 class AcademyEvent(models.Model):
     _name = 'academy.event'
@@ -119,6 +124,132 @@ class AcademyEvent(models.Model):
     is_admin_event = fields.Boolean(compute='_compute_is_admin_event', store=True)
     is_teacher_event = fields.Boolean(compute='_compute_is_teacher_event', store=True)
     student_creator_id = fields.Many2one('academy.student', string='Estudiante Creador')
+
+    read_status_ids = fields.One2many(
+        'academy.event.read.status',
+        'event_id',
+        string='Estados de Lectura'
+    )
+    read_count = fields.Integer(
+        string='Lecturas',
+        compute='_compute_read_count',
+        store=True
+    )
+    unread_count = fields.Integer(
+        string='No Leídos',
+        compute='_compute_read_count',
+        store=True
+    )
+
+    @api.depends('read_status_ids.read_status')
+    def _compute_read_count(self):
+        for record in self:
+            read_statuses = record.read_status_ids
+            record.read_count = len(read_statuses.filtered(lambda r: r.read_status == 'read'))
+            record.unread_count = len(read_statuses.filtered(lambda r: r.read_status == 'unread'))
+
+    def _prepare_read_status(self, users):
+        """Prepara los estados de lectura para los usuarios especificados"""
+        status_vals = []
+        for user in users:
+            if not self.read_status_ids.filtered(lambda r: r.user_id == user):
+                status_vals.append({
+                    'event_id': self.id,
+                    'user_id': user.id,
+                    'read_status': 'unread'
+                })
+        return status_vals
+
+    def action_view_read_status(self):
+        """Abre una vista con el estado de lectura de los usuarios"""
+        self.ensure_one()
+        return {
+            'name': 'Estado de Lectura',
+            'view_mode': 'list,form',
+            'res_model': 'academy.event.read.status',
+            'domain': [('event_id', '=', self.id)],
+            'type': 'ir.actions.act_window',
+            'context': {'default_event_id': self.id}
+        }
+
+    # En academy_event.py
+    def notify_event_read(self, user_id):
+        """
+        Marca el evento como leído por un usuario específico
+        Args:
+            user_id (int): ID del usuario que lee el evento
+        Returns:
+            bool: True si se marca correctamente
+        """
+        self.ensure_one()
+
+        # Log para depuración
+        _logger.info("Iniciando notify_event_read para evento %s y usuario %s", self.id, user_id)
+
+        # Verificar que el usuario existe
+        user = self.env['res.users'].browse(user_id).exists()
+        if not user:
+            raise ValidationError(_('Usuario no válido'))
+
+        try:
+            EventReadStatus = self.env['academy.event.read.status']
+
+            # Buscar o crear el registro de estado de lectura
+            read_status = EventReadStatus.search([
+                ('event_id', '=', self.id),
+                ('user_id', '=', user_id)
+            ], limit=1)
+
+            vals = {
+                'read_status': 'read',
+                'read_date': fields.Datetime.now()
+            }
+
+            if read_status:
+                if read_status.read_status != 'read':
+                    read_status.write(vals)
+            else:
+                vals.update({
+                    'event_id': self.id,
+                    'user_id': user_id,
+                })
+                EventReadStatus.create(vals)
+
+            # Notificar al creador si es diferente del lector
+            if self.responsible_id and self.responsible_id.id != user_id:
+                reader = self.env['res.users'].browse(user_id).name
+                self.message_post(
+                    body=_("%s ha leído el evento.") % reader,
+                    message_type='notification',
+                    subtype_xmlid='mail.mt_note',
+                    partner_ids=[self.responsible_id.partner_id.id]
+                )
+
+            return True
+
+        except Exception as e:
+            _logger.error("Error en notify_event_read: %s", str(e))
+            raise ValidationError(_('Error al registrar la lectura del evento: %s') % str(e))
+
+    def _notify_creator_about_read(self, reader_id):
+        """Notifica al creador que alguien ha leído el evento"""
+        reader = self.env['res.users'].browse(reader_id)
+        notification = {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': 'Evento leído',
+                'message': f'{reader.name} ha leído el evento "{self.name}"',
+                'type': 'info',
+                'sticky': False,
+                'next': {'type': 'ir.actions.act_window_close'}
+            }
+        }
+        self.env['bus.bus']._sendone(
+            self.responsible_id.partner_id,
+            'event_read_notification',
+            notification
+        )
 
     @api.depends('event_type', 'responsible_id')
     def _compute_is_admin_event(self):

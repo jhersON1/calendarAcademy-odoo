@@ -111,3 +111,6 @@ access_academy_event_student,academy.event.student,model_academy_event,calendar_
 access_academy_event_user,academy.event.user,model_academy_event,calendar_academy.group_academy_manager,1,1,1,1
 access_academy_event_teacher,academy.event.teacher,model_academy_event,calendar_academy.group_academy_teacher,1,1,1,0
 access_academy_event_student,academy.event.student,model_academy_event,calendar_academy.group_academy_student,1,1,1,1
+
+access_academy_event_read_status_user,academy.event.read.status.user,model_academy_event_read_status,base.group_user,1,1,0,0
+access_academy_event_read_status_manager,academy.event.read.status.manager,model_academy_event_read_status,calendar_academy.group_academy_manager,1,1,1,1

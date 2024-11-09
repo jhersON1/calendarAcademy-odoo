@@ -69,6 +69,12 @@
         'views/menu_views.xml',
 
     ],
+
+    'assets': {
+        'web.assets_backend': [
+            'calendar_academy/static/src/js/event_modal.js',
+        ],
+    },
     # only loaded in demonstration mode
     'demo': [
         'demo/demo.xml',
