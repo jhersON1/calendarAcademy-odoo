@@ -24,7 +24,7 @@
         <field name="name">academy.event.form</field>
         <field name="model">academy.event</field>
         <field name="arch" type="xml">
-            <form>
+            <form js_class="event_modal_form">
                 <header>
                     <button name="action_confirm"
                             string="Confirmar"
@@ -39,41 +39,48 @@
                     <button name="action_cancel"
                             string="Cancelar"
                             type="object"
-                            invisible="state in ('done','cancelled')"/>
-                    <button name="action_draft"
-                            string="Volver a Borrador"
-                            type="object"
-                            invisible="state != 'cancelled'"/>
+                            invisible="state in ('done', 'cancelled')"/>
                     <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_read_status"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-eye">
+                            <div class="o_stat_info">
+                                <field name="read_count" class="o_stat_value"/>
+                                <span class="o_stat_text">Leído por</span>
+                            </div>
+                        </button>
+                    </div>
                     <div class="oe_title">
                         <h1>
-                            <field name="name" placeholder="Título..."/>
+                            <field name="name"/>
                         </h1>
                     </div>
                     <group>
                         <group>
                             <field name="reminder_type"/>
                             <field name="event_type"/>
-                            <field name="priority" widget="priority"/>
                             <field name="start_date"/>
                             <field name="end_date"/>
-                            <field name="responsible_id"/>
+                            <field name="priority" widget="priority"/>
                         </group>
                         <group>
+                            <field name="responsible_id"/>
                             <field name="is_virtual"/>
-                            <field name="location" invisible="is_virtual"/>
-                            <field name="virtual_url" invisible="not is_virtual"/>
+                            <field name="virtual_url"
+                                   invisible="not is_virtual"/>
+                            <field name="location"
+                                   invisible="is_virtual"/>
                         </group>
                     </group>
                     <notebook>
                         <page string="Descripción" name="description">
-                            <field name="description" placeholder="Detalles..."/>
+                            <field name="description"/>
                         </page>
-                        <page string="Participantes"
-                              name="participants"
-                              groups="calendar_academy.group_academy_manager,calendar_academy.group_academy_teacher">
+                        <page string="Participantes" name="participants">
                             <group>
                                 <div class="oe_button_box" name="participants_buttons">
                                     <button name="action_add_all_participants"
@@ -83,19 +90,23 @@
                                             icon="fa-users"/>
                                 </div>
                                 <field name="course_ids" widget="many2many_tags"/>
-                                <field name="teacher_ids"
-                                       widget="many2many_tags"
-                                       groups="calendar_academy.group_academy_manager"/>
+                                <field name="teacher_ids" widget="many2many_tags"/>
                                 <field name="student_ids" widget="many2many_tags"/>
                             </group>
                         </page>
+                        <page string="Estado de Lectura" name="read_status">
+                            <field name="read_status_ids">
+                                <list>
+                                    <field name="user_id"/>
+                                    <field name="read_status" widget="badge"
+                                           decoration-success="read_status == 'read'"
+                                           decoration-info="read_status == 'unread'"/>
+                                    <field name="read_date"/>
+                                </list>
+                            </field>
+                        </page>
                     </notebook>
                 </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids"/>
-                    <field name="activity_ids"/>
-                    <field name="message_ids"/>
-                </div>
             </form>
         </field>
     </record>
