@@ -24,7 +24,6 @@ class EventModalFormController extends FormController {
             const record = this.model.root;
             const recordData = record.data;
 
-            // Usar session.uid directamente
             const currentUserId = session.storeData?.['res.partner']?.[1]?.userId;
             console.log('session', session)
 
@@ -48,23 +47,35 @@ class EventModalFormController extends FormController {
                 return;
             }
 
-            console.log('Antes de result')
-            const result = await this.orm.call(
+            // Primero verificamos si el usuario ya leyó el evento
+            const hasRead = await this.orm.call(
                 'academy.event',
-                'notify_event_read',
+                'check_user_has_read',
                 [[eventId]],
                 {
                     user_id: currentUserId,
                 }
             );
 
-            console.log('Después de result')
-            if (result) {
-                this.notification.add(
-                    "Evento marcado como leído",
-                    {type: "success", sticky: false}
+            if (!hasRead) {
+                console.log('Antes de result')
+                const result = await this.orm.call(
+                    'academy.event',
+                    'notify_event_read',
+                    [[eventId]],
+                    {
+                        user_id: currentUserId,
+                    }
                 );
-                await record.load();
+
+                console.log('Después de result')
+                if (result) {
+                    this.notification.add(
+                        "Evento marcado como leído",
+                        {type: "success", sticky: false}
+                    );
+                    await record.load();
+                }
             }
 
         } catch (error) {

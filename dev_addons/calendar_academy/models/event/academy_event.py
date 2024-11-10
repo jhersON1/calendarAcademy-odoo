@@ -517,3 +517,21 @@ class AcademyEvent(models.Model):
             ('teacher_ids', '=', teacher.id),
             ('course_ids.teacher_ids', '=', teacher.id)
         ]
+
+    def check_user_has_read(self, user_id):
+        """
+        Verifica si un usuario específico ya ha leído el evento
+        Args:
+            user_id (int): ID del usuario a verificar
+        Returns:
+            bool: True si el usuario ya leyó el evento, False en caso contrario
+        """
+        self.ensure_one()
+
+        read_status = self.env['academy.event.read.status'].sudo().search([
+            ('event_id', '=', self.id),
+            ('user_id', '=', user_id),
+            ('read_status', '=', 'read')
+        ], limit=1)
+
+        return bool(read_status)
