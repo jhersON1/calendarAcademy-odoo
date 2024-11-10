@@ -619,3 +619,18 @@ class AcademyEvent(models.Model):
             self.action_notify_participants()
 
         return result
+
+    def action_create_ai(self):
+        """
+        Método para manejar la creación de recordatorios por IA
+        Por ahora solo devuelve una acción de notificación
+        """
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'message': 'Función de IA en desarrollo',
+                'type': 'info',
+                'sticky': False,
+            }
+        }
