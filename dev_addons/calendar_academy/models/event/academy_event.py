@@ -535,3 +535,102 @@ class AcademyEvent(models.Model):
         ], limit=1)
 
         return bool(read_status)
+
+    # Push notification
+
+    def action_notify_participants(self):
+        """Notifica a los participantes cuando se les comparte un recordatorio"""
+        self.ensure_one()
+
+        # Obtener todos los usuarios participantes
+        participant_partners = self.env['res.partner']
+
+        # Añadir profesores
+        if self.teacher_ids:
+            participant_partners |= self.teacher_ids.mapped('user_id.partner_id')
+
+        # Añadir estudiantes
+        if self.student_ids:
+            participant_partners |= self.student_ids.mapped('user_id.partner_id')
+
+        # Excluir al creador de las notificaciones
+        participant_partners = participant_partners.filtered(
+            lambda p: p.user_ids and p.user_ids[0] != self.env.user
+        )
+
+        if participant_partners:
+            # Crear el mensaje de notificación
+            notification_msg = {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': _('Nuevo Recordatorio Compartido'),
+                    'message': _(
+                        '%(user)s ha compartido contigo el recordatorio: %(event)s'
+                    ) % {
+                                   'user': self.env.user.name,
+                                   'event': self.name
+                               },
+                    'type': 'info',
+                    'sticky': True,
+                    'next': {
+                        'type': 'ir.actions.act_window',
+                        'res_model': 'academy.event',
+                        'res_id': self.id,
+                        'view_mode': 'form',
+                    }
+                }
+            }
+
+            # Enviar notificación a cada participante
+            for partner in participant_partners:
+                self.env['bus.bus']._sendone(
+                    partner,
+                    'new_reminder',
+                    notification_msg
+                )
+
+                # Crear registro de actividad
+                activity_type = self.env['mail.activity.type'].search([('category', '=', 'default')], limit=1)
+                if activity_type:
+                    self.env['mail.activity'].create({
+                        'activity_type_id': activity_type.id,
+                        'note': notification_msg['params']['message'],
+                        'user_id': partner.user_ids[0].id,
+                        'res_model_id': self.env['ir.model']._get('academy.event').id,
+                        'res_id': self.id,
+                        'summary': _('Nuevo Recordatorio Compartido')
+                    })
+
+    # Modificar el método create para enviar notificaciones al crear
+    @api.model_create_multi
+    def create(self, vals_list):
+        records = super().create(vals_list)
+        for record in records:
+            record.action_notify_participants()
+        return records
+
+    # Modificar el método write para enviar notificaciones al modificar participantes
+    def write(self, vals):
+        result = super().write(vals)
+
+        # Si se modificaron los participantes
+        if any(field in vals for field in ['teacher_ids', 'student_ids']):
+            self.action_notify_participants()
+
+        return result
+
+    def action_create_ai(self):
+        """
+        Método para manejar la creación de recordatorios por IA
+        Por ahora solo devuelve una acción de notificación
+        """
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'message': 'Función de IA en desarrollo',
+                'type': 'info',
+                'sticky': False,
+            }
+        }

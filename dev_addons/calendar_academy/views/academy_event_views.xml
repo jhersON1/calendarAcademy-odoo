@@ -26,6 +26,11 @@
         <field name="arch" type="xml">
             <form js_class="event_modal_form">
                 <header>
+                    <button name="action_create_ai"
+                            string="Crear AI"
+                            type="object"
+                            class="btn-primary"
+                            icon="fa-microphone"/>
                     <button name="action_confirm"
                             string="Confirmar"
                             type="object"
