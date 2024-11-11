@@ -150,11 +150,13 @@ class AcademyEvent(models.Model):
     subject_id = fields.Many2one(
         'academy.subject',
         string='Materia',
-        domain="[('id', 'in', available_subjects)]"
+        domain="[('id', 'in', available_subjects_ids)]"
     )
-    available_subjects = fields.Many2many(
+
+    available_subjects_ids = fields.Many2many(
         'academy.subject',
-        compute='_compute_available_subjects'
+        compute='_compute_available_subjects',
+        store=True
     )
 
     # Campos específicos cuando es tarea
@@ -224,12 +226,53 @@ class AcademyEvent(models.Model):
             teacher = self.env['academy.teacher'].search(
                 [('user_id', '=', record.responsible_id.id)], limit=1
             )
-            if teacher and record.course_ids:
-                record.available_subjects = teacher.schedule_ids.filtered(
-                    lambda s: s.course_id in record.course_ids
-                ).mapped('subject_id')
+            if teacher:
+                # Primero obtenemos las especialidades del profesor
+                teacher_subjects = teacher.specialty
+
+                # Si hay cursos seleccionados, filtramos las materias que el profesor
+                # puede dictar en esos cursos específicos
+                if record.course_ids:
+                    course_subjects = record.course_ids.mapped('subject_ids')
+                    # Intersección entre especialidades del profesor y materias del curso
+                    available_subjects = teacher_subjects & course_subjects
+                else:
+                    # Si no hay cursos seleccionados, mostramos todas sus especialidades
+                    available_subjects = teacher_subjects
+
+                record.available_subjects_ids = available_subjects.ids
             else:
-                record.available_subjects = False
+                record.available_subjects_ids = []
+
+    @api.onchange('reminder_type', 'responsible_id')
+    def _onchange_reminder_type(self):
+        if self.reminder_type == 'task':
+            self.event_type = 'academic'  # Forzar tipo académico
+
+            # Verificar si el profesor tiene especialidades
+            teacher = self.env['academy.teacher'].search(
+                [('user_id', '=', self.responsible_id.id)], limit=1
+            )
+            if teacher and not teacher.specialty:
+                return {
+                    'warning': {
+                        'title': _('Advertencia'),
+                        'message': _('No tiene materias asignadas en su perfil de profesor. '
+                                     'Por favor, actualice sus especialidades antes de crear una tarea.')
+                    }
+                }
+
+    @api.constrains('reminder_type', 'subject_id', 'responsible_id')
+    def _check_teacher_subject(self):
+        for record in self:
+            if record.reminder_type == 'task':
+                teacher = self.env['academy.teacher'].search(
+                    [('user_id', '=', record.responsible_id.id)], limit=1
+                )
+                if teacher and record.subject_id not in teacher.specialty:
+                    raise ValidationError(_(
+                        'Solo puede crear tareas para materias que estén en sus especialidades.'
+                    ))
 
     @api.depends('reminder_type')
     def _compute_is_task(self):
