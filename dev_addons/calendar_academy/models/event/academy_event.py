@@ -142,6 +142,149 @@ class AcademyEvent(models.Model):
         store=True
     )
 
+    # En academy.event
+    is_task = fields.Boolean(compute='_compute_is_task')
+    task_id = fields.Many2one('academy.task', string='Tarea Relacionada')
+
+    # En academy.event
+    subject_id = fields.Many2one(
+        'academy.subject',
+        string='Materia',
+        domain="[('id', 'in', available_subjects_ids)]"
+    )
+
+    available_subjects_ids = fields.Many2many(
+        'academy.subject',
+        compute='_compute_available_subjects',
+        store=True
+    )
+
+    # Campos específicos cuando es tarea
+    max_score = fields.Float(
+        string='Puntuación Máxima',
+        default=10.0
+    )
+    weight = fields.Float(
+        string='Peso en Calificación (%)',
+        default=100.0
+    )
+    submission_type = fields.Selection([
+        ('online', 'En línea'),
+        ('physical', 'Física'),
+        ('both', 'Ambas')
+    ], string='Tipo de Entrega', default='online')
+    allow_late_submission = fields.Boolean(
+        string='Permitir Entregas Tardías',
+        default=False
+    )
+    late_submission_penalty = fields.Float(
+        string='Penalización por Retraso (%)',
+        default=0
+    )
+    attachment_ids = fields.Many2many(
+        'ir.attachment',
+        string='Archivos Adjuntos'
+    )
+
+    @api.constrains('weight')
+    def _check_weight(self):
+        for record in self:
+            if record.reminder_type == 'task':
+                if record.weight < 0 or record.weight > 100:
+                    raise ValidationError(_('El peso debe estar entre 0 y 100'))
+
+    def action_confirm(self):
+        res = super().action_confirm()
+        for record in self:
+            if record.reminder_type == 'task':
+                # Crear tarea al confirmar el recordatorio
+                task_vals = {
+                    'name': record.name,
+                    'course_id': record.course_ids[0].id if record.course_ids else False,
+                    'subject_id': record.subject_id.id,
+                    'teacher_id': self.env['academy.teacher'].search(
+                        [('user_id', '=', record.responsible_id.id)], limit=1
+                    ).id,
+                    'description': record.description,
+                    'deadline': record.end_date,
+                    'available_from': record.start_date,
+                    'max_score': record.max_score,
+                    'weight': record.weight,
+                    'submission_type': record.submission_type,
+                    'allow_late_submission': record.allow_late_submission,
+                    'late_submission_penalty': record.late_submission_penalty,
+                    'attachment_ids': [(6, 0, record.attachment_ids.ids)],
+                    'state': 'published'
+                }
+                task = self.env['academy.task'].create(task_vals)
+                record.task_id = task.id
+        return res
+
+    @api.depends('course_ids', 'responsible_id')
+    def _compute_available_subjects(self):
+        for record in self:
+            teacher = self.env['academy.teacher'].search(
+                [('user_id', '=', record.responsible_id.id)], limit=1
+            )
+            if teacher:
+                # Primero obtenemos las especialidades del profesor
+                teacher_subjects = teacher.specialty
+
+                # Si hay cursos seleccionados, filtramos las materias que el profesor
+                # puede dictar en esos cursos específicos
+                if record.course_ids:
+                    course_subjects = record.course_ids.mapped('subject_ids')
+                    # Intersección entre especialidades del profesor y materias del curso
+                    available_subjects = teacher_subjects & course_subjects
+                else:
+                    # Si no hay cursos seleccionados, mostramos todas sus especialidades
+                    available_subjects = teacher_subjects
+
+                record.available_subjects_ids = available_subjects.ids
+            else:
+                record.available_subjects_ids = []
+
+    @api.onchange('reminder_type', 'responsible_id')
+    def _onchange_reminder_type(self):
+        if self.reminder_type == 'task':
+            self.event_type = 'academic'  # Forzar tipo académico
+
+            # Verificar si el profesor tiene especialidades
+            teacher = self.env['academy.teacher'].search(
+                [('user_id', '=', self.responsible_id.id)], limit=1
+            )
+            if teacher and not teacher.specialty:
+                return {
+                    'warning': {
+                        'title': _('Advertencia'),
+                        'message': _('No tiene materias asignadas en su perfil de profesor. '
+                                     'Por favor, actualice sus especialidades antes de crear una tarea.')
+                    }
+                }
+
+    @api.constrains('reminder_type', 'subject_id', 'responsible_id')
+    def _check_teacher_subject(self):
+        for record in self:
+            if record.reminder_type == 'task':
+                teacher = self.env['academy.teacher'].search(
+                    [('user_id', '=', record.responsible_id.id)], limit=1
+                )
+                if teacher and record.subject_id not in teacher.specialty:
+                    raise ValidationError(_(
+                        'Solo puede crear tareas para materias que estén en sus especialidades.'
+                    ))
+
+    @api.depends('reminder_type')
+    def _compute_is_task(self):
+        for record in self:
+            record.is_task = record.reminder_type == 'task'
+
+    @api.onchange('reminder_type')
+    def _onchange_reminder_type(self):
+        if self.reminder_type == 'task':
+            # Mostrar campos adicionales
+            self.event_type = 'academic'  # Forzar tipo académico
+
     @api.depends('read_status_ids.read_status')
     def _compute_read_count(self):
         for record in self:
