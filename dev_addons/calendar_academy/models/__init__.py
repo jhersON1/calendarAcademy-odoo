@@ -15,5 +15,5 @@ from . import schedule
 from . import communication
 from . import submission
 from . import task
-
+from . import openai_config
 from . import event

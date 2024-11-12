@@ -64,12 +64,15 @@
         'views/dashboard/teacher_dashboard.xml',
         'views/dashboard/student_dashboard.xml',
         'views/dashboard/parent_dashboard.xml',
+        'views/openai_config_views.xml',
 
         # Menu
         'views/menu_views.xml',
 
     ],
-
+    'external_dependencies': {
+        'python': ['openai'],
+    },
     'assets': {
         'web.assets_backend': [
             'calendar_academy/static/src/js/event_modal.js',
