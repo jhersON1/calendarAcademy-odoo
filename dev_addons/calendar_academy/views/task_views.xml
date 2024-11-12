@@ -15,7 +15,7 @@
                     <button name="action_close"
                             string="Cerrar"
                             type="object"
-                            invisible="state != 'in_progress'"/>
+                            invisible="state != 'published'"/>
                     <button name="action_reopen"
                             string="Reabrir"
                             type="object"
@@ -28,15 +28,32 @@
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
-                        <button name="action_view_submissions" type="object"
-                                class="oe_stat_button" icon="fa-tasks">
+                        <!-- Existente -->
+                        <button name="action_view_submissions"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-tasks">
                             <field name="submission_count" widget="statinfo" string="Entregas"/>
+                        </button>
+                        <!-- Nuevo: Botón para ver evento relacionado si existe -->
+                        <button name="action_view_event"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-calendar"
+                                invisible="not event_id">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Evento</span>
+                            </div>
                         </button>
                     </div>
                     <div class="oe_title">
                         <h1>
                             <field name="name" placeholder="Título de la Tarea"/>
                         </h1>
+                        <!-- Nuevo: Mostrar referencia del evento si existe -->
+                        <h3 invisible="not event_id">
+                            <field name="event_id" readonly="1"/>
+                        </h3>
                     </div>
                     <group>
                         <group>
@@ -64,7 +81,8 @@
                                 </group>
                                 <group>
                                     <field name="allow_late_submission"/>
-                                    <field name="late_submission_penalty" invisible="not allow_late_submission"/>
+                                    <field name="late_submission_penalty"
+                                           invisible="not allow_late_submission"/>
                                 </group>
                             </group>
                         </page>
@@ -96,33 +114,30 @@
         </field>
     </record>
 
-
-    <!-- List View -->
+    <!-- Actualizar vista list para incluir referencia al evento -->
     <record id="view_academy_task_list" model="ir.ui.view">
         <field name="name">academy.task.list</field>
         <field name="model">academy.task</field>
         <field name="arch" type="xml">
             <list decoration-info="state == 'draft'"
                   decoration-success="state == 'published'"
-                  decoration-warning="state == 'in_progress'"
-                  decoration-muted="state in ['closed', 'archived']">
+                  decoration-muted="state == 'closed'">
                 <field name="reference"/>
                 <field name="name"/>
                 <field name="course_id"/>
                 <field name="subject_id"/>
                 <field name="deadline"/>
                 <field name="submission_count"/>
-                <field name="graded_count"/>
+                <field name="event_id"/>
                 <field name="state" widget="badge"
                        decoration-info="state == 'draft'"
                        decoration-success="state == 'published'"
-                       decoration-warning="state == 'in_progress'"
                        decoration-danger="state == 'closed'"/>
             </list>
         </field>
     </record>
 
-    <!-- Kanban View -->
+    <!-- Actualizar vista kanban para mostrar referencia al evento -->
     <record id="view_academy_task_kanban" model="ir.ui.view">
         <field name="name">academy.task.kanban</field>
         <field name="model">academy.task</field>
@@ -133,7 +148,7 @@
                 <field name="subject_id"/>
                 <field name="deadline"/>
                 <field name="submission_count"/>
-                <field name="graded_count"/>
+                <field name="event_id"/>
                 <field name="state"/>
                 <templates>
                     <t t-name="kanban-box">
@@ -148,10 +163,14 @@
                                 <div class="o_kanban_tags_section">
                                     Fecha límite: <field name="deadline"/>
                                 </div>
+                                <div t-if="record.event_id.raw_value" class="o_kanban_record_subtitle">
+                                    <span class="badge badge-info">
+                                        <i class="fa fa-calendar"/> Evento: <field name="event_id"/>
+                                    </span>
+                                </div>
                                 <div class="o_kanban_record_bottom">
                                     <div class="oe_kanban_bottom_left">
-                                        <span><t t-esc="record.graded_count.value"/>/<t
-                                                t-esc="record.submission_count.value"/> calificadas</span>
+                                        <span><t t-esc="record.submission_count.value"/> entregas</span>
                                     </div>
                                 </div>
                             </div>

@@ -144,7 +144,7 @@ class AcademyEvent(models.Model):
 
     # En academy.event
     is_task = fields.Boolean(compute='_compute_is_task')
-    task_id = fields.Many2one('academy.task', string='Tarea Relacionada')
+    task_id = fields.Many2one('academy.task', string='Tarea Relacionada', tracking=True)
 
     # En academy.event
     subject_id = fields.Many2one(
@@ -173,6 +173,7 @@ class AcademyEvent(models.Model):
         ('physical', 'Física'),
         ('both', 'Ambas')
     ], string='Tipo de Entrega', default='online')
+
     allow_late_submission = fields.Boolean(
         string='Permitir Entregas Tardías',
         default=False
@@ -185,6 +186,7 @@ class AcademyEvent(models.Model):
         'ir.attachment',
         string='Archivos Adjuntos'
     )
+
 
     @api.constrains('weight')
     def _check_weight(self):
@@ -438,8 +440,55 @@ class AcademyEvent(models.Model):
 
     # Simple workflow
     def action_confirm(self):
-        """Confirmar evento"""
-        self.write({'state': 'confirmed'})
+        """Confirma el evento y crea la tarea si es necesario"""
+        for record in self:
+            # Primero cambiamos el estado
+            record.write({'state': 'confirmed'})
+
+            # Si es tipo tarea, creamos la tarea asociada
+            if record.is_task and not record.task_id:
+                # Validar campos requeridos
+                if not record.subject_id:
+                    raise ValidationError(_('Debe seleccionar una materia para la tarea'))
+                if not record.course_ids:
+                    raise ValidationError(_('Debe seleccionar al menos un curso'))
+
+                # Obtener profesor
+                teacher = self.env['academy.teacher'].search(
+                    [('user_id', '=', record.responsible_id.id)], limit=1
+                )
+                if not teacher:
+                    raise ValidationError(_('El responsable debe ser un profesor'))
+
+                # Crear la tarea
+                task_vals = {
+                    'name': record.name,
+                    'course_id': record.course_ids[0].id,
+                    'subject_id': record.subject_id.id,
+                    'teacher_id': teacher.id,
+                    'description': record.description,
+                    'deadline': record.end_date,
+                    'available_from': record.start_date,
+                    'max_score': record.max_score,
+                    'weight': record.weight,
+                    'submission_type': record.submission_type,
+                    'allow_late_submission': record.allow_late_submission,
+                    'late_submission_penalty': record.late_submission_penalty,
+                    'attachment_ids': [(6, 0, record.attachment_ids.ids)],
+                    'event_id': record.id,
+                    'state': 'draft'
+                }
+
+                task = self.env['academy.task'].create(task_vals)
+                record.task_id = task.id
+
+                # Registrar en el chatter
+                record.message_post(
+                    body=_("Tarea creada: %s") % task.name,
+                    message_type='notification'
+                )
+
+        return True
 
     def action_mark_done(self):
         """Marcar evento como realizado"""

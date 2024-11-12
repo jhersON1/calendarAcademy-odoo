@@ -110,18 +110,21 @@
                                 </list>
                             </field>
                         </page>
-                        <!-- En academy_event_views.xml -->
+                        <!-- Agregamos la nueva página de configuración de tarea -->
                         <page string="Configuración de Tarea" name="task_config"
                               invisible="reminder_type != 'task'">
                             <group>
                                 <group>
                                     <field name="subject_id"
-                                           required="reminder_type == 'task'"/>
+                                           invisible="reminder_type != 'task'"
+                                           required="1"/>
                                     <field name="max_score"/>
                                     <field name="weight"/>
                                     <field name="submission_type"/>
                                 </group>
                                 <group>
+                                    <field name="task_id" readonly="1"
+                                           invisible="not task_id"/>
                                     <field name="allow_late_submission"/>
                                     <field name="late_submission_penalty"
                                            invisible="not allow_late_submission"/>
@@ -131,6 +134,11 @@
                         </page>
                     </notebook>
                 </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
             </form>
         </field>
     </record>

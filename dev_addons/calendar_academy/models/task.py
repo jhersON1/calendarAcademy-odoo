@@ -118,13 +118,51 @@ class AcademicTask(models.Model):
     )
 
     # Estados
+
+    # Agregar campo para relación con evento
+    event_id = fields.Many2one(
+        'academy.event',
+        string='Evento Relacionado',
+        tracking=True
+    )
+
+    # Modificar estados para simplificar
     state = fields.Selection([
         ('draft', 'Borrador'),
         ('published', 'Publicada'),
-        ('in_progress', 'En Curso'),
-        ('closed', 'Cerrada'),
-        ('archived', 'Archivada')
-    ], string='Estado', default='draft', tracking=True)
+        ('closed', 'Cerrada')
+    ], string='Estado',
+        default='draft',
+        tracking=True
+    )
+
+    def action_publish(self):
+        """Publicar tarea y notificar"""
+        self.ensure_one()
+        if not self.course_id.student_ids:
+            raise ValidationError(_('No hay estudiantes en el curso'))
+
+        # Crear entregas para cada estudiante
+        for student in self.course_id.student_ids:
+            self.env['academy.task.submission'].create({
+                'task_id': self.id,
+                'student_id': student.id,
+                'deadline': self.deadline
+            })
+
+        self.write({'state': 'published'})
+        self._notify_students()
+
+        # Actualizar evento relacionado si existe
+        if self.event_id:
+            self.event_id.message_post(
+                body=_("Tarea publicada y notificada a los estudiantes"),
+                message_type='notification'
+            )
+
+    def action_close(self):
+        """Cerrar tarea"""
+        return self.write({'state': 'closed'})
 
     @api.model
     def _get_current_teacher(self):
@@ -197,11 +235,24 @@ class AcademicTask(models.Model):
 
     def _notify_students(self):
         """Notifica a los estudiantes sobre la nueva tarea"""
-        template = self.env.ref('academy_tasks.email_template_new_task')
+        template = self.env.ref('calendar_academy.email_template_new_task', raise_if_not_found=False)
+
+        if not template:
+            # Si la plantilla no existe, solo registramos en el chatter
+            self.message_post(
+                body=_("Tarea publicada: %s") % self.name,
+                message_type='notification',
+                subtype_xmlid='mail.mt_note'
+            )
+            return True
+
         for student in self.course_id.student_ids:
-            template.send_mail(self.id, force_send=True, email_values={
-                'email_to': student.email
-            })
+            if student.email:  # Solo enviar si tiene email
+                template.send_mail(self.id, force_send=True, email_values={
+                    'email_to': student.email
+                })
+
+        return True
 
     def _integrate_grades(self):
         """Integra las calificaciones de la tarea con el sistema de calificaciones"""
@@ -239,4 +290,21 @@ class AcademicTask(models.Model):
                 'default_task_id': self.id,
                 'search_default_pending': 1
             }
+        }
+
+    # En models/task.py
+
+    def action_view_event(self):
+        """Abre el formulario del evento relacionado"""
+        self.ensure_one()
+        if not self.event_id:
+            return
+
+        return {
+            'name': _('Evento Relacionado'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'academy.event',
+            'res_id': self.event_id.id,
+            'view_mode': 'form',
+            'target': 'current',
         }
