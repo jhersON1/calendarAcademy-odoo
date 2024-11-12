@@ -5,7 +5,7 @@
         <field name="name">academy.task.submission.form</field>
         <field name="model">academy.task.submission</field>
         <field name="arch" type="xml">
-            <form>s
+            <form>
                 <header>
                     <button name="action_submit"
                             string="Entregar"
@@ -21,6 +21,13 @@
                             string="Reiniciar"
                             type="object"
                             invisible="state == 'pending'"/>
+                    <!-- Nuevo botón de análisis IA -->
+                    <button name="action_analyze_with_ai"
+                            string="Analizar con IA"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="state not in ['submitted', 'late']"
+                            groups="calendar_academy.group_academy_teacher"/>
                     <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
@@ -51,6 +58,15 @@
                         <page string="Retroalimentación" name="feedback">
                             <field name="feedback"/>
                         </page>
+                        <!-- Nueva página para análisis IA -->
+                        <page string="Análisis IA" name="ai_analysis"
+                              groups="calendar_academy.group_academy_teacher">
+                            <group>
+                                <field name="ai_analysis_state" widget="statusbar"/>
+                                <field name="ai_suggested_score"/>
+                            </group>
+                            <field name="ai_feedback" widget="html"/>
+                        </page>
                     </notebook>
                 </sheet>
                 <div class="oe_chatter">
@@ -67,15 +83,17 @@
         <field name="name">academy.task.submission.list</field>
         <field name="model">academy.task.submission</field>
         <field name="arch" type="xml">
-            <list decoration-danger="state == 'late'"
+            <list decoration-info="state == 'submitted'"
                   decoration-success="state == 'graded'"
-                  decoration-info="state == 'submitted'">
+                  decoration-danger="state == 'late'">
                 <field name="task_id"/>
                 <field name="student_id"/>
                 <field name="deadline"/>
                 <field name="submission_date"/>
                 <field name="is_late"/>
                 <field name="score"/>
+                <field name="ai_suggested_score"/>
+                <field name="ai_analysis_state"/>
                 <field name="state" widget="badge"
                        decoration-info="state == 'submitted'"
                        decoration-success="state == 'graded'"
@@ -101,6 +119,12 @@
                         domain="[('state', '=', 'graded')]"/>
                 <filter string="Tardías" name="late"
                         domain="[('is_late', '=', True)]"/>
+                <!-- Nuevos filtros para IA -->
+                <separator/>
+                <filter string="Análisis IA Pendiente" name="ai_pending"
+                        domain="[('ai_analysis_state', '=', 'pending')]"/>
+                <filter string="Análisis IA Completado" name="ai_completed"
+                        domain="[('ai_analysis_state', '=', 'completed')]"/>
                 <group expand="0" string="Agrupar Por">
                     <filter string="Tarea" name="task"
                             context="{'group_by': 'task_id'}"/>
@@ -108,6 +132,8 @@
                             context="{'group_by': 'student_id'}"/>
                     <filter string="Estado" name="state"
                             context="{'group_by': 'state'}"/>
+                    <filter string="Estado IA" name="ai_state"
+                            context="{'group_by': 'ai_analysis_state'}"/>
                 </group>
             </search>
         </field>

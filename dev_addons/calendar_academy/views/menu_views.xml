@@ -155,4 +155,11 @@
               action="action_academy_schedule"
               parent="menu_academy_config"
               sequence="40"/>
+
+    <menuitem id="menu_openai_settings"
+              name="OpenAI"
+              action="action_openai_config"
+              parent="menu_academy_config"
+              sequence="90"
+              groups="calendar_academy.group_academy_manager"/>
 </odoo>
