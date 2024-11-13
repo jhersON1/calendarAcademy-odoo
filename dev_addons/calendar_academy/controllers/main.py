@@ -17,79 +17,66 @@ class DateTimeEncoder(json.JSONEncoder):
 class FCMController(http.Controller):
     @http.route('/api/fcm/register', type='json', auth='none', csrf=False, methods=['POST'])
     def register_device(self, **post):
-        """
-        Registra un nuevo dispositivo FCM o actualiza uno existente
-        """
         try:
             _logger.info("Starting FCM device registration process")
             
             data = json.loads(request.httprequest.data)
             _logger.info(f"Parsed request data: {data}")
             
+            data = json.loads(request.httprequest.data)
+            _logger.info(f"Parsed request data: {data}")
             token = data.get('token')
             device_name = data.get('device_name', 'Unknown Device')
+            user_id = data.get('user_id')
             
-            _logger.info(f"Processing registration - Token: {token}, Device Name: {device_name}")
+            _logger.info(f"Processing registration - Token: {token}, Device Name: {device_name}, User ID: {user_id}")
             
             if not token:
                 _logger.error("Token is missing in request")
                 return {'success': False, 'error': 'Token is required'}
 
+            if not user_id:
+                _logger.error("User ID is missing in request")
+                return {'success': False, 'error': 'User ID is required'}
+
             env = request.env(su=True)
             
             try:
                 with env.cr.savepoint():
-                    # Buscar dispositivo existente (incluso inactivos)
+                    # Buscar dispositivo existente
                     device = env['fcm.device'].search([
                         ('token', '=', token)
                     ], limit=1)
                     
                     if device:
-                        _logger.info(f"Found existing device with ID: {device.id}, Active status: {device.active}")
+                        _logger.info(f"Found existing device with ID: {device.id}, updating user_id")
                         device_data = {
                             'name': device_name,
-                            'active': True  # Reactivar si estaba inactivo
+                            'user_id': user_id,  # Actualizar user_id
+                            'active': True
                         }
-                        _logger.info(f"Updating device with data: {device_data}")
                         device.write(device_data)
-                        _logger.info(f"Device updated successfully")
                         device_id = device.id
                     else:
                         _logger.info("Creating new device registration")
                         device_data = {
                             'name': device_name,
                             'token': token,
+                            'user_id': user_id,  # Añadir user_id
                             'active': True
                         }
-                        _logger.info(f"Creation data: {device_data}")
                         new_device = env['fcm.device'].create(device_data)
-                        _logger.info(f"New device created with ID: {new_device.id}")
                         device_id = new_device.id
                     
-                    # Verificar el registro
-                    verification = env['fcm.device'].search([
-                        ('id', '=', device_id),
-                        ('active', '=', True)
-                    ], limit=1)
-                    
-                    if verification:
-                        return {
-                            'success': True,
-                            'device_id': verification.id,
-                            'message': 'Device updated' if device else 'Device created'
-                        }
-                    else:
-                        return {
-                            'success': False,
-                            'error': 'Failed to verify device registration'
-                        }
+                    return {
+                        'success': True,
+                        'device_id': device_id,
+                        'message': 'Device updated' if device else 'Device created'
+                    }
             
-            except PSQLError as e:
-                _logger.error(f"PostgreSQL error: {str(e)}")
-                return {'success': False, 'error': f'Database error: {str(e)}'}
             except Exception as e:
                 _logger.error(f"Database operation failed: {str(e)}")
-                return {'success': False, 'error': f'Operation failed: {str(e)}'}
+                return {'success': False, 'error': str(e)}
                 
         except Exception as e:
             _logger.error(f"Unexpected error in register_device: {str(e)}")

@@ -18,9 +18,8 @@ class FCMDevice(models.Model):
 
     name = fields.Char(string='Device Name')
     token = fields.Char(string='FCM Token', required=True)
-    user_id = fields.Many2one('res.users', string='User')
+    user_id = fields.Many2one('res.users', string='User')  # Añadido
     active = fields.Boolean(default=True)
-    last_used = fields.Datetime(string='Last Used', readonly=True)
 
     _sql_constraints = [
         ('token_unique', 'unique(token)', 'Token must be unique!')
