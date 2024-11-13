@@ -826,3 +826,68 @@ class AcademyEvent(models.Model):
                 'sticky': False,
             }
         }
+    def _notify_event_creation(self):
+        """Enviar notificación cuando se crea un evento"""
+        _logger.info(f"Starting event creation notification for event ID: {self.id}")
+        
+        try:
+            notification = self.env['fcm.notification']
+            
+            # Log event details
+            _logger.info(f"Event details - Name: {self.name}, Type: {self.event_type}")
+            _logger.info(f"Start date: {self.start_date}, Reminder type: {self.reminder_type}")
+            
+            # Prepare notification data
+            data = {
+                'event_id': str(self.id),
+                'event_type': self.event_type if self.event_type else '',
+                'reminder_type': self.reminder_type if self.reminder_type else '',
+                'start_date': str(self.start_date) if self.start_date else '',
+                'priority': str(self.priority) if hasattr(self, 'priority') else '',
+            }
+            
+            _logger.info(f"Prepared notification data: {data}")
+
+            # Prepare notification title and body
+            title = f"Nuevo {dict(self._fields['reminder_type'].selection).get(self.reminder_type, '')}"
+            body = f"{self.name}\nFecha: {self.start_date.strftime('%d/%m/%Y %H:%M') if self.start_date else ''}"
+            
+            _logger.info(f"Notification title: {title}")
+            _logger.info(f"Notification body: {body}")
+            
+            # Send notification
+            _logger.info("Sending notification...")
+            result = notification.send_notification(title, body, data)
+            
+            _logger.info(f"Notification send result: {result}")
+            return result
+            
+        except Exception as e:
+            _logger.error(f"Error in _notify_event_creation: {str(e)}")
+            _logger.error(f"Exception type: {type(e)}")
+            _logger.error(f"Exception args: {e.args}")
+            if hasattr(e, '_traceback_'):
+                import traceback
+                _logger.error(f"Traceback: {''.join(traceback.format_tb(e.traceback_))}")
+            return False
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Create events with notification"""
+        _logger.info(f"Creating {len(vals_list)} new events")
+        
+        try:
+            records = super().create(vals_list)
+            _logger.info(f"Successfully created {len(records)} events")
+            
+            for record in records:
+                _logger.info(f"Processing notifications for event ID: {record.id}")
+                record._notify_event_creation()
+                
+            return records
+            
+        except Exception as e:
+            _logger.error(f"Error in create method: {str(e)}")
+            _logger.error(f"Exception type: {type(e)}")
+            _logger.error(f"Exception args: {e.args}")
+            raise
