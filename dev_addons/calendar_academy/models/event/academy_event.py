@@ -833,9 +833,32 @@ class AcademyEvent(models.Model):
         try:
             notification = self.env['fcm.notification']
             
-            # Log event details
-            _logger.info(f"Event details - Name: {self.name}, Type: {self.event_type}")
-            _logger.info(f"Start date: {self.start_date}, Reminder type: {self.reminder_type}")
+            # Obtener los user_ids de los participantes
+            participant_user_ids = []
+            if self.teacher_ids:
+                participant_user_ids.extend(self.teacher_ids.mapped('user_id.id'))
+            if self.student_ids:
+                participant_user_ids.extend(self.student_ids.mapped('user_id.id'))
+            if self.course_ids:
+                participant_user_ids.extend(self.course_ids.mapped('student_ids.user_id.id'))
+                participant_user_ids.extend(self.course_ids.mapped('teacher_ids.user_id.id'))
+            
+            # Eliminar duplicados y valores False
+            participant_user_ids = list(set(filter(None, participant_user_ids)))
+            
+            _logger.info(f"Participant user IDs: {participant_user_ids}")
+            
+            # Obtener los tokens de los dispositivos de los participantes
+            devices = self.env['fcm.device'].search([
+                ('user_id', 'in', participant_user_ids),
+                ('active', '=', True)
+            ])
+            
+            if not devices:
+                _logger.info("No active devices found for participants")
+                return False
+                
+            _logger.info(f"Found {len(devices)} active devices for participants")
             
             # Prepare notification data
             data = {
@@ -846,29 +869,15 @@ class AcademyEvent(models.Model):
                 'priority': str(self.priority) if hasattr(self, 'priority') else '',
             }
             
-            _logger.info(f"Prepared notification data: {data}")
-
-            # Prepare notification title and body
             title = f"Nuevo {dict(self._fields['reminder_type'].selection).get(self.reminder_type, '')}"
             body = f"{self.name}\nFecha: {self.start_date.strftime('%d/%m/%Y %H:%M') if self.start_date else ''}"
             
-            _logger.info(f"Notification title: {title}")
-            _logger.info(f"Notification body: {body}")
-            
-            # Send notification
-            _logger.info("Sending notification...")
+            # Send notification only to participant devices
             result = notification.send_notification(title, body, data)
-            
-            _logger.info(f"Notification send result: {result}")
             return result
             
         except Exception as e:
             _logger.error(f"Error in _notify_event_creation: {str(e)}")
-            _logger.error(f"Exception type: {type(e)}")
-            _logger.error(f"Exception args: {e.args}")
-            if hasattr(e, '_traceback_'):
-                import traceback
-                _logger.error(f"Traceback: {''.join(traceback.format_tb(e.traceback_))}")
             return False
 
     @api.model_create_multi
