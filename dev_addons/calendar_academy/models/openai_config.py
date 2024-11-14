@@ -10,7 +10,8 @@ class ResConfigSettings(models.TransientModel):
     openai_model = fields.Selection([
         ('gpt-4', 'GPT-4'),
         ('gpt-3.5-turbo', 'GPT-3.5 Turbo'),
+        ('gpt-4o', 'gpt-4o')
     ], string='OpenAI Model',
-        default='gpt-3.5-turbo',
+        default='gpt-4o',
         config_parameter='calendar_academy.openai_model'
     )
