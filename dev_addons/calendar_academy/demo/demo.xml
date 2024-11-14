@@ -2,12 +2,97 @@
 <odoo>
     <data noupdate="1">
         <!-- Periodos Académicos -->
+        <!-- 2020 Períodos -->
+        <record id="period_2020_1" model="academy.period">
+            <field name="start_date">2020-01-01</field>
+            <field name="end_date">2020-06-30</field>
+            <field name="enrollment_start_date">2020-01-02</field>
+            <field name="enrollment_end_date">2020-01-31</field>
+            <field name="class_start_date">2020-02-03</field>
+            <field name="class_end_date">2020-06-19</field>
+            <field name="state">closed</field>
+        </record>
+
+        <record id="period_2020_2" model="academy.period">
+            <field name="start_date">2020-07-01</field>
+            <field name="end_date">2020-12-18</field>
+            <field name="enrollment_start_date">2020-07-01</field>
+            <field name="enrollment_end_date">2020-07-31</field>
+            <field name="class_start_date">2020-08-03</field>
+            <field name="class_end_date">2020-12-11</field>
+            <field name="state">closed</field>
+        </record>
+
+        <!-- 2021 Períodos -->
+        <record id="period_2021_1" model="academy.period">
+            <field name="start_date">2021-01-01</field>
+            <field name="end_date">2021-06-30</field>
+            <field name="enrollment_start_date">2021-01-04</field>
+            <field name="enrollment_end_date">2021-01-29</field>
+            <field name="class_start_date">2021-02-01</field>
+            <field name="class_end_date">2021-06-18</field>
+            <field name="state">closed</field>
+        </record>
+
+        <record id="period_2021_2" model="academy.period">
+            <field name="start_date">2021-07-01</field>
+            <field name="end_date">2021-12-17</field>
+            <field name="enrollment_start_date">2021-07-01</field>
+            <field name="enrollment_end_date">2021-07-30</field>
+            <field name="class_start_date">2021-08-02</field>
+            <field name="class_end_date">2021-12-10</field>
+            <field name="state">closed</field>
+        </record>
+
+        <!-- 2022 Períodos -->
+        <record id="period_2022_1" model="academy.period">
+            <field name="start_date">2022-01-01</field>
+            <field name="end_date">2022-06-30</field>
+            <field name="enrollment_start_date">2022-01-03</field>
+            <field name="enrollment_end_date">2022-01-28</field>
+            <field name="class_start_date">2022-01-31</field>
+            <field name="class_end_date">2022-06-17</field>
+            <field name="state">closed</field>
+        </record>
+
+        <record id="period_2022_2" model="academy.period">
+            <field name="start_date">2022-07-01</field>
+            <field name="end_date">2022-12-16</field>
+            <field name="enrollment_start_date">2022-07-01</field>
+            <field name="enrollment_end_date">2022-07-29</field>
+            <field name="class_start_date">2022-08-01</field>
+            <field name="class_end_date">2022-12-09</field>
+            <field name="state">closed</field>
+        </record>
+
+        <!-- 2023 Períodos -->
+        <record id="period_2023_1" model="academy.period">
+            <field name="start_date">2023-01-01</field>
+            <field name="end_date">2023-06-30</field>
+            <field name="enrollment_start_date">2023-01-02</field>
+            <field name="enrollment_end_date">2023-01-27</field>
+            <field name="class_start_date">2023-01-30</field>
+            <field name="class_end_date">2023-06-16</field>
+            <field name="state">closed</field>
+        </record>
+
+        <record id="period_2023_2" model="academy.period">
+            <field name="start_date">2023-07-01</field>
+            <field name="end_date">2023-12-22</field>
+            <field name="enrollment_start_date">2023-07-03</field>
+            <field name="enrollment_end_date">2023-07-28</field>
+            <field name="class_start_date">2023-07-31</field>
+            <field name="class_end_date">2023-12-15</field>
+            <field name="state">finished</field>
+        </record>
+
+        <!-- 2024 Períodos (Actual) -->
         <record id="period_2024_1" model="academy.period">
-            <field name="start_date">2023-12-01</field>
-            <field name="end_date">2024-06-30</field>
-            <field name="enrollment_start_date">2023-12-01</field>
-            <field name="enrollment_end_date">2023-12-31</field>
-            <field name="class_start_date">2024-01-08</field>
+            <field name="start_date">2024-01-01</field>
+            <field name="end_date">2024-06-28</field>
+            <field name="enrollment_start_date">2024-01-02</field>
+            <field name="enrollment_end_date">2024-01-26</field>
+            <field name="class_start_date">2024-01-29</field>
             <field name="class_end_date">2024-06-21</field>
             <field name="state">active</field>
         </record>
@@ -16,137 +101,743 @@
             <field name="start_date">2024-07-01</field>
             <field name="end_date">2024-12-20</field>
             <field name="enrollment_start_date">2024-07-01</field>
-            <field name="enrollment_end_date">2024-07-15</field>
-            <field name="class_start_date">2024-07-22</field>
+            <field name="enrollment_end_date">2024-07-26</field>
+            <field name="class_start_date">2024-07-29</field>
             <field name="class_end_date">2024-12-13</field>
             <field name="state">draft</field>
         </record>
 
-        <!-- Niveles Académicos -->
-        <record id="level_1_basic" model="academy.level">
-            <field name="name">Primero Básico</field>
-            <field name="code">1B</field>
-            <field name="sequence">1</field>
-            <field name="min_age">6</field>
-            <field name="max_age">7</field>
-            <field name="is_mandatory">True</field>
-            <field name="description">Primer nivel de educación básica elemental</field>
+        <!-- 2025 Períodos (Futuros) -->
+        <record id="period_2025_1" model="academy.period">
+            <field name="start_date">2025-01-01</field>
+            <field name="end_date">2025-06-27</field>
+            <field name="enrollment_start_date">2025-01-02</field>
+            <field name="enrollment_end_date">2025-01-24</field>
+            <field name="class_start_date">2025-01-27</field>
+            <field name="class_end_date">2025-06-20</field>
+            <field name="state">draft</field>
         </record>
 
-        <record id="level_2_basic" model="academy.level">
-            <field name="name">Segundo Básico</field>
-            <field name="code">2B</field>
+        <record id="period_2025_2" model="academy.period">
+            <field name="start_date">2025-07-01</field>
+            <field name="end_date">2025-12-19</field>
+            <field name="enrollment_start_date">2025-07-01</field>
+            <field name="enrollment_end_date">2025-07-25</field>
+            <field name="class_start_date">2025-07-28</field>
+            <field name="class_end_date">2025-12-12</field>
+            <field name="state">draft</field>
+        </record>
+
+        <!-- Niveles Académicos -->
+
+        <!-- Educación Inicial -->
+        <record id="level_inicial_1" model="academy.level">
+            <field name="name">Inicial 1</field>
+            <field name="code">INI1</field>
+            <field name="sequence">1</field>
+            <field name="min_age">3</field>
+            <field name="max_age">4</field>
+            <field name="is_mandatory">false</field>
+            <field name="description">Primer nivel de educación inicial. Desarrollo temprano de habilidades sociales y
+                motoras.
+            </field>
+        </record>
+
+        <record id="level_inicial_2" model="academy.level">
+            <field name="name">Inicial 2</field>
+            <field name="code">INI2</field>
             <field name="sequence">2</field>
-            <field name="min_age">7</field>
-            <field name="max_age">8</field>
-            <field name="is_mandatory">True</field>
-            <field name="description">Segundo nivel de educación básica elemental</field>
+            <field name="min_age">4</field>
+            <field name="max_age">5</field>
+            <field name="is_mandatory">false</field>
+            <field name="description">Segundo nivel de educación inicial. Preparación para educación básica.</field>
+        </record>
+
+        <!-- Preparatoria -->
+        <record id="level_preparatoria" model="academy.level">
+            <field name="name">Preparatoria</field>
+            <field name="code">PREP</field>
+            <field name="sequence">3</field>
+            <field name="min_age">5</field>
+            <field name="max_age">6</field>
+            <field name="is_mandatory">true</field>
+            <field name="description">Primer grado de Educación General Básica. Desarrollo de habilidades básicas.
+            </field>
+        </record>
+
+        <!-- Básica Elemental -->
+        <record id="level_2_basic" model="academy.level">
+            <field name="name">Segundo Básica</field>
+            <field name="code">2B</field>
+            <field name="sequence">4</field>
+            <field name="min_age">6</field>
+            <field name="max_age">7</field>
+            <field name="is_mandatory">true</field>
+            <field name="description">Segundo grado de Educación General Básica.</field>
         </record>
 
         <record id="level_3_basic" model="academy.level">
-            <field name="name">Tercero Básico</field>
+            <field name="name">Tercero Básica</field>
             <field name="code">3B</field>
-            <field name="sequence">3</field>
+            <field name="sequence">5</field>
+            <field name="min_age">7</field>
+            <field name="max_age">8</field>
+            <field name="is_mandatory">true</field>
+            <field name="description">Tercer grado de Educación General Básica.</field>
+        </record>
+
+        <record id="level_4_basic" model="academy.level">
+            <field name="name">Cuarto Básica</field>
+            <field name="code">4B</field>
+            <field name="sequence">6</field>
             <field name="min_age">8</field>
             <field name="max_age">9</field>
-            <field name="is_mandatory">True</field>
-            <field name="description">Tercer nivel de educación básica elemental</field>
+            <field name="is_mandatory">true</field>
+            <field name="description">Cuarto grado de Educación General Básica.</field>
+        </record>
+
+        <!-- Básica Media -->
+        <record id="level_5_basic" model="academy.level">
+            <field name="name">Quinto Básica</field>
+            <field name="code">5B</field>
+            <field name="sequence">7</field>
+            <field name="min_age">9</field>
+            <field name="max_age">10</field>
+            <field name="is_mandatory">true</field>
+            <field name="description">Quinto grado de Educación General Básica.</field>
+        </record>
+
+        <record id="level_6_basic" model="academy.level">
+            <field name="name">Sexto Básica</field>
+            <field name="code">6B</field>
+            <field name="sequence">8</field>
+            <field name="min_age">10</field>
+            <field name="max_age">11</field>
+            <field name="is_mandatory">true</field>
+            <field name="description">Sexto grado de Educación General Básica.</field>
+        </record>
+
+        <record id="level_7_basic" model="academy.level">
+            <field name="name">Séptimo Básica</field>
+            <field name="code">7B</field>
+            <field name="sequence">9</field>
+            <field name="min_age">11</field>
+            <field name="max_age">12</field>
+            <field name="is_mandatory">true</field>
+            <field name="description">Séptimo grado de Educación General Básica.</field>
+        </record>
+
+        <!-- Básica Superior -->
+        <record id="level_8_basic" model="academy.level">
+            <field name="name">Octavo Básica</field>
+            <field name="code">8B</field>
+            <field name="sequence">10</field>
+            <field name="min_age">12</field>
+            <field name="max_age">13</field>
+            <field name="is_mandatory">true</field>
+            <field name="description">Octavo grado de Educación General Básica.</field>
+        </record>
+
+        <record id="level_9_basic" model="academy.level">
+            <field name="name">Noveno Básica</field>
+            <field name="code">9B</field>
+            <field name="sequence">11</field>
+            <field name="min_age">13</field>
+            <field name="max_age">14</field>
+            <field name="is_mandatory">true</field>
+            <field name="description">Noveno grado de Educación General Básica.</field>
+        </record>
+
+        <record id="level_10_basic" model="academy.level">
+            <field name="name">Décimo Básica</field>
+            <field name="code">10B</field>
+            <field name="sequence">12</field>
+            <field name="min_age">14</field>
+            <field name="max_age">15</field>
+            <field name="is_mandatory">true</field>
+            <field name="description">Décimo grado de Educación General Básica.</field>
+        </record>
+
+        <!-- Bachillerato -->
+        <record id="level_1_bach" model="academy.level">
+            <field name="name">Primero Bachillerato</field>
+            <field name="code">1BCH</field>
+            <field name="sequence">13</field>
+            <field name="min_age">15</field>
+            <field name="max_age">16</field>
+            <field name="is_mandatory">true</field>
+            <field name="description">Primer año de Bachillerato General Unificado.</field>
+        </record>
+
+        <record id="level_2_bach" model="academy.level">
+            <field name="name">Segundo Bachillerato</field>
+            <field name="code">2BCH</field>
+            <field name="sequence">14</field>
+            <field name="min_age">16</field>
+            <field name="max_age">17</field>
+            <field name="is_mandatory">true</field>
+            <field name="description">Segundo año de Bachillerato General Unificado.</field>
+        </record>
+
+        <record id="level_3_bach" model="academy.level">
+            <field name="name">Tercero Bachillerato</field>
+            <field name="code">3BCH</field>
+            <field name="sequence">15</field>
+            <field name="min_age">17</field>
+            <field name="max_age">18</field>
+            <field name="is_mandatory">true</field>
+            <field name="description">Tercer año de Bachillerato General Unificado.</field>
         </record>
 
         <!-- Paralelos -->
+
+        <!-- Paralelos Matutinos -->
         <record id="parallel_a" model="academy.parallel">
             <field name="name">A</field>
             <field name="code">A</field>
-            <field name="description">Paralelo A - Turno Matutino</field>
+            <field name="description">Paralelo A - Turno Matutino (07:15 - 13:15)</field>
         </record>
 
         <record id="parallel_b" model="academy.parallel">
             <field name="name">B</field>
             <field name="code">B</field>
-            <field name="description">Paralelo B - Turno Matutino</field>
+            <field name="description">Paralelo B - Turno Matutino (07:15 - 13:15)</field>
         </record>
 
         <record id="parallel_c" model="academy.parallel">
             <field name="name">C</field>
             <field name="code">C</field>
-            <field name="description">Paralelo C - Turno Vespertino</field>
+            <field name="description">Paralelo C - Turno Matutino (07:15 - 13:15)</field>
+        </record>
+
+        <record id="parallel_d" model="academy.parallel">
+            <field name="name">D</field>
+            <field name="code">D</field>
+            <field name="description">Paralelo D - Turno Matutino (07:15 - 13:15)</field>
+        </record>
+
+        <!-- Paralelos Vespertinos -->
+        <record id="parallel_e" model="academy.parallel">
+            <field name="name">E</field>
+            <field name="code">E</field>
+            <field name="description">Paralelo E - Turno Vespertino (13:30 - 19:30)</field>
+        </record>
+
+        <record id="parallel_f" model="academy.parallel">
+            <field name="name">F</field>
+            <field name="code">F</field>
+            <field name="description">Paralelo F - Turno Vespertino (13:30 - 19:30)</field>
+        </record>
+
+        <record id="parallel_g" model="academy.parallel">
+            <field name="name">G</field>
+            <field name="code">G</field>
+            <field name="description">Paralelo G - Turno Vespertino (13:30 - 19:30)</field>
+        </record>
+
+        <!-- Paralelos Especiales -->
+        <record id="parallel_h" model="academy.parallel">
+            <field name="name">H</field>
+            <field name="code">H</field>
+            <field name="description">Paralelo H - Turno Matutino - Programa de Alto Rendimiento</field>
+        </record>
+
+        <record id="parallel_i" model="academy.parallel">
+            <field name="name">I</field>
+            <field name="code">I</field>
+            <field name="description">Paralelo I - Turno Matutino - Programa Internacional</field>
+        </record>
+
+        <record id="parallel_j" model="academy.parallel">
+            <field name="name">J</field>
+            <field name="code">J</field>
+            <field name="description">Paralelo J - Turno Vespertino - Programa de Inclusión</field>
         </record>
 
         <!-- Materias -->
+
+        <!-- Materias Básicas -->
         <record id="subject_math" model="academy.subject">
             <field name="name">Matemáticas</field>
             <field name="code">MAT</field>
             <field name="hours_per_week">6</field>
             <field name="credits">4</field>
-            <field name="is_mandatory">True</field>
+            <field name="is_mandatory">true</field>
             <field name="evaluation_method">numeric</field>
             <field name="min_grade">7</field>
-            <field name="description">Desarrollo del pensamiento lógico-matemático</field>
-            <field name="has_homework">True</field>
-            <field name="has_projects">True</field>
-            <field name="has_midterm">True</field>
-            <field name="has_final">True</field>
+            <field name="description">Desarrollo del pensamiento lógico-matemático y habilidades numéricas</field>
+            <field name="has_homework">true</field>
+            <field name="has_projects">true</field>
+            <field name="has_midterm">true</field>
+            <field name="has_final">true</field>
         </record>
 
         <record id="subject_language" model="academy.subject">
-            <field name="name">Lenguaje</field>
+            <field name="name">Lengua y Literatura</field>
             <field name="code">LEN</field>
             <field name="hours_per_week">6</field>
             <field name="credits">4</field>
-            <field name="is_mandatory">True</field>
+            <field name="is_mandatory">true</field>
             <field name="evaluation_method">numeric</field>
             <field name="min_grade">7</field>
-            <field name="description">Desarrollo de habilidades comunicativas</field>
-            <field name="has_homework">True</field>
-            <field name="has_projects">True</field>
-            <field name="has_midterm">True</field>
-            <field name="has_final">True</field>
+            <field name="description">Desarrollo de habilidades comunicativas y comprensión lectora</field>
+            <field name="has_homework">true</field>
+            <field name="has_projects">true</field>
+            <field name="has_midterm">true</field>
+            <field name="has_final">true</field>
         </record>
 
-        <record id="subject_science" model="academy.subject">
+        <record id="subject_natural_science" model="academy.subject">
             <field name="name">Ciencias Naturales</field>
             <field name="code">CCNN</field>
             <field name="hours_per_week">4</field>
             <field name="credits">3</field>
-            <field name="is_mandatory">True</field>
+            <field name="is_mandatory">true</field>
             <field name="evaluation_method">numeric</field>
             <field name="min_grade">7</field>
-            <field name="description">Estudio del mundo natural y sus fenómenos</field>
-            <field name="has_homework">True</field>
-            <field name="has_projects">True</field>
-            <field name="has_midterm">True</field>
-            <field name="has_final">True</field>
+            <field name="description">Estudio de fenómenos naturales y método científico</field>
+            <field name="has_homework">true</field>
+            <field name="has_projects">true</field>
+            <field name="has_midterm">true</field>
+            <field name="has_final">true</field>
         </record>
 
-        <record id="subject_social" model="academy.subject">
+        <record id="subject_social_studies" model="academy.subject">
             <field name="name">Estudios Sociales</field>
             <field name="code">EESS</field>
             <field name="hours_per_week">4</field>
             <field name="credits">3</field>
-            <field name="is_mandatory">True</field>
+            <field name="is_mandatory">true</field>
             <field name="evaluation_method">numeric</field>
             <field name="min_grade">7</field>
-            <field name="description">Estudio de la sociedad y su desarrollo</field>
-            <field name="has_homework">True</field>
-            <field name="has_projects">True</field>
-            <field name="has_midterm">True</field>
-            <field name="has_final">True</field>
+            <field name="description">Historia, geografía y formación ciudadana</field>
+            <field name="has_homework">true</field>
+            <field name="has_projects">true</field>
+            <field name="has_midterm">true</field>
+            <field name="has_final">true</field>
         </record>
 
+        <!-- Idiomas -->
+        <record id="subject_english" model="academy.subject">
+            <field name="name">Inglés</field>
+            <field name="code">ENG</field>
+            <field name="hours_per_week">5</field>
+            <field name="credits">3</field>
+            <field name="is_mandatory">true</field>
+            <field name="evaluation_method">numeric</field>
+            <field name="min_grade">7</field>
+            <field name="description">Desarrollo de competencias en el idioma inglés</field>
+            <field name="has_homework">true</field>
+            <field name="has_projects">true</field>
+            <field name="has_midterm">true</field>
+            <field name="has_final">true</field>
+        </record>
+
+        <record id="subject_french" model="academy.subject">
+            <field name="name">Francés</field>
+            <field name="code">FRA</field>
+            <field name="hours_per_week">3</field>
+            <field name="credits">2</field>
+            <field name="is_mandatory">false</field>
+            <field name="evaluation_method">numeric</field>
+            <field name="min_grade">7</field>
+            <field name="description">Introducción al idioma francés y su cultura</field>
+            <field name="has_homework">true</field>
+            <field name="has_projects">true</field>
+            <field name="has_midterm">true</field>
+            <field name="has_final">true</field>
+        </record>
+
+        <!-- Ciencias Específicas -->
+        <record id="subject_physics" model="academy.subject">
+            <field name="name">Física</field>
+            <field name="code">FIS</field>
+            <field name="hours_per_week">4</field>
+            <field name="credits">3</field>
+            <field name="is_mandatory">true</field>
+            <field name="evaluation_method">numeric</field>
+            <field name="min_grade">7</field>
+            <field name="description">Estudio de las leyes fundamentales de la física</field>
+            <field name="has_homework">true</field>
+            <field name="has_projects">true</field>
+            <field name="has_midterm">true</field>
+            <field name="has_final">true</field>
+        </record>
+
+        <record id="subject_chemistry" model="academy.subject">
+            <field name="name">Química</field>
+            <field name="code">QUI</field>
+            <field name="hours_per_week">4</field>
+            <field name="credits">3</field>
+            <field name="is_mandatory">true</field>
+            <field name="evaluation_method">numeric</field>
+            <field name="min_grade">7</field>
+            <field name="description">Fundamentos de química general y orgánica</field>
+            <field name="has_homework">true</field>
+            <field name="has_projects">true</field>
+            <field name="has_midterm">true</field>
+            <field name="has_final">true</field>
+        </record>
+
+        <record id="subject_biology" model="academy.subject">
+            <field name="name">Biología</field>
+            <field name="code">BIO</field>
+            <field name="hours_per_week">4</field>
+            <field name="credits">3</field>
+            <field name="is_mandatory">true</field>
+            <field name="evaluation_method">numeric</field>
+            <field name="min_grade">7</field>
+            <field name="description">Estudio de los seres vivos y sus procesos</field>
+            <field name="has_homework">true</field>
+            <field name="has_projects">true</field>
+            <field name="has_midterm">true</field>
+            <field name="has_final">true</field>
+        </record>
+
+        <!-- Tecnología y Arte -->
+        <record id="subject_computing" model="academy.subject">
+            <field name="name">Computación</field>
+            <field name="code">COMP</field>
+            <field name="hours_per_week">2</field>
+            <field name="credits">2</field>
+            <field name="is_mandatory">true</field>
+            <field name="evaluation_method">numeric</field>
+            <field name="min_grade">7</field>
+            <field name="description">Informática básica y programación</field>
+            <field name="has_homework">true</field>
+            <field name="has_projects">true</field>
+            <field name="has_midterm">true</field>
+            <field name="has_final">true</field>
+        </record>
+
+        <record id="subject_art" model="academy.subject">
+            <field name="name">Educación Cultural y Artística</field>
+            <field name="code">ART</field>
+            <field name="hours_per_week">2</field>
+            <field name="credits">2</field>
+            <field name="is_mandatory">true</field>
+            <field name="evaluation_method">numeric</field>
+            <field name="min_grade">7</field>
+            <field name="description">Desarrollo de la creatividad y expresión artística</field>
+            <field name="has_homework">true</field>
+            <field name="has_projects">true</field>
+            <field name="has_midterm">false</field>
+            <field name="has_final">true</field>
+        </record>
+
+        <!-- Educación Física y Valores -->
+        <record id="subject_physical_education" model="academy.subject">
+            <field name="name">Educación Física</field>
+            <field name="code">EF</field>
+            <field name="hours_per_week">2</field>
+            <field name="credits">2</field>
+            <field name="is_mandatory">true</field>
+            <field name="evaluation_method">numeric</field>
+            <field name="min_grade">7</field>
+            <field name="description">Desarrollo físico y deportivo</field>
+            <field name="has_homework">false</field>
+            <field name="has_projects">false</field>
+            <field name="has_midterm">true</field>
+            <field name="has_final">true</field>
+        </record>
+
+        <record id="subject_values" model="academy.subject">
+            <field name="name">Desarrollo Humano Integral</field>
+            <field name="code">DHI</field>
+            <field name="hours_per_week">2</field>
+            <field name="credits">2</field>
+            <field name="is_mandatory">true</field>
+            <field name="evaluation_method">numeric</field>
+            <field name="min_grade">7</field>
+            <field name="description">Formación en valores y desarrollo personal</field>
+            <field name="has_homework">true</field>
+            <field name="has_projects">true</field>
+            <field name="has_midterm">false</field>
+            <field name="has_final">true</field>
+        </record>
+
+        <!-- Materias Optativas -->
+        <record id="subject_entrepreneurship" model="academy.subject">
+            <field name="name">Emprendimiento y Gestión</field>
+            <field name="code">EMP</field>
+            <field name="hours_per_week">3</field>
+            <field name="credits">2</field>
+            <field name="is_mandatory">false</field>
+            <field name="evaluation_method">numeric</field>
+            <field name="min_grade">7</field>
+            <field name="description">Desarrollo de habilidades empresariales</field>
+            <field name="has_homework">true</field>
+            <field name="has_projects">true</field>
+            <field name="has_midterm">true</field>
+            <field name="has_final">true</field>
+        </record>
+
+        <record id="subject_music" model="academy.subject">
+            <field name="name">Educación Musical</field>
+            <field name="code">MUS</field>
+            <field name="hours_per_week">2</field>
+            <field name="credits">2</field>
+            <field name="is_mandatory">false</field>
+            <field name="evaluation_method">numeric</field>
+            <field name="min_grade">7</field>
+            <field name="description">Apreciación musical y práctica instrumental</field>
+            <field name="has_homework">true</field>
+            <field name="has_projects">true</field>
+            <field name="has_midterm">false</field>
+            <field name="has_final">true</field>
+        </record>
+
+        <record id="subject_robotics" model="academy.subject">
+            <field name="name">Robótica</field>
+            <field name="code">ROB</field>
+            <field name="hours_per_week">2</field>
+            <field name="credits">2</field>
+            <field name="is_mandatory">false</field>
+            <field name="evaluation_method">numeric</field>
+            <field name="min_grade">7</field>
+            <field name="description">Introducción a la robótica y programación básica</field>
+            <field name="has_homework">true</field>
+            <field name="has_projects">true</field>
+            <field name="has_midterm">false</field>
+            <field name="has_final">true</field>
+        </record>
+
+
         <!-- Asignar materias a niveles -->
-        <record id="level_1_basic" model="academy.level">
+
+        <!-- Inicial 1 -->
+        <record id="level_inicial_1" model="academy.level">
             <field name="subject_ids" eval="[(6, 0, [
-                ref('subject_math'),
                 ref('subject_language'),
-                ref('subject_science'),
-                ref('subject_social')
+                ref('subject_art'),
+                ref('subject_physical_education'),
+                ref('subject_values'),
+                ref('subject_music')
             ])]"/>
         </record>
 
+        <!-- Inicial 2 -->
+        <record id="level_inicial_2" model="academy.level">
+            <field name="subject_ids" eval="[(6, 0, [
+                ref('subject_language'),
+                ref('subject_math'),
+                ref('subject_art'),
+                ref('subject_physical_education'),
+                ref('subject_values'),
+                ref('subject_music')
+            ])]"/>
+        </record>
+
+        <!-- Preparatoria -->
+        <record id="level_preparatoria" model="academy.level">
+            <field name="subject_ids" eval="[(6, 0, [
+                ref('subject_language'),
+                ref('subject_math'),
+                ref('subject_art'),
+                ref('subject_physical_education'),
+                ref('subject_values'),
+                ref('subject_music'),
+                ref('subject_english')
+            ])]"/>
+        </record>
+
+        <!-- Básica Elemental (2do a 4to) -->
+        <record id="level_2_basic" model="academy.level">
+            <field name="subject_ids" eval="[(6, 0, [
+                ref('subject_language'),
+                ref('subject_math'),
+                ref('subject_natural_science'),
+                ref('subject_social_studies'),
+                ref('subject_english'),
+                ref('subject_art'),
+                ref('subject_physical_education'),
+                ref('subject_values'),
+                ref('subject_computing')
+            ])]"/>
+        </record>
+
+        <record id="level_3_basic" model="academy.level">
+            <field name="subject_ids" eval="[(6, 0, [
+                ref('subject_language'),
+                ref('subject_math'),
+                ref('subject_natural_science'),
+                ref('subject_social_studies'),
+                ref('subject_english'),
+                ref('subject_art'),
+                ref('subject_physical_education'),
+                ref('subject_values'),
+                ref('subject_computing')
+            ])]"/>
+        </record>
+
+        <record id="level_4_basic" model="academy.level">
+            <field name="subject_ids" eval="[(6, 0, [
+                ref('subject_language'),
+                ref('subject_math'),
+                ref('subject_natural_science'),
+                ref('subject_social_studies'),
+                ref('subject_english'),
+                ref('subject_art'),
+                ref('subject_physical_education'),
+                ref('subject_values'),
+                ref('subject_computing')
+            ])]"/>
+        </record>
+
+        <!-- Básica Media (5to a 7mo) -->
+        <record id="level_5_basic" model="academy.level">
+            <field name="subject_ids" eval="[(6, 0, [
+                ref('subject_language'),
+                ref('subject_math'),
+                ref('subject_natural_science'),
+                ref('subject_social_studies'),
+                ref('subject_english'),
+                ref('subject_art'),
+                ref('subject_physical_education'),
+                ref('subject_values'),
+                ref('subject_computing'),
+                ref('subject_french')
+            ])]"/>
+        </record>
+
+        <record id="level_6_basic" model="academy.level">
+            <field name="subject_ids" eval="[(6, 0, [
+                ref('subject_language'),
+                ref('subject_math'),
+                ref('subject_natural_science'),
+                ref('subject_social_studies'),
+                ref('subject_english'),
+                ref('subject_art'),
+                ref('subject_physical_education'),
+                ref('subject_values'),
+                ref('subject_computing'),
+                ref('subject_french')
+            ])]"/>
+        </record>
+
+        <record id="level_7_basic" model="academy.level">
+            <field name="subject_ids" eval="[(6, 0, [
+                ref('subject_language'),
+                ref('subject_math'),
+                ref('subject_natural_science'),
+                ref('subject_social_studies'),
+                ref('subject_english'),
+                ref('subject_art'),
+                ref('subject_physical_education'),
+                ref('subject_values'),
+                ref('subject_computing'),
+                ref('subject_french')
+            ])]"/>
+        </record>
+
+        <!-- Básica Superior (8vo a 10mo) -->
+        <record id="level_8_basic" model="academy.level">
+            <field name="subject_ids" eval="[(6, 0, [
+                ref('subject_language'),
+                ref('subject_math'),
+                ref('subject_biology'),
+                ref('subject_social_studies'),
+                ref('subject_english'),
+                ref('subject_art'),
+                ref('subject_physical_education'),
+                ref('subject_values'),
+                ref('subject_computing'),
+                ref('subject_french'),
+                ref('subject_robotics')
+            ])]"/>
+        </record>
+
+        <record id="level_9_basic" model="academy.level">
+            <field name="subject_ids" eval="[(6, 0, [
+                ref('subject_language'),
+                ref('subject_math'),
+                ref('subject_biology'),
+                ref('subject_social_studies'),
+                ref('subject_english'),
+                ref('subject_art'),
+                ref('subject_physical_education'),
+                ref('subject_values'),
+                ref('subject_computing'),
+                ref('subject_french'),
+                ref('subject_robotics')
+            ])]"/>
+        </record>
+
+        <record id="level_10_basic" model="academy.level">
+            <field name="subject_ids" eval="[(6, 0, [
+                ref('subject_language'),
+                ref('subject_math'),
+                ref('subject_biology'),
+                ref('subject_social_studies'),
+                ref('subject_english'),
+                ref('subject_art'),
+                ref('subject_physical_education'),
+                ref('subject_values'),
+                ref('subject_computing'),
+                ref('subject_french'),
+                ref('subject_robotics')
+            ])]"/>
+        </record>
+
+        <!-- Bachillerato -->
+        <record id="level_1_bach" model="academy.level">
+            <field name="subject_ids" eval="[(6, 0, [
+                ref('subject_language'),
+                ref('subject_math'),
+                ref('subject_physics'),
+                ref('subject_chemistry'),
+                ref('subject_biology'),
+                ref('subject_social_studies'),
+                ref('subject_english'),
+                ref('subject_physical_education'),
+                ref('subject_values'),
+                ref('subject_computing'),
+                ref('subject_entrepreneurship'),
+                ref('subject_french')
+            ])]"/>
+        </record>
+
+        <record id="level_2_bach" model="academy.level">
+            <field name="subject_ids" eval="[(6, 0, [
+                ref('subject_language'),
+                ref('subject_math'),
+                ref('subject_physics'),
+                ref('subject_chemistry'),
+                ref('subject_biology'),
+                ref('subject_social_studies'),
+                ref('subject_english'),
+                ref('subject_physical_education'),
+                ref('subject_values'),
+                ref('subject_computing'),
+                ref('subject_entrepreneurship'),
+                ref('subject_french')
+            ])]"/>
+        </record>
+
+        <record id="level_3_bach" model="academy.level">
+            <field name="subject_ids" eval="[(6, 0, [
+                ref('subject_language'),
+                ref('subject_math'),
+                ref('subject_physics'),
+                ref('subject_chemistry'),
+                ref('subject_biology'),
+                ref('subject_social_studies'),
+                ref('subject_english'),
+                ref('subject_physical_education'),
+                ref('subject_values'),
+                ref('subject_computing'),
+                ref('subject_entrepreneurship'),
+                ref('subject_french')
+            ])]"/>
+        </record>
+
+
         <!-- Profesores -->
-        <record id="teacher_1" model="academy.teacher">
+
+        <!-- Profesores de Matemáticas -->
+        <record id="teacher_math_1" model="academy.teacher">
             <field name="name">María González</field>
-            <field name="identification">1234567890</field>
+            <field name="identification">1001234567</field>
             <field name="email">maria.gonzalez@demo.com</field>
             <field name="phone">555-0101</field>
             <field name="mobile">555-0102</field>
@@ -156,363 +847,936 @@
             <field name="years_experience">8</field>
             <field name="hire_date">2020-01-15</field>
             <field name="max_hours">30</field>
+            <field name="specialty" eval="[(6, 0, [ref('subject_math')])]"/>
             <field name="status">active</field>
         </record>
 
-        <record id="teacher_2" model="academy.teacher">
-            <field name="name">Juan Pérez</field>
-            <field name="identification">2345678901</field>
-            <field name="email">juan.perez@demo.com</field>
-            <field name="phone">555-0201</field>
-            <field name="mobile">555-0202</field>
+        <record id="teacher_math_2" model="academy.teacher">
+            <field name="name">Carlos Ruiz</field>
+            <field name="identification">1001234568</field>
+            <field name="email">carlos.ruiz@demo.com</field>
+            <field name="phone">555-0103</field>
+            <field name="mobile">555-0104</field>
             <field name="birth_date">1982-07-22</field>
             <field name="gender">male</field>
             <field name="education_level">phd</field>
             <field name="years_experience">12</field>
-            <field name="hire_date">2018-08-01</field>
+            <field name="hire_date">2019-08-01</field>
             <field name="max_hours">40</field>
+            <field name="specialty" eval="[(6, 0, [ref('subject_math'), ref('subject_physics')])]"/>
             <field name="status">active</field>
         </record>
 
-        <record id="teacher_3" model="academy.teacher">
+        <!-- Profesores de Lenguaje -->
+        <record id="teacher_lang_1" model="academy.teacher">
             <field name="name">Ana Martínez</field>
-            <field name="identification">3456789012</field>
+            <field name="identification">1001234569</field>
             <field name="email">ana.martinez@demo.com</field>
-            <field name="phone">555-0301</field>
-            <field name="mobile">555-0302</field>
+            <field name="phone">555-0105</field>
+            <field name="mobile">555-0106</field>
             <field name="birth_date">1988-11-30</field>
             <field name="gender">female</field>
             <field name="education_level">master</field>
             <field name="years_experience">6</field>
             <field name="hire_date">2021-03-01</field>
             <field name="max_hours">35</field>
+            <field name="specialty" eval="[(6, 0, [ref('subject_language')])]"/>
             <field name="status">active</field>
         </record>
 
-        <!-- Asignar especialidades a profesores -->
-        <record id="teacher_1" model="academy.teacher">
-            <field name="specialty" eval="[(6, 0, [ref('subject_math')])]"/>
+        <record id="teacher_lang_2" model="academy.teacher">
+            <field name="name">Pedro Sánchez</field>
+            <field name="identification">1001234570</field>
+            <field name="email">pedro.sanchez@demo.com</field>
+            <field name="phone">555-0107</field>
+            <field name="mobile">555-0108</field>
+            <field name="birth_date">1984-05-18</field>
+            <field name="gender">male</field>
+            <field name="education_level">master</field>
+            <field name="years_experience">9</field>
+            <field name="hire_date">2020-08-15</field>
+            <field name="max_hours">35</field>
+            <field name="specialty" eval="[(6, 0, [ref('subject_language')])]"/>
+            <field name="status">active</field>
         </record>
 
-        <record id="teacher_2" model="academy.teacher">
-            <field name="specialty" eval="[(6, 0, [ref('subject_language'), ref('subject_social')])]"/>
+        <!-- Profesores de Ciencias -->
+        <record id="teacher_science_1" model="academy.teacher">
+            <field name="name">Laura Torres</field>
+            <field name="identification">1001234571</field>
+            <field name="email">laura.torres@demo.com</field>
+            <field name="phone">555-0109</field>
+            <field name="mobile">555-0110</field>
+            <field name="birth_date">1987-09-25</field>
+            <field name="gender">female</field>
+            <field name="education_level">phd</field>
+            <field name="years_experience">7</field>
+            <field name="hire_date">2021-01-10</field>
+            <field name="max_hours">40</field>
+            <field name="specialty" eval="[(6, 0, [ref('subject_biology'), ref('subject_natural_science')])]"/>
+            <field name="status">active</field>
         </record>
 
-        <record id="teacher_3" model="academy.teacher">
-            <field name="specialty" eval="[(6, 0, [ref('subject_science')])]"/>
+        <record id="teacher_science_2" model="academy.teacher">
+            <field name="name">Juan Pérez</field>
+            <field name="identification">1001234572</field>
+            <field name="email">juan.perez@demo.com</field>
+            <field name="phone">555-0111</field>
+            <field name="mobile">555-0112</field>
+            <field name="birth_date">1980-12-03</field>
+            <field name="gender">male</field>
+            <field name="education_level">phd</field>
+            <field name="years_experience">15</field>
+            <field name="hire_date">2018-09-01</field>
+            <field name="max_hours">40</field>
+            <field name="specialty" eval="[(6, 0, [ref('subject_chemistry'), ref('subject_natural_science')])]"/>
+            <field name="status">active</field>
         </record>
 
-        <!-- Representantes -->
+        <!-- Profesores de Idiomas -->
+        <record id="teacher_lang_3" model="academy.teacher">
+            <field name="name">Sophie Anderson</field>
+            <field name="identification">1001234573</field>
+            <field name="email">sophie.anderson@demo.com</field>
+            <field name="phone">555-0113</field>
+            <field name="mobile">555-0114</field>
+            <field name="birth_date">1989-04-12</field>
+            <field name="gender">female</field>
+            <field name="education_level">master</field>
+            <field name="years_experience">5</field>
+            <field name="hire_date">2022-01-15</field>
+            <field name="max_hours">30</field>
+            <field name="specialty" eval="[(6, 0, [ref('subject_english')])]"/>
+            <field name="status">active</field>
+        </record>
+
+        <record id="teacher_lang_4" model="academy.teacher">
+            <field name="name">Jean-Pierre Dubois</field>
+            <field name="identification">1001234574</field>
+            <field name="email">jp.dubois@demo.com</field>
+            <field name="phone">555-0115</field>
+            <field name="mobile">555-0116</field>
+            <field name="birth_date">1983-08-28</field>
+            <field name="gender">male</field>
+            <field name="education_level">master</field>
+            <field name="years_experience">10</field>
+            <field name="hire_date">2020-02-01</field>
+            <field name="max_hours">30</field>
+            <field name="specialty" eval="[(6, 0, [ref('subject_french')])]"/>
+            <field name="status">active</field>
+        </record>
+
+        <!-- Profesores de Estudios Sociales -->
+        <record id="teacher_social_1" model="academy.teacher">
+            <field name="name">Carmen Jiménez</field>
+            <field name="identification">1001234575</field>
+            <field name="email">carmen.jimenez@demo.com</field>
+            <field name="phone">555-0117</field>
+            <field name="mobile">555-0118</field>
+            <field name="birth_date">1986-06-15</field>
+            <field name="gender">female</field>
+            <field name="education_level">master</field>
+            <field name="years_experience">8</field>
+            <field name="hire_date">2020-09-01</field>
+            <field name="max_hours">35</field>
+            <field name="specialty" eval="[(6, 0, [ref('subject_social_studies')])]"/>
+            <field name="status">active</field>
+        </record>
+
+        <!-- Profesores de Arte y Música -->
+        <record id="teacher_art_1" model="academy.teacher">
+            <field name="name">Roberto Vargas</field>
+            <field name="identification">1001234576</field>
+            <field name="email">roberto.vargas@demo.com</field>
+            <field name="phone">555-0119</field>
+            <field name="mobile">555-0120</field>
+            <field name="birth_date">1990-02-20</field>
+            <field name="gender">male</field>
+            <field name="education_level">bachelor</field>
+            <field name="years_experience">4</field>
+            <field name="hire_date">2023-01-15</field>
+            <field name="max_hours">25</field>
+            <field name="specialty" eval="[(6, 0, [ref('subject_art'), ref('subject_music')])]"/>
+            <field name="status">active</field>
+        </record>
+
+        <!-- Profesores de Educación Física -->
+        <record id="teacher_pe_1" model="academy.teacher">
+            <field name="name">Diego Morales</field>
+            <field name="identification">1001234577</field>
+            <field name="email">diego.morales@demo.com</field>
+            <field name="phone">555-0121</field>
+            <field name="mobile">555-0122</field>
+            <field name="birth_date">1988-07-30</field>
+            <field name="gender">male</field>
+            <field name="education_level">bachelor</field>
+            <field name="years_experience">6</field>
+            <field name="hire_date">2021-08-15</field>
+            <field name="max_hours">30</field>
+            <field name="specialty" eval="[(6, 0, [ref('subject_physical_education')])]"/>
+            <field name="status">active</field>
+        </record>
+
+        <!-- Profesores de Tecnología -->
+        <record id="teacher_tech_1" model="academy.teacher">
+            <field name="name">Andrés Castro</field>
+            <field name="identification">1001234578</field>
+            <field name="email">andres.castro@demo.com</field>
+            <field name="phone">555-0123</field>
+            <field name="mobile">555-0124</field>
+            <field name="birth_date">1985-11-12</field>
+            <field name="gender">male</field>
+            <field name="education_level">master</field>
+            <field name="years_experience">9</field>
+            <field name="hire_date">2020-03-01</field>
+            <field name="max_hours">35</field>
+            <field name="specialty" eval="[(6, 0, [ref('subject_computing'), ref('subject_robotics')])]"/>
+            <field name="status">active</field>
+        </record>
+
+        <!-- Representantes de Estudiantes -->
         <record id="parent_1" model="academy.parent">
             <field name="name">Carlos Rodríguez</field>
-            <field name="identification">4567890123</field>
+            <field name="identification">1002345671</field>
             <field name="email">carlos.rodriguez@demo.com</field>
             <field name="phone">555-1001</field>
             <field name="mobile">555-1002</field>
-            <field name="occupation">Ingeniero</field>
-            <field name="workplace">Empresa XYZ</field>
+            <field name="occupation">Ingeniero Civil</field>
+            <field name="workplace">Constructora ABC</field>
             <field name="work_phone">555-1003</field>
             <field name="emergency_contact">María Rodríguez</field>
             <field name="emergency_phone">555-1004</field>
             <field name="emergency_relation">Hermana</field>
+            <field name="address">Av. Principal 123</field>
         </record>
 
         <record id="parent_2" model="academy.parent">
             <field name="name">Laura Torres</field>
-            <field name="identification">5678901234</field>
+            <field name="identification">1002345672</field>
             <field name="email">laura.torres@demo.com</field>
-            <field name="phone">555-2001</field>
-            <field name="mobile">555-2002</field>
+            <field name="phone">555-1005</field>
+            <field name="mobile">555-1006</field>
             <field name="occupation">Médico</field>
             <field name="workplace">Hospital Central</field>
-            <field name="work_phone">555-2003</field>
+            <field name="work_phone">555-1007</field>
             <field name="emergency_contact">Pedro Torres</field>
-            <field name="emergency_phone">555-2004</field>
+            <field name="emergency_phone">555-1008</field>
             <field name="emergency_relation">Hermano</field>
+            <field name="address">Calle Secundaria 456</field>
+        </record>
+
+        <record id="parent_3" model="academy.parent">
+            <field name="name">Ana López</field>
+            <field name="identification">1002345673</field>
+            <field name="email">ana.lopez@demo.com</field>
+            <field name="phone">555-1009</field>
+            <field name="mobile">555-1010</field>
+            <field name="occupation">Abogada</field>
+            <field name="workplace">Bufete Jurídico XYZ</field>
+            <field name="work_phone">555-1011</field>
+            <field name="emergency_contact">Juan López</field>
+            <field name="emergency_phone">555-1012</field>
+            <field name="emergency_relation">Padre</field>
+            <field name="address">Av. Tercera 789</field>
+        </record>
+
+        <record id="parent_4" model="academy.parent">
+            <field name="name">Miguel Sánchez</field>
+            <field name="identification">1002345674</field>
+            <field name="email">miguel.sanchez@demo.com</field>
+            <field name="phone">555-1013</field>
+            <field name="mobile">555-1014</field>
+            <field name="occupation">Arquitecto</field>
+            <field name="workplace">Estudio de Arquitectura MS</field>
+            <field name="work_phone">555-1015</field>
+            <field name="emergency_contact">Carmen Sánchez</field>
+            <field name="emergency_phone">555-1016</field>
+            <field name="emergency_relation">Esposa</field>
+            <field name="address">Calle Cuarta 101</field>
+        </record>
+
+        <record id="parent_5" model="academy.parent">
+            <field name="name">Patricia Ramírez</field>
+            <field name="identification">1002345675</field>
+            <field name="email">patricia.ramirez@demo.com</field>
+            <field name="phone">555-1017</field>
+            <field name="mobile">555-1018</field>
+            <field name="occupation">Contadora</field>
+            <field name="workplace">Firma Contable DEF</field>
+            <field name="work_phone">555-1019</field>
+            <field name="emergency_contact">Roberto Ramírez</field>
+            <field name="emergency_phone">555-1020</field>
+            <field name="emergency_relation">Esposo</field>
+            <field name="address">Av. Quinta 202</field>
+        </record>
+
+        <record id="parent_6" model="academy.parent">
+            <field name="name">Jorge Martínez</field>
+            <field name="identification">1002345676</field>
+            <field name="email">jorge.martinez@demo.com</field>
+            <field name="phone">555-1021</field>
+            <field name="mobile">555-1022</field>
+            <field name="occupation">Empresario</field>
+            <field name="workplace">Empresa Propia</field>
+            <field name="work_phone">555-1023</field>
+            <field name="emergency_contact">Lucía Martínez</field>
+            <field name="emergency_phone">555-1024</field>
+            <field name="emergency_relation">Hermana</field>
+            <field name="address">Calle Sexta 303</field>
+        </record>
+
+        <record id="parent_7" model="academy.parent">
+            <field name="name">Isabel Castro</field>
+            <field name="identification">1002345677</field>
+            <field name="email">isabel.castro@demo.com</field>
+            <field name="phone">555-1025</field>
+            <field name="mobile">555-1026</field>
+            <field name="occupation">Profesora</field>
+            <field name="workplace">Universidad Local</field>
+            <field name="work_phone">555-1027</field>
+            <field name="emergency_contact">Diego Castro</field>
+            <field name="emergency_phone">555-1028</field>
+            <field name="emergency_relation">Primo</field>
+            <field name="address">Av. Séptima 404</field>
+        </record>
+
+        <record id="parent_8" model="academy.parent">
+            <field name="name">Fernando Morales</field>
+            <field name="identification">1002345678</field>
+            <field name="email">fernando.morales@demo.com</field>
+            <field name="phone">555-1029</field>
+            <field name="mobile">555-1030</field>
+            <field name="occupation">Dentista</field>
+            <field name="workplace">Clínica Dental Morales</field>
+            <field name="work_phone">555-1031</field>
+            <field name="emergency_contact">Elena Morales</field>
+            <field name="emergency_phone">555-1032</field>
+            <field name="emergency_relation">Esposa</field>
+            <field name="address">Calle Octava 505</field>
+        </record>
+
+        <record id="parent_9" model="academy.parent">
+            <field name="name">Carolina Vargas</field>
+            <field name="identification">1002345679</field>
+            <field name="email">carolina.vargas@demo.com</field>
+            <field name="phone">555-1033</field>
+            <field name="mobile">555-1034</field>
+            <field name="occupation">Psicóloga</field>
+            <field name="workplace">Centro de Psicología CV</field>
+            <field name="work_phone">555-1035</field>
+            <field name="emergency_contact">Andrés Vargas</field>
+            <field name="emergency_phone">555-1036</field>
+            <field name="emergency_relation">Hermano</field>
+            <field name="address">Av. Novena 606</field>
+        </record>
+
+        <record id="parent_10" model="academy.parent">
+            <field name="name">Roberto Flores</field>
+            <field name="identification">1002345680</field>
+            <field name="email">roberto.flores@demo.com</field>
+            <field name="phone">555-1037</field>
+            <field name="mobile">555-1038</field>
+            <field name="occupation">Ingeniero en Sistemas</field>
+            <field name="workplace">Empresa de Tecnología GHI</field>
+            <field name="work_phone">555-1039</field>
+            <field name="emergency_contact">María Flores</field>
+            <field name="emergency_phone">555-1040</field>
+            <field name="emergency_relation">Madre</field>
+            <field name="address">Calle Décima 707</field>
         </record>
 
         <!-- Estudiantes -->
+        <!-- Estudiantes de Carlos Rodríguez -->
         <record id="student_1" model="academy.student">
             <field name="name">Ana Rodríguez</field>
-            <field name="identification">6789012345</field>
+            <field name="identification">1003456781</field>
             <field name="birth_date">2017-05-15</field>
             <field name="gender">female</field>
             <field name="email">ana.rodriguez@demo.com</field>
-            <field name="phone">555-3001</field>
+            <field name="phone">555-2001</field>
             <field name="parent_id" ref="parent_1"/>
             <field name="blood_type">a+</field>
+            <field name="medical_conditions">Ninguna</field>
+            <field name="allergies">Ninguna</field>
+            <field name="enrollment_date">2023-01-15</field>
             <field name="status">enrolled</field>
         </record>
 
         <record id="student_2" model="academy.student">
-            <field name="name">Pedro Torres</field>
-            <field name="identification">7890123456</field>
-            <field name="birth_date">2017-08-22</field>
+            <field name="name">David Rodríguez</field>
+            <field name="identification">1003456782</field>
+            <field name="birth_date">2019-08-20</field>
             <field name="gender">male</field>
-            <field name="email">pedro.torres@demo.com</field>
-            <field name="phone">555-3002</field>
-            <field name="parent_id" ref="parent_2"/>
+            <field name="email">david.rodriguez@demo.com</field>
+            <field name="phone">555-2002</field>
+            <field name="parent_id" ref="parent_1"/>
             <field name="blood_type">o+</field>
+            <field name="medical_conditions">Asma leve</field>
+            <field name="allergies">Polen</field>
+            <field name="enrollment_date">2023-01-15</field>
             <field name="status">enrolled</field>
         </record>
 
-        <!-- Cursos -->
-        <record id="course_1b_a" model="academy.course">
-            <field name="code">1BA-2024</field>
+        <!-- Estudiantes de Laura Torres -->
+        <record id="student_3" model="academy.student">
+            <field name="name">María Torres</field>
+            <field name="identification">1003456783</field>
+            <field name="birth_date">2016-03-10</field>
+            <field name="gender">female</field>
+            <field name="email">maria.torres@demo.com</field>
+            <field name="phone">555-2003</field>
+            <field name="parent_id" ref="parent_2"/>
+            <field name="blood_type">b+</field>
+            <field name="enrollment_date">2023-01-16</field>
+            <field name="status">enrolled</field>
+        </record>
+
+        <!-- Estudiantes de Ana López -->
+        <record id="student_4" model="academy.student">
+            <field name="name">Carlos López</field>
+            <field name="identification">1003456784</field>
+            <field name="birth_date">2015-11-25</field>
+            <field name="gender">male</field>
+            <field name="email">carlos.lopez@demo.com</field>
+            <field name="phone">555-2004</field>
+            <field name="parent_id" ref="parent_3"/>
+            <field name="blood_type">a-</field>
+            <field name="enrollment_date">2023-01-16</field>
+            <field name="status">enrolled</field>
+        </record>
+
+        <record id="student_5" model="academy.student">
+            <field name="name">Isabel López</field>
+            <field name="identification">1003456785</field>
+            <field name="birth_date">2018-07-12</field>
+            <field name="gender">female</field>
+            <field name="email">isabel.lopez@demo.com</field>
+            <field name="phone">555-2005</field>
+            <field name="parent_id" ref="parent_3"/>
+            <field name="blood_type">o+</field>
+            <field name="enrollment_date">2023-01-16</field>
+            <field name="status">enrolled</field>
+        </record>
+
+        <!-- Estudiantes de Miguel Sánchez -->
+        <record id="student_6" model="academy.student">
+            <field name="name">Pablo Sánchez</field>
+            <field name="identification">1003456786</field>
+            <field name="birth_date">2014-09-30</field>
+            <field name="gender">male</field>
+            <field name="email">pablo.sanchez@demo.com</field>
+            <field name="phone">555-2006</field>
+            <field name="parent_id" ref="parent_4"/>
+            <field name="blood_type">ab+</field>
+            <field name="enrollment_date">2023-01-17</field>
+            <field name="status">enrolled</field>
+        </record>
+
+        <!-- Estudiantes de Patricia Ramírez -->
+        <record id="student_7" model="academy.student">
+            <field name="name">Lucía Ramírez</field>
+            <field name="identification">1003456787</field>
+            <field name="birth_date">2016-12-05</field>
+            <field name="gender">female</field>
+            <field name="email">lucia.ramirez@demo.com</field>
+            <field name="phone">555-2007</field>
+            <field name="parent_id" ref="parent_5"/>
+            <field name="blood_type">o-</field>
+            <field name="medical_conditions">Miopía</field>
+            <field name="enrollment_date">2023-01-17</field>
+            <field name="status">enrolled</field>
+        </record>
+
+        <!-- Estudiantes de Jorge Martínez -->
+        <record id="student_8" model="academy.student">
+            <field name="name">Daniel Martínez</field>
+            <field name="identification">1003456788</field>
+            <field name="birth_date">2015-02-18</field>
+            <field name="gender">male</field>
+            <field name="email">daniel.martinez@demo.com</field>
+            <field name="phone">555-2008</field>
+            <field name="parent_id" ref="parent_6"/>
+            <field name="blood_type">a+</field>
+            <field name="enrollment_date">2023-01-18</field>
+            <field name="status">enrolled</field>
+        </record>
+
+        <!-- Estudiantes de Isabel Castro -->
+        <record id="student_9" model="academy.student">
+            <field name="name">Sofía Castro</field>
+            <field name="identification">1003456789</field>
+            <field name="birth_date">2017-04-22</field>
+            <field name="gender">female</field>
+            <field name="email">sofia.castro@demo.com</field>
+            <field name="phone">555-2009</field>
+            <field name="parent_id" ref="parent_7"/>
+            <field name="blood_type">b+</field>
+            <field name="enrollment_date">2023-01-18</field>
+            <field name="status">enrolled</field>
+        </record>
+
+        <!-- Estudiantes de Fernando Morales -->
+        <record id="student_10" model="academy.student">
+            <field name="name">Gabriel Morales</field>
+            <field name="identification">1003456790</field>
+            <field name="birth_date">2016-06-15</field>
+            <field name="gender">male</field>
+            <field name="email">gabriel.morales@demo.com</field>
+            <field name="phone">555-2010</field>
+            <field name="parent_id" ref="parent_8"/>
+            <field name="blood_type">o+</field>
+            <field name="allergies">Maní</field>
+            <field name="enrollment_date">2023-01-19</field>
+            <field name="status">enrolled</field>
+        </record>
+
+        <!-- Estudiantes de Carolina Vargas -->
+        <record id="student_11" model="academy.student">
+            <field name="name">Valentina Vargas</field>
+            <field name="identification">1003456791</field>
+            <field name="birth_date">2015-10-08</field>
+            <field name="gender">female</field>
+            <field name="email">valentina.vargas@demo.com</field>
+            <field name="phone">555-2011</field>
+            <field name="parent_id" ref="parent_9"/>
+            <field name="blood_type">a+</field>
+            <field name="enrollment_date">2023-01-19</field>
+            <field name="status">enrolled</field>
+        </record>
+
+        <!-- Estudiantes de Roberto Flores -->
+        <record id="student_12" model="academy.student">
+            <field name="name">Mateo Flores</field>
+            <field name="identification">1003456792</field>
+            <field name="birth_date">2017-01-30</field>
+            <field name="gender">male</field>
+            <field name="email">mateo.flores@demo.com</field>
+            <field name="phone">555-2012</field>
+            <field name="parent_id" ref="parent_10"/>
+            <field name="blood_type">ab+</field>
+            <field name="medical_conditions">Rinitis alérgica</field>
+            <field name="enrollment_date">2023-01-20</field>
+            <field name="status">enrolled</field>
+        </record>
+
+        <!-- Cursos Período 2024-1 -->
+
+        <!-- Inicial 1 -->
+        <record id="course_ini1_a_2024_1" model="academy.course">
+            <field name="code">INI1A-2024-1</field>
             <field name="period_id" ref="period_2024_1"/>
-            <field name="level_id" ref="level_1_basic"/>
+            <field name="level_id" ref="level_inicial_1"/>
             <field name="parallel_id" ref="parallel_a"/>
-            <field name="capacity">30</field>
+            <field name="capacity">25</field>
             <field name="min_students">15</field>
             <field name="state">active</field>
             <field name="subject_ids" eval="[(6, 0, [
-                ref('subject_math'),
                 ref('subject_language'),
-                ref('subject_science'),
-                ref('subject_social')
+                ref('subject_art'),
+                ref('subject_physical_education'),
+                ref('subject_values'),
+                ref('subject_music')
             ])]"/>
+            <field name="teacher_ids" eval="[(6, 0, [
+                ref('teacher_lang_1'),
+                ref('teacher_art_1'),
+                ref('teacher_pe_1')
+            ])]"/>
+        </record>
+
+        <!-- Inicial 2 -->
+        <record id="course_ini2_a_2024_1" model="academy.course">
+            <field name="code">INI2A-2024-1</field>
+            <field name="period_id" ref="period_2024_1"/>
+            <field name="level_id" ref="level_inicial_2"/>
+            <field name="parallel_id" ref="parallel_a"/>
+            <field name="capacity">25</field>
+            <field name="min_students">15</field>
+            <field name="state">active</field>
+            <field name="subject_ids" eval="[(6, 0, [
+                ref('subject_language'),
+                ref('subject_math'),
+                ref('subject_art'),
+                ref('subject_physical_education'),
+                ref('subject_values'),
+                ref('subject_music')
+            ])]"/>
+            <field name="teacher_ids" eval="[(6, 0, [
+                ref('teacher_lang_1'),
+                ref('teacher_math_1'),
+                ref('teacher_art_1'),
+                ref('teacher_pe_1')
+            ])]"/>
+        </record>
+
+        <!-- Preparatoria -->
+        <record id="course_prep_a_2024_1" model="academy.course">
+            <field name="code">PREPA-2024-1</field>
+            <field name="period_id" ref="period_2024_1"/>
+            <field name="level_id" ref="level_preparatoria"/>
+            <field name="parallel_id" ref="parallel_a"/>
+            <field name="capacity">30</field>
+            <field name="min_students">20</field>
+            <field name="state">active</field>
+            <field name="subject_ids" eval="[(6, 0, [
+                ref('subject_language'),
+                ref('subject_math'),
+                ref('subject_art'),
+                ref('subject_physical_education'),
+                ref('subject_values'),
+                ref('subject_music'),
+                ref('subject_english')
+            ])]"/>
+            <field name="teacher_ids" eval="[(6, 0, [
+                ref('teacher_lang_1'),
+                ref('teacher_math_1'),
+                ref('teacher_art_1'),
+                ref('teacher_pe_1'),
+                ref('teacher_lang_3')
+            ])]"/>
+        </record>
+
+        <!-- Segundo Básica -->
+        <record id="course_2b_a_2024_1" model="academy.course">
+            <field name="code">2BA-2024-1</field>
+            <field name="period_id" ref="period_2024_1"/>
+            <field name="level_id" ref="level_2_basic"/>
+            <field name="parallel_id" ref="parallel_a"/>
+            <field name="capacity">35</field>
+            <field name="min_students">20</field>
+            <field name="state">active</field>
+            <field name="subject_ids" eval="[(6, 0, [
+                ref('subject_language'),
+                ref('subject_math'),
+                ref('subject_natural_science'),
+                ref('subject_social_studies'),
+                ref('subject_english'),
+                ref('subject_art'),
+                ref('subject_physical_education'),
+                ref('subject_values'),
+                ref('subject_computing')
+            ])]"/>
+            <field name="teacher_ids" eval="[(6, 0, [
+                ref('teacher_lang_2'),
+                ref('teacher_math_1'),
+                ref('teacher_science_1'),
+                ref('teacher_social_1'),
+                ref('teacher_lang_3'),
+                ref('teacher_art_1'),
+                ref('teacher_pe_1'),
+                ref('teacher_tech_1')
+            ])]"/>
+        </record>
+
+        <!-- Quinto Básica -->
+        <record id="course_5b_a_2024_1" model="academy.course">
+            <field name="code">5BA-2024-1</field>
+            <field name="period_id" ref="period_2024_1"/>
+            <field name="level_id" ref="level_5_basic"/>
+            <field name="parallel_id" ref="parallel_a"/>
+            <field name="capacity">35</field>
+            <field name="min_students">20</field>
+            <field name="state">active</field>
+            <field name="subject_ids" eval="[(6, 0, [
+                ref('subject_language'),
+                ref('subject_math'),
+                ref('subject_natural_science'),
+                ref('subject_social_studies'),
+                ref('subject_english'),
+                ref('subject_art'),
+                ref('subject_physical_education'),
+                ref('subject_values'),
+                ref('subject_computing'),
+                ref('subject_french')
+            ])]"/>
+            <field name="teacher_ids" eval="[(6, 0, [
+                ref('teacher_lang_2'),
+                ref('teacher_math_2'),
+                ref('teacher_science_1'),
+                ref('teacher_social_1'),
+                ref('teacher_lang_3'),
+                ref('teacher_art_1'),
+                ref('teacher_pe_1'),
+                ref('teacher_tech_1'),
+                ref('teacher_lang_4')
+            ])]"/>
+        </record>
+
+        <!-- Octavo Básica -->
+        <record id="course_8b_a_2024_1" model="academy.course">
+            <field name="code">8BA-2024-1</field>
+            <field name="period_id" ref="period_2024_1"/>
+            <field name="level_id" ref="level_8_basic"/>
+            <field name="parallel_id" ref="parallel_a"/>
+            <field name="capacity">35</field>
+            <field name="min_students">20</field>
+            <field name="state">active</field>
+            <field name="subject_ids" eval="[(6, 0, [
+                ref('subject_language'),
+                ref('subject_math'),
+                ref('subject_biology'),
+                ref('subject_social_studies'),
+                ref('subject_english'),
+                ref('subject_art'),
+                ref('subject_physical_education'),
+                ref('subject_values'),
+                ref('subject_computing'),
+                ref('subject_french'),
+                ref('subject_robotics')
+            ])]"/>
+            <field name="teacher_ids" eval="[(6, 0, [
+                ref('teacher_lang_1'),
+                ref('teacher_math_2'),
+                ref('teacher_science_1'),
+                ref('teacher_social_1'),
+                ref('teacher_lang_3'),
+                ref('teacher_art_1'),
+                ref('teacher_pe_1'),
+                ref('teacher_tech_1'),
+                ref('teacher_lang_4')
+            ])]"/>
+        </record>
+
+        <!-- Primero Bachillerato -->
+        <record id="course_1bgu_a_2024_1" model="academy.course">
+            <field name="code">1BGUA-2024-1</field>
+            <field name="period_id" ref="period_2024_1"/>
+            <field name="level_id" ref="level_1_bach"/>
+            <field name="parallel_id" ref="parallel_a"/>
+            <field name="capacity">35</field>
+            <field name="min_students">20</field>
+            <field name="state">active</field>
+            <field name="subject_ids" eval="[(6, 0, [
+                ref('subject_language'),
+                ref('subject_math'),
+                ref('subject_physics'),
+                ref('subject_chemistry'),
+                ref('subject_biology'),
+                ref('subject_social_studies'),
+                ref('subject_english'),
+                ref('subject_physical_education'),
+                ref('subject_values'),
+                ref('subject_computing'),
+                ref('subject_entrepreneurship'),
+                ref('subject_french')
+            ])]"/>
+            <field name="teacher_ids" eval="[(6, 0, [
+                ref('teacher_lang_2'),
+                ref('teacher_math_2'),
+                ref('teacher_science_1'),
+                ref('teacher_science_2'),
+                ref('teacher_social_1'),
+                ref('teacher_lang_3'),
+                ref('teacher_pe_1'),
+                ref('teacher_tech_1'),
+                ref('teacher_lang_4')
+            ])]"/>
+        </record>
+
+        <!-- Asignando estudiantes a cursos -->
+        <record id="course_ini1_a_2024_1" model="academy.course">
+            <field name="student_ids" eval="[(6, 0, [
+                ref('student_2'),
+                ref('student_5')
+            ])]"/>
+        </record>
+
+        <record id="course_ini2_a_2024_1" model="academy.course">
+            <field name="student_ids" eval="[(6, 0, [
+                ref('student_12')
+            ])]"/>
+        </record>
+
+        <record id="course_prep_a_2024_1" model="academy.course">
             <field name="student_ids" eval="[(6, 0, [
                 ref('student_1'),
-                ref('student_2')
+                ref('student_9')
             ])]"/>
         </record>
 
-        <!-- Horarios -->
-        <record id="schedule_1" model="academy.schedule">
-            <field name="course_id" ref="course_1b_a"/>
-            <field name="subject_id" ref="subject_math"/>
-            <field name="teacher_id" ref="teacher_1"/>
+        <record id="course_2b_a_2024_1" model="academy.course">
+            <field name="student_ids" eval="[(6, 0, [
+                ref('student_7')
+            ])]"/>
+        </record>
+
+        <record id="course_5b_a_2024_1" model="academy.course">
+            <field name="student_ids" eval="[(6, 0, [
+                ref('student_3'),
+                ref('student_10')
+            ])]"/>
+        </record>
+
+        <record id="course_8b_a_2024_1" model="academy.course">
+            <field name="student_ids" eval="[(6, 0, [
+                ref('student_4'),
+                ref('student_11')
+            ])]"/>
+        </record>
+
+        <record id="course_1bgu_a_2024_1" model="academy.course">
+            <field name="student_ids" eval="[(6, 0, [
+                ref('student_6'),
+                ref('student_8')
+            ])]"/>
+        </record>
+
+
+        <!-- Horarios Curso Preparatoria -->
+        <record id="schedule_prep_language_1" model="academy.schedule">
+            <field name="course_id" ref="course_prep_a_2024_1"/>
+            <field name="subject_id" ref="subject_language"/>
+            <field name="teacher_id" ref="teacher_lang_1"/>
             <field name="day">monday</field>
-            <field name="start_hour">8</field>
-            <field name="end_hour">9.5</field>
-            <field name="classroom">101</field>
+            <field name="start_hour">7.25</field>
+            <field name="end_hour">8.95</field>
+            <field name="classroom">A101</field>
         </record>
 
-        <record id="schedule_2" model="academy.schedule">
-            <field name="course_id" ref="course_1b_a"/>
-            <field name="subject_id" ref="subject_language"/>
-            <field name="teacher_id" ref="teacher_2"/>
+        <record id="schedule_prep_math_1" model="academy.schedule">
+            <field name="course_id" ref="course_prep_a_2024_1"/>
+            <field name="subject_id" ref="subject_math"/>
+            <field name="teacher_id" ref="teacher_math_1"/>
             <field name="day">monday</field>
-            <field name="start_hour">9.5</field>
-            <field name="end_hour">11</field>
-            <field name="classroom">101</field>
+            <field name="start_hour">9.15</field>
+            <field name="end_hour">10.85</field>
+            <field name="classroom">A101</field>
         </record>
 
-        <record id="schedule_3" model="academy.schedule">
-            <field name="course_id" ref="course_1b_a"/>
-            <field name="subject_id" ref="subject_science"/>
-            <field name="teacher_id" ref="teacher_3"/>
+        <record id="schedule_prep_english_1" model="academy.schedule">
+            <field name="course_id" ref="course_prep_a_2024_1"/>
+            <field name="subject_id" ref="subject_english"/>
+            <field name="teacher_id" ref="teacher_lang_3"/>
+            <field name="day">monday</field>
+            <field name="start_hour">11.05</field>
+            <field name="end_hour">12.75</field>
+            <field name="classroom">A101</field>
+        </record>
+
+        <!-- Martes -->
+        <record id="schedule_prep_art_1" model="academy.schedule">
+            <field name="course_id" ref="course_prep_a_2024_1"/>
+            <field name="subject_id" ref="subject_art"/>
+            <field name="teacher_id" ref="teacher_art_1"/>
             <field name="day">tuesday</field>
-            <field name="start_hour">8</field>
-            <field name="end_hour">9.5</field>
-            <field name="classroom">101</field>
+            <field name="start_hour">7.25</field>
+            <field name="end_hour">8.95</field>
+            <field name="classroom">A101</field>
         </record>
 
-        <!-- Matrículas -->
-        <record id="enrollment_1" model="academy.enrollment">
-            <field name="student_id" ref="student_1"/>
-            <field name="course_id" ref="course_1b_a"/>
-            <field name="parent_id" ref="parent_1"/>
-            <field name="parent_relationship">father</field>
-            <field name="enrollment_date">2023-12-10</field>
-            <field name="state">confirmed</field>
-        </record>
-
-        <record id="enrollment_2" model="academy.enrollment">
-            <field name="student_id" ref="student_2"/>
-            <field name="course_id" ref="course_1b_a"/>
-            <field name="parent_id" ref="parent_2"/>
-            <field name="parent_relationship">mother</field>
-            <field name="enrollment_date">2023-12-15</field>
-            <field name="state">confirmed</field>
-        </record>
-
-        <!-- Documentos de Matrícula -->
-        <record id="enrollment_doc_1" model="academy.enrollment.document">
-            <field name="enrollment_id" ref="enrollment_1"/>
-            <field name="name">Cédula de Identidad</field>
-            <field name="document_type">id</field>
-            <field name="is_required">True</field>
-            <field name="is_submitted">True</field>
-            <field name="submission_date">2023-12-10</field>
-        </record>
-
-        <record id="enrollment_doc_2" model="academy.enrollment.document">
-            <field name="enrollment_id" ref="enrollment_1"/>
-            <field name="name">Certificado de Promoción</field>
-            <field name="document_type">certificate</field>
-            <field name="is_required">True</field>
-            <field name="is_submitted">True</field>
-            <field name="submission_date">2023-12-10</field>
-        </record>
-
-        <!-- Calificaciones -->
-        <record id="grade_math_1" model="academy.grade">
-            <field name="course_id" ref="course_1b_a"/>
-            <field name="subject_id" ref="subject_math"/>
-            <field name="teacher_id" ref="teacher_1"/>
-            <field name="evaluation_type">test</field>
-            <field name="evaluation_date">2024-02-01</field>
-            <field name="max_grade">10</field>
-            <field name="weight">30</field>
-            <field name="state">published</field>
-        </record>
-
-        <record id="grade_math_1_line_1" model="academy.grade.line">
-            <field name="grade_id" ref="grade_math_1"/>
-            <field name="student_id" ref="student_1"/>
-            <field name="grade">8.5</field>
-            <field name="comment">Buen desempeño en resolución de problemas</field>
-        </record>
-
-        <record id="grade_math_1_line_2" model="academy.grade.line">
-            <field name="grade_id" ref="grade_math_1"/>
-            <field name="student_id" ref="student_2"/>
-            <field name="grade">9.0</field>
-            <field name="comment">Excelente comprensión de conceptos</field>
-        </record>
-
-        <record id="grade_language_1" model="academy.grade">
-            <field name="course_id" ref="course_1b_a"/>
-            <field name="subject_id" ref="subject_language"/>
-            <field name="teacher_id" ref="teacher_2"/>
-            <field name="evaluation_type">project</field>
-            <field name="evaluation_date">2024-02-15</field>
-            <field name="max_grade">10</field>
-            <field name="weight">25</field>
-            <field name="state">published</field>
-        </record>
-
-        <record id="grade_language_1_line_1" model="academy.grade.line">
-            <field name="grade_id" ref="grade_language_1"/>
-            <field name="student_id" ref="student_1"/>
-            <field name="grade">9.5</field>
-            <field name="comment">Proyecto muy creativo y bien presentado</field>
-        </record>
-
-        <record id="grade_language_1_line_2" model="academy.grade.line">
-            <field name="grade_id" ref="grade_language_1"/>
-            <field name="student_id" ref="student_2"/>
-            <field name="grade">8.5</field>
-            <field name="comment">Buena presentación, puede mejorar la redacción</field>
-        </record>
-
-        <!-- Asistencias -->
-        <record id="attendance_1" model="academy.attendance">
-            <field name="date">2024-01-15</field>
-            <field name="course_id" ref="course_1b_a"/>
-            <field name="subject_id" ref="subject_math"/>
-            <field name="teacher_id" ref="teacher_1"/>
-            <field name="state">confirmed</field>
-        </record>
-
-        <record id="attendance_line_1" model="academy.attendance.line">
-            <field name="attendance_id" ref="attendance_1"/>
-            <field name="student_id" ref="student_1"/>
-            <field name="attendance_status">present</field>
-            <field name="arrival_time">8.0</field>
-        </record>
-
-        <record id="attendance_line_2" model="academy.attendance.line">
-            <field name="attendance_id" ref="attendance_1"/>
-            <field name="student_id" ref="student_2"/>
-            <field name="attendance_status">late</field>
-            <field name="arrival_time">8.15</field>
-            <field name="justification">Tráfico en la vía principal</field>
-        </record>
-
-        <record id="attendance_2" model="academy.attendance">
-            <field name="date">2024-01-16</field>
-            <field name="course_id" ref="course_1b_a"/>
-            <field name="subject_id" ref="subject_language"/>
-            <field name="teacher_id" ref="teacher_2"/>
-            <field name="state">confirmed</field>
-        </record>
-
-        <record id="attendance_line_3" model="academy.attendance.line">
-            <field name="attendance_id" ref="attendance_2"/>
-            <field name="student_id" ref="student_1"/>
-            <field name="attendance_status">present</field>
-            <field name="arrival_time">8.0</field>
-        </record>
-
-        <record id="attendance_line_4" model="academy.attendance.line">
-            <field name="attendance_id" ref="attendance_2"/>
-            <field name="student_id" ref="student_2"/>
-            <field name="attendance_status">present</field>
-            <field name="arrival_time">8.0</field>
-        </record>
-
-        <!-- Más horarios para completar la semana -->
-        <record id="schedule_4" model="academy.schedule">
-            <field name="course_id" ref="course_1b_a"/>
-            <field name="subject_id" ref="subject_social"/>
-            <field name="teacher_id" ref="teacher_2"/>
+        <record id="schedule_prep_music_1" model="academy.schedule">
+            <field name="course_id" ref="course_prep_a_2024_1"/>
+            <field name="subject_id" ref="subject_music"/>
+            <field name="teacher_id" ref="teacher_art_1"/>
             <field name="day">tuesday</field>
-            <field name="start_hour">9.5</field>
-            <field name="end_hour">11</field>
-            <field name="classroom">101</field>
+            <field name="start_hour">9.15</field>
+            <field name="end_hour">10.85</field>
+            <field name="classroom">A101</field>
         </record>
 
-        <record id="schedule_5" model="academy.schedule">
-            <field name="course_id" ref="course_1b_a"/>
-            <field name="subject_id" ref="subject_math"/>
-            <field name="teacher_id" ref="teacher_1"/>
-            <field name="day">wednesday</field>
-            <field name="start_hour">8</field>
-            <field name="end_hour">9.5</field>
-            <field name="classroom">101</field>
+        <record id="schedule_prep_pe_1" model="academy.schedule">
+            <field name="course_id" ref="course_prep_a_2024_1"/>
+            <field name="subject_id" ref="subject_physical_education"/>
+            <field name="teacher_id" ref="teacher_pe_1"/>
+            <field name="day">tuesday</field>
+            <field name="start_hour">11.05</field>
+            <field name="end_hour">12.75</field>
+            <field name="classroom">GYM01</field>
         </record>
 
-        <record id="schedule_6" model="academy.schedule">
-            <field name="course_id" ref="course_1b_a"/>
-            <field name="subject_id" ref="subject_science"/>
-            <field name="teacher_id" ref="teacher_3"/>
-            <field name="day">wednesday</field>
-            <field name="start_hour">9.5</field>
-            <field name="end_hour">11</field>
-            <field name="classroom">101</field>
-        </record>
-
-        <record id="schedule_7" model="academy.schedule">
-            <field name="course_id" ref="course_1b_a"/>
+        <!-- Miércoles -->
+        <record id="schedule_prep_language_2" model="academy.schedule">
+            <field name="course_id" ref="course_prep_a_2024_1"/>
             <field name="subject_id" ref="subject_language"/>
-            <field name="teacher_id" ref="teacher_2"/>
-            <field name="day">thursday</field>
-            <field name="start_hour">8</field>
-            <field name="end_hour">9.5</field>
-            <field name="classroom">101</field>
+            <field name="teacher_id" ref="teacher_lang_1"/>
+            <field name="day">wednesday</field>
+            <field name="start_hour">7.25</field>
+            <field name="end_hour">8.95</field>
+            <field name="classroom">A101</field>
         </record>
 
-        <record id="schedule_8" model="academy.schedule">
-            <field name="course_id" ref="course_1b_a"/>
-            <field name="subject_id" ref="subject_social"/>
-            <field name="teacher_id" ref="teacher_2"/>
-            <field name="day">thursday</field>
-            <field name="start_hour">9.5</field>
-            <field name="end_hour">11</field>
-            <field name="classroom">101</field>
-        </record>
-
-        <record id="schedule_9" model="academy.schedule">
-            <field name="course_id" ref="course_1b_a"/>
+        <record id="schedule_prep_math_2" model="academy.schedule">
+            <field name="course_id" ref="course_prep_a_2024_1"/>
             <field name="subject_id" ref="subject_math"/>
-            <field name="teacher_id" ref="teacher_1"/>
-            <field name="day">friday</field>
-            <field name="start_hour">8</field>
-            <field name="end_hour">9.5</field>
-            <field name="classroom">101</field>
+            <field name="teacher_id" ref="teacher_math_1"/>
+            <field name="day">wednesday</field>
+            <field name="start_hour">9.15</field>
+            <field name="end_hour">10.85</field>
+            <field name="classroom">A101</field>
         </record>
 
-        <record id="schedule_10" model="academy.schedule">
-            <field name="course_id" ref="course_1b_a"/>
-            <field name="subject_id" ref="subject_science"/>
-            <field name="teacher_id" ref="teacher_3"/>
-            <field name="day">friday</field>
-            <field name="start_hour">9.5</field>
-            <field name="end_hour">11</field>
-            <field name="classroom">101</field>
+        <record id="schedule_prep_values_1" model="academy.schedule">
+            <field name="course_id" ref="course_prep_a_2024_1"/>
+            <field name="subject_id" ref="subject_values"/>
+            <field name="teacher_id" ref="teacher_lang_1"/>
+            <field name="day">wednesday</field>
+            <field name="start_hour">11.05</field>
+            <field name="end_hour">12.75</field>
+            <field name="classroom">A101</field>
         </record>
+
+        <!-- Jueves -->
+        <record id="schedule_prep_english_2" model="academy.schedule">
+            <field name="course_id" ref="course_prep_a_2024_1"/>
+            <field name="subject_id" ref="subject_english"/>
+            <field name="teacher_id" ref="teacher_lang_3"/>
+            <field name="day">thursday</field>
+            <field name="start_hour">7.25</field>
+            <field name="end_hour">8.95</field>
+            <field name="classroom">A101</field>
+        </record>
+
+        <record id="schedule_prep_art_2" model="academy.schedule">
+            <field name="course_id" ref="course_prep_a_2024_1"/>
+            <field name="subject_id" ref="subject_art"/>
+            <field name="teacher_id" ref="teacher_art_1"/>
+            <field name="day">thursday</field>
+            <field name="start_hour">9.15</field>
+            <field name="end_hour">10.85</field>
+            <field name="classroom">A101</field>
+        </record>
+
+        <record id="schedule_prep_pe_2" model="academy.schedule">
+            <field name="course_id" ref="course_prep_a_2024_1"/>
+            <field name="subject_id" ref="subject_physical_education"/>
+            <field name="teacher_id" ref="teacher_pe_1"/>
+            <field name="day">thursday</field>
+            <field name="start_hour">11.05</field>
+            <field name="end_hour">12.75</field>
+            <field name="classroom">GYM01</field>
+        </record>
+
+        <!-- Viernes -->
+        <record id="schedule_prep_language_3" model="academy.schedule">
+            <field name="course_id" ref="course_prep_a_2024_1"/>
+            <field name="subject_id" ref="subject_language"/>
+            <field name="teacher_id" ref="teacher_lang_1"/>
+            <field name="day">friday</field>
+            <field name="start_hour">7.25</field>
+            <field name="end_hour">8.95</field>
+            <field name="classroom">A101</field>
+        </record>
+
+        <record id="schedule_prep_math_3" model="academy.schedule">
+            <field name="course_id" ref="course_prep_a_2024_1"/>
+            <field name="subject_id" ref="subject_math"/>
+            <field name="teacher_id" ref="teacher_math_1"/>
+            <field name="day">friday</field>
+            <field name="start_hour">9.15</field>
+            <field name="end_hour">10.85</field>
+            <field name="classroom">A101</field>
+        </record>
+
+        <record id="schedule_prep_music_2" model="academy.schedule">
+            <field name="course_id" ref="course_prep_a_2024_1"/>
+            <field name="subject_id" ref="subject_music"/>
+            <field name="teacher_id" ref="teacher_art_1"/>
+            <field name="day">friday</field>
+            <field name="start_hour">11.05</field>
+            <field name="end_hour">12.75</field>
+            <field name="classroom">A101</field>
+        </record>
+
 
     </data>
 </odoo>
