@@ -93,7 +93,7 @@ class TaskSubmission(models.Model):
         if not api_key:
             raise ValidationError(_('La clave API de OpenAI no está configurada'))
 
-        model = self.env['ir.config_parameter'].sudo().get_param('calendar_academy.openai_model', 'gpt-3.5-turbo')
+        model = self.env['ir.config_parameter'].sudo().get_param('calendar_academy.openai_model', 'gpt-4o')
 
         try:
             self.ai_analysis_state = 'analyzing'
