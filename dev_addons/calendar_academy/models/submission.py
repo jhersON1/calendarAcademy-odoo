@@ -83,6 +83,34 @@ class TaskSubmission(models.Model):
         ('failed', 'Fallido')
     ], string='Estado Análisis IA', default='pending')
 
+    def _process_attachment_for_ai(self, attachment):
+        """Procesa un archivo adjunto para análisis de IA"""
+        try:
+            if attachment.mimetype.startswith('text/'):
+                return {
+                    'type': 'text',
+                    'content': attachment.raw.decode('utf-8', errors='ignore')[:1000]
+                }
+            elif attachment.mimetype.startswith('image/'):
+                # Formato correcto para GPT-4 Vision
+                return {
+                    'type': 'image',
+                    'content': {
+                        "type": "image_url",
+                        "image_url": {
+                            "url": f"data:{attachment.mimetype};base64,{attachment.datas.decode('utf-8')}"
+                        }
+                    }
+                }
+            else:
+                return {
+                    'type': 'unsupported',
+                    'content': f"Archivo no procesable: {attachment.name} ({attachment.mimetype})"
+                }
+        except Exception as e:
+            _logger.error(f"Error processing attachment {attachment.name}: {str(e)}")
+            return None
+
     def action_analyze_with_ai(self):
         """Analiza la tarea usando IA"""
         self.ensure_one()
@@ -93,51 +121,43 @@ class TaskSubmission(models.Model):
         if not api_key:
             raise ValidationError(_('La clave API de OpenAI no está configurada'))
 
-        model = self.env['ir.config_parameter'].sudo().get_param('calendar_academy.openai_model', 'gpt-4o')
-
+        self.ai_analysis_state = 'analyzing'
         try:
-            self.ai_analysis_state = 'analyzing'
             client = openai.OpenAI(api_key=api_key)
-
-            # Preparar el contexto de la tarea
-            task_context = f"""
-                Tarea: {self.task_id.name}
-                Descripción: {self.task_id.description}
-                Puntuación máxima: {self.task_id.max_score}
+            
+            # Preparar el contenido del mensaje
+            message_content = [{
+                "type": "text",
+                "text": f"""
+                    Tarea: {self.task_id.name or ''}
+                    Descripción: {self.task_id.description or ''}
+                    Puntuación máxima: {self.task_id.max_score or 0}
+                    
+                    Contenido de la entrega:
+                    {self.content or 'No hay contenido textual'}
                 """
+            }]
 
-            # Preparar el contenido de la entrega
-            submission_content = self.content or "No hay contenido textual"
-
-            # Procesar archivos adjuntos
-            attachment_texts = []
+            # Procesar adjuntos
             for attachment in self.attachment_ids:
-                try:
-                    # Intentar decodificar el contenido si es texto
-                    if attachment.mimetype.startswith('text/'):
-                        attachment_texts.append(f"Contenido de {attachment.name}:\n{attachment.raw.decode()}")
+                processed = self._process_attachment_for_ai(attachment)
+                if processed:
+                    if processed['type'] == 'image':
+                        message_content.append(processed['content'])
                     else:
-                        attachment_texts.append(f"Archivo adjunto: {attachment.name} (tipo: {attachment.mimetype})")
-                except:
-                    attachment_texts.append(f"Archivo adjunto: {attachment.name} (no procesable)")
+                        message_content.append({
+                            "type": "text",
+                            "text": processed['content']
+                        })
 
-            # Crear el prompt para OpenAI
-            prompt = f"""Actúa como un profesor experto evaluando esta tarea.
-
-                CONTEXTO DE LA TAREA:
-                {task_context}
-
-                ENTREGA DEL ESTUDIANTE:
-                Contenido textual:
-                {submission_content}
-
-                Archivos adjuntos:
-                {'\n'.join(attachment_texts)}
-
+            # Agregar instrucciones finales
+            message_content.append({
+                "type": "text",
+                "text": """
                 Por favor, proporciona:
-                1. Una evaluación detallada de la entrega
+                1. Una evaluación detallada de la entrega (incluyendo análisis de imágenes si hay)
                 2. Retroalimentación constructiva para el estudiante
-                3. Una puntuación sugerida sobre {self.task_id.max_score} puntos
+                3. Una puntuación sugerida
                 4. Justificación de la puntuación
 
                 Estructura tu respuesta así:
@@ -146,45 +166,61 @@ class TaskSubmission(models.Model):
                 <PUNTUACION>número sugerido</PUNTUACION>
                 <JUSTIFICACION>justificación de la puntuación</JUSTIFICACION>
                 """
+            })
 
-            # Llamar a la API de OpenAI
-            response = client.chat.completions.create(
-                model=model,
-                messages=[{"role": "user", "content": prompt}],
-                temperature=0.7
-            )
+            # Llamar a la API
+            try:
+                response = client.chat.completions.create(
+                    model="gpt-4o-mini",  # Usar el modelo con capacidad de visión
+                    messages=[{
+                        "role": "user",
+                        "content": message_content
+                    }],
+                    max_tokens=1000,
+                    temperature=0.7
+                )
+            except Exception as e:
+                _logger.error(f"Error en la llamada a la API: {str(e)}")
+                raise ValidationError(_('Error en la llamada a la API: %s') % str(e))
 
-            # Procesar la respuesta
+            # Validate API response
+            if not response.choices or not response.choices[0].message.content:
+                raise ValidationError(_('La respuesta de la API está vacía'))
+
             ai_response = response.choices[0].message.content
 
-            # Extraer las secciones usando un método auxiliar
-            evaluacion = self._extract_section(ai_response, "EVALUACION")
-            retroalimentacion = self._extract_section(ai_response, "RETROALIMENTACION")
-            puntuacion = self._extract_section(ai_response, "PUNTUACION")
-            justificacion = self._extract_section(ai_response, "JUSTIFICACION")
+            # Process response sections
+            sections = {
+                'EVALUACION': '',
+                'RETROALIMENTACION': '',
+                'PUNTUACION': '',
+                'JUSTIFICACION': ''
+            }
+            
+            for section in sections.keys():
+                sections[section] = self._extract_section(ai_response, section)
+                if not sections[section] and section in ['EVALUACION', 'PUNTUACION']:
+                    raise ValidationError(_(f'Sección {section} no encontrada en la respuesta'))
 
-            # Formatear el feedback final
-            feedback_final = f"""
-                EVALUACIÓN DETALLADA:
-                {evaluacion}
+            try:
+                score = float(sections['PUNTUACION'].strip() or 0)
+                if score < 0 or score > self.task_id.max_score:
+                    raise ValidationError(_('Puntuación sugerida fuera de rango'))
+            except ValueError:
+                raise ValidationError(_('Error al procesar la puntuación sugerida'))
 
-                RETROALIMENTACIÓN:
-                {retroalimentacion}
+            # Format final feedback
+            feedback_final = self._format_ai_feedback(sections)
 
-                JUSTIFICACIÓN DE LA PUNTUACIÓN:
-                {justificacion}
-                """
-
-            # Actualizar el registro
+            # Update record
             self.write({
                 'ai_feedback': feedback_final,
-                'ai_suggested_score': float(puntuacion.strip() or 0),
+                'ai_suggested_score': score,
                 'ai_analysis_state': 'completed'
             })
 
-            # Crear nota en el chatter
             self.message_post(
-                body=_("Análisis de IA completado. Puntuación sugerida: %s") % puntuacion.strip(),
+                body=_("Análisis de IA completado. Puntuación sugerida: %s") % score,
                 message_type='notification'
             )
 
@@ -202,6 +238,46 @@ class TaskSubmission(models.Model):
             self.ai_analysis_state = 'failed'
             _logger.error("Error en análisis IA: %s", str(e))
             raise ValidationError(_('Error en el análisis de IA: %s') % str(e))
+
+    def _prepare_ai_prompt(self, task_context, submission_content, attachment_texts):
+        """Prepara el prompt para la IA"""
+        return f"""Actúa como un profesor experto evaluando esta tarea.
+            
+            CONTEXTO DE LA TAREA:
+            {task_context}
+
+            ENTREGA DEL ESTUDIANTE:
+            Contenido textual:
+            {submission_content}
+
+            Archivos adjuntos:
+            {chr(10).join(attachment_texts)}
+
+            Por favor, proporciona:
+            1. Una evaluación detallada de la entrega
+            2. Retroalimentación constructiva para el estudiante
+            3. Una puntuación sugerida sobre {self.task_id.max_score} puntos
+            4. Justificación de la puntuación
+
+            Estructura tu respuesta así:
+            <EVALUACION>tu evaluación detallada</EVALUACION>
+            <RETROALIMENTACION>tus comentarios constructivos</RETROALIMENTACION>
+            <PUNTUACION>número sugerido</PUNTUACION>
+            <JUSTIFICACION>justificación de la puntuación</JUSTIFICACION>
+            """
+
+    def _format_ai_feedback(self, sections):
+        """Formatea la retroalimentación de la IA"""
+        return f"""
+            EVALUACIÓN DETALLADA:
+            {sections['EVALUACION']}
+
+            RETROALIMENTACIÓN:
+            {sections['RETROALIMENTACION']}
+
+            JUSTIFICACIÓN DE LA PUNTUACIÓN:
+            {sections['JUSTIFICACION']}
+            """
 
     def _extract_section(self, text, section_name):
         """Extrae una sección específica del texto de respuesta"""
