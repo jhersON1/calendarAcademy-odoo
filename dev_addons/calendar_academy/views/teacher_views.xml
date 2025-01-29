@@ -6,97 +6,125 @@
         <field name="model">academy.teacher</field>
         <field name="arch" type="xml">
             <form>
-                <header>
-                    <button name="action_create_user"
-                            string="Crear Usuario"
-                            type="object"
-                            class="oe_highlight"
-                            invisible="user_id"/>
-                    <button name="action_on_leave"
-                            string="Poner en Permiso"
-                            type="object"
-                            invisible="status != 'active'"/>
-                    <button name="action_activate"
-                            string="Activar"
-                            type="object"
-                            invisible="status == 'active'"/>
-                    <field name="status" widget="statusbar"
-                           statusbar_visible="active,on_leave,inactive"/>
-                </header>
-                <sheet>
-                    <div class="oe_button_box" name="button_box">
-                        <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
-                            <field name="active" widget="boolean_button"/>
-                        </button>
-                        <button name="action_view_schedule" type="object"
-                                class="oe_stat_button" icon="fa-calendar">
-                            <span>Horario</span>
-                        </button>
+                <div class="container-fluid d-flex flex-column align-items-center">
+                    <div class="row w-100">
+                        <div class="col-12 d-flex justify-content-center">
+                            <header class="w-100 d-flex justify-content-between" style="max-width: 1200px;">
+                                <div>
+                                    <button name="action_create_user"
+                                            string="Crear Usuario"
+                                            type="object"
+                                            class="oe_highlight"
+                                            invisible="user_id"/>
+                                    <button name="action_on_leave"
+                                            string="Poner en Permiso"
+                                            type="object"
+                                            invisible="status != 'active'"/>
+                                    <button name="action_activate"
+                                            string="Activar"
+                                            type="object"
+                                            invisible="status == 'active'"/>
+                                </div>
+                                <field name="status" widget="statusbar"
+                                       statusbar_visible="active,on_leave,inactive"/>
+                            </header>
+                        </div>
                     </div>
-                    <field name="image" widget="image" class="oe_avatar"/>
-                    <div class="oe_title">
-                        <h1>
-                            <field name="name" placeholder="Nombre Completo"/>
-                        </h1>
+    
+                    <div class="row justify-content-center w-100">
+                        <div class="col-12 col-lg-10" style="max-width: 1200px;">
+                            <sheet>
+                                <div class="oe_button_box" name="button_box">
+                                    <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                                        <field name="active" widget="boolean_button"/>
+                                    </button>
+                                    <button name="action_view_schedule" type="object"
+                                            class="oe_stat_button" icon="fa-calendar">
+                                        <span>Horario</span>
+                                    </button>
+                                </div>
+    
+                                <div class="d-flex justify-content-center">
+                                    <field name="image" widget="image" class="oe_avatar"/>
+                                </div>
+    
+                                <div class="oe_title text-center">
+                                    <h1>
+                                        <field name="name" placeholder="Nombre Completo"/>
+                                    </h1>
+                                </div>
+    
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <group>
+                                            <field name="identification"/>
+                                            <field name="birth_date"/>
+                                            <field name="gender"/>
+                                            <field name="education_level"/>
+                                            <field name="years_experience"/>
+                                            <field name="user_id" readonly="1"/>
+                                        </group>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <group>
+                                            <field name="email"/>
+                                            <field name="phone"/>
+                                            <field name="mobile"/>
+                                            <field name="address"/>
+                                            <field name="hire_date"/>
+                                            <field name="max_hours"/>
+                                            <field name="current_hours"/>
+                                        </group>
+                                    </div>
+                                </div>
+    
+                                <notebook>
+                                    <page string="Especialidades" name="specialties">
+                                        <field name="specialty">
+                                            <list>
+                                                <field name="name"/>
+                                                <field name="code"/>
+                                                <field name="hours_per_week"/>
+                                            </list>
+                                        </field>
+                                    </page>
+                                    <page string="Cursos Asignados" name="courses">
+                                        <field name="course_ids">
+                                            <list>
+                                                <field name="name"/>
+                                                <field name="period_id"/>
+                                                <field name="level_id"/>
+                                                <field name="parallel_id"/>
+                                                <field name="state"/>
+                                            </list>
+                                        </field>
+                                    </page>
+                                    <page string="Horario" name="schedule">
+                                        <field name="schedule_ids">
+                                            <list>
+                                                <field name="course_id"/>
+                                                <field name="subject_id"/>
+                                                <field name="day"/>
+                                                <field name="start_hour" widget="float_time"/>
+                                                <field name="end_hour" widget="float_time"/>
+                                                <field name="classroom"/>
+                                            </list>
+                                        </field>
+                                    </page>
+                                </notebook>
+                            </sheet>
+                        </div>
                     </div>
-                    <group>
-                        <group>
-                            <field name="identification"/>
-                            <field name="birth_date"/>
-                            <field name="gender"/>
-                            <field name="education_level"/>
-                            <field name="years_experience"/>
-                            <field name="user_id" readonly="1"/>
-                        </group>
-                        <group>
-                            <field name="email"/>
-                            <field name="phone"/>
-                            <field name="mobile"/>
-                            <field name="address"/>
-                            <field name="hire_date"/>
-                            <field name="max_hours"/>
-                            <field name="current_hours"/>
-                        </group>
-                    </group>
-                    <notebook>
-                        <page string="Especialidades" name="specialties">
-                            <field name="specialty">
-                                <list>
-                                    <field name="name"/>
-                                    <field name="code"/>
-                                    <field name="hours_per_week"/>
-                                </list>
-                            </field>
-                        </page>
-                        <page string="Cursos Asignados" name="courses">
-                            <field name="course_ids">
-                                <list>
-                                    <field name="name"/>
-                                    <field name="period_id"/>
-                                    <field name="level_id"/>
-                                    <field name="parallel_id"/>
-                                    <field name="state"/>
-                                </list>
-                            </field>
-                        </page>
-                        <page string="Horario" name="schedule">
-                            <field name="schedule_ids">
-                                <list>
-                                    <field name="course_id"/>
-                                    <field name="subject_id"/>
-                                    <field name="day"/>
-                                    <field name="start_hour" widget="float_time"/>
-                                    <field name="end_hour" widget="float_time"/>
-                                    <field name="classroom"/>
-                                </list>
-                            </field>
-                        </page>
-                    </notebook>
-                </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids"/>
-                    <field name="activity_ids"/>
-                    <field name="message_ids"/>
+    
+                    <div class="row justify-content-center w-100 mt-4">
+                        <div class="col-12 col-lg-10" style="max-width: 1200px;">
+                            <div class="oe_chatter">
+                                <field name="message_follower_ids"/>
+                                <field name="activity_ids"/>
+                                <field name="message_ids"/>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </form>
         </field>
