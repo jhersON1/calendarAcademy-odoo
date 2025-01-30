@@ -6,94 +6,119 @@
         <field name="model">academy.period</field>
         <field name="arch" type="xml">
             <form>
-                <header>
-                    <button name="action_start_enrollment"
-                            string="Iniciar Matrículas"
-                            type="object"
-                            class="oe_highlight"
-                            invisible="state != 'draft'"/>
-                    <button name="action_start_classes"
-                            string="Iniciar Clases"
-                            type="object"
-                            class="oe_highlight"
-                            invisible="state != 'enrollment'"/>
-                    <button name="action_finish"
-                            string="Finalizar"
-                            type="object"
-                            invisible="state != 'active'"/>
-                    <button name="action_close"
-                            string="Cerrar"
-                            type="object"
-                            invisible="state != 'finished'"/>
-                    <field name="state" widget="statusbar"
-                           statusbar_visible="draft,enrollment,active,finished,closed"/>
-                </header>
-                <sheet>
-                    <div class="oe_button_box" name="button_box">
-                        <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
-                            <field name="active" widget="boolean_button"/>
-                        </button>
-                        <button name="action_view_courses" type="object" class="oe_stat_button" icon="fa-book">
-                            <div class="o_stat_info">
-                                <field name="course_count" class="o_stat_value"/>
-                                <span class="o_stat_text">Cursos</span>
-                            </div>
-                        </button>
-                        <button class="oe_stat_button" icon="fa-users" disabled="1">
-                            <div class="o_stat_info">
-                                <field name="student_count" class="o_stat_value"/>
-                                <span class="o_stat_text">Estudiantes</span>
-                            </div>
-                        </button>
-                        <button class="oe_stat_button" icon="fa-user" disabled="1">
-                            <div class="o_stat_info">
-                                <field name="teacher_count" class="o_stat_value"/>
-                                <span class="o_stat_text">Profesores</span>
-                            </div>
-                        </button>
+                <div class="container-fluid d-flex flex-column align-items-center">
+                    <div class="row w-100">
+                        <div class="col-12 d-flex justify-content-center">
+                            <header class="w-100 d-flex justify-content-between" style="max-width: 1200px;">
+                                <div>
+                                    <button name="action_start_enrollment"
+                                            string="Iniciar Matrículas"
+                                            type="object"
+                                            class="oe_highlight"
+                                            invisible="state != 'draft'"/>
+                                    <button name="action_start_classes"
+                                            string="Iniciar Clases"
+                                            type="object"
+                                            class="oe_highlight"
+                                            invisible="state != 'enrollment'"/>
+                                    <button name="action_finish"
+                                            string="Finalizar"
+                                            type="object"
+                                            invisible="state != 'active'"/>
+                                    <button name="action_close"
+                                            string="Cerrar"
+                                            type="object"
+                                            invisible="state != 'finished'"/>
+                                </div>
+                                <field name="state" widget="statusbar"
+                                       statusbar_visible="draft,enrollment,active,finished,closed"/>
+                            </header>
+                        </div>
                     </div>
-                    <div class="oe_title">
-                        <h1>
-                            <field name="name"/>
-                        </h1>
+    
+                    <div class="row justify-content-center w-100">
+                        <div class="col-12 col-lg-10" style="max-width: 1200px;">
+                            <sheet>
+                                <div class="oe_button_box" name="button_box">
+                                    <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                                        <field name="active" widget="boolean_button"/>
+                                    </button>
+                                    <button name="action_view_courses" type="object" class="oe_stat_button" icon="fa-book">
+                                        <div class="o_stat_info">
+                                            <field name="course_count" class="o_stat_value"/>
+                                            <span class="o_stat_text">Cursos</span>
+                                        </div>
+                                    </button>
+                                    <button class="oe_stat_button" icon="fa-users" disabled="1">
+                                        <div class="o_stat_info">
+                                            <field name="student_count" class="o_stat_value"/>
+                                            <span class="o_stat_text">Estudiantes</span>
+                                        </div>
+                                    </button>
+                                    <button class="oe_stat_button" icon="fa-user" disabled="1">
+                                        <div class="o_stat_info">
+                                            <field name="teacher_count" class="o_stat_value"/>
+                                            <span class="o_stat_text">Profesores</span>
+                                        </div>
+                                    </button>
+                                </div>
+    
+                                <div class="oe_title text-center">
+                                    <h1>
+                                        <field name="name"/>
+                                    </h1>
+                                </div>
+    
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <group string="Período">
+                                            <field name="code"/>
+                                            <field name="year"/>
+                                            <field name="start_date"/>
+                                            <field name="end_date"/>
+                                        </group>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <group string="Matrículas">
+                                            <field name="enrollment_start_date"/>
+                                            <field name="enrollment_end_date"/>
+                                            <field name="class_start_date"/>
+                                            <field name="class_end_date"/>
+                                        </group>
+                                    </div>
+                                </div>
+    
+                                <notebook>
+                                    <page string="Cursos" name="courses">
+                                        <field name="course_ids">
+                                            <list>
+                                                <field name="name"/>
+                                                <field name="level_id"/>
+                                                <field name="parallel_id"/>
+                                                <field name="enrolled_count"/>
+                                                <field name="capacity"/>
+                                                <field name="state" widget="badge"
+                                                       decoration-info="state == 'draft'"
+                                                       decoration-success="state == 'active'"
+                                                       decoration-warning="state == 'finished'"
+                                                       decoration-danger="state == 'cancelled'"/>
+                                            </list>
+                                        </field>
+                                    </page>
+                                </notebook>
+                            </sheet>
+                        </div>
                     </div>
-                    <group>
-                        <group string="Período">
-                            <field name="code"/>
-                            <field name="year"/>
-                            <field name="start_date"/>
-                            <field name="end_date"/>
-                        </group>
-                        <group string="Matrículas">
-                            <field name="enrollment_start_date"/>
-                            <field name="enrollment_end_date"/>
-                            <field name="class_start_date"/>
-                            <field name="class_end_date"/>
-                        </group>
-                    </group>
-                    <notebook>
-                        <page string="Cursos" name="courses">
-                            <field name="course_ids">
-                                <list>
-                                    <field name="name"/>
-                                    <field name="level_id"/>
-                                    <field name="parallel_id"/>
-                                    <field name="enrolled_count"/>
-                                    <field name="capacity"/>
-                                    <field name="state" widget="badge"
-                                           decoration-info="state == 'draft'"
-                                           decoration-success="state == 'active'"
-                                           decoration-warning="state == 'finished'"
-                                           decoration-danger="state == 'cancelled'"/>
-                                </list>
-                            </field>
-                        </page>
-                    </notebook>
-                </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids"/>
-                    <field name="activity_ids"/>
-                    <field name="message_ids"/>
+    
+                    <div class="row justify-content-center w-100 mt-4">
+                        <div class="col-12 col-lg-10" style="max-width: 1200px;">
+                            <div class="oe_chatter">
+                                <field name="message_follower_ids"/>
+                                <field name="activity_ids"/>
+                                <field name="message_ids"/>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </form>
         </field>
