@@ -25,119 +25,143 @@
         <field name="model">academy.event</field>
         <field name="arch" type="xml">
             <form js_class="event_modal_form">
-                <header>
-                    <button name="action_create_ai"
-                            string="Crear AI"
-                            type="object"
-                            class="btn-primary"
-                            icon="fa-microphone"/>
-                    <button name="action_confirm"
-                            string="Confirmar"
-                            type="object"
-                            class="oe_highlight"
-                            invisible="state != 'draft'"/>
-                    <button name="action_mark_done"
-                            string="Marcar Realizado"
-                            type="object"
-                            class="oe_highlight"
-                            invisible="state != 'confirmed'"/>
-                    <button name="action_cancel"
-                            string="Cancelar"
-                            type="object"
-                            invisible="state in ('done', 'cancelled')"/>
-                    <field name="state" widget="statusbar"/>
-                </header>
-                <sheet>
-                    <div class="oe_button_box" name="button_box">
-                        <button name="action_view_read_status"
-                                type="object"
-                                class="oe_stat_button"
-                                icon="fa-eye">
-                            <div class="o_stat_info">
-                                <field name="read_count" class="o_stat_value"/>
-                                <span class="o_stat_text">Leído por</span>
-                            </div>
-                        </button>
-                    </div>
-                    <div class="oe_title">
-                        <h1>
-                            <field name="name"/>
-                        </h1>
-                    </div>
-                    <group>
-                        <group>
-                            <field name="reminder_type"/>
-                            <field name="event_type"/>
-                            <field name="start_date"/>
-                            <field name="end_date"/>
-                            <field name="priority" widget="priority"/>
-                        </group>
-                        <group>
-                            <field name="responsible_id"/>
-                            <field name="is_virtual"/>
-                            <field name="virtual_url"
-                                   invisible="not is_virtual"/>
-                            <field name="location"
-                                   invisible="is_virtual"/>
-                        </group>
-                    </group>
-                    <notebook>
-                        <page string="Descripción" name="description">
-                            <field name="description"/>
-                        </page>
-                        <page string="Participantes" name="participants">
-                            <group>
-                                <div class="oe_button_box" name="participants_buttons">
-                                    <button name="action_add_all_participants"
-                                            string="Añadir Todos"
+                <div class="container-fluid d-flex flex-column align-items-center">
+                    <div class="row w-100">
+                        <div class="col-12 d-flex justify-content-center">
+                            <header class="w-100 d-flex justify-content-between" style="max-width: 1200px;">
+                                <div>
+                                    <button name="action_create_ai"
+                                            string="Crear AI"
                                             type="object"
-                                            class="btn btn-primary"
-                                            icon="fa-users"/>
+                                            class="btn-primary"
+                                            icon="fa-microphone"/>
+                                    <button name="action_confirm"
+                                            string="Confirmar"
+                                            type="object"
+                                            class="oe_highlight"
+                                            invisible="state != 'draft'"/>
+                                    <button name="action_mark_done"
+                                            string="Marcar Realizado"
+                                            type="object"
+                                            class="oe_highlight"
+                                            invisible="state != 'confirmed'"/>
+                                    <button name="action_cancel"
+                                            string="Cancelar"
+                                            type="object"
+                                            invisible="state in ('done', 'cancelled')"/>
                                 </div>
-                                <field name="course_ids" widget="many2many_tags"/>
-                                <field name="teacher_ids" widget="many2many_tags"/>
-                                <field name="student_ids" widget="many2many_tags"/>
-                            </group>
-                        </page>
-                        <page string="Estado de Lectura" name="read_status">
-                            <field name="read_status_ids">
-                                <list>
-                                    <field name="user_id"/>
-                                    <field name="read_status" widget="badge"
-                                           decoration-success="read_status == 'read'"
-                                           decoration-info="read_status == 'unread'"/>
-                                    <field name="read_date"/>
-                                </list>
-                            </field>
-                        </page>
-                        <!-- Agregamos la nueva página de configuración de tarea -->
-                        <page string="Configuración de Tarea" name="task_config"
-                              invisible="reminder_type != 'task'">
-                            <group>
-                                <group>
-                                    <field name="subject_id"
-                                           invisible="reminder_type != 'task'"
-                                           required="1"/>
-                                    <field name="max_score"/>
-                                    <field name="weight"/>
-                                    <field name="submission_type"/>
-                                </group>
-                                <group>
-                                    <field name="task_id" readonly="1"
-                                           invisible="not task_id"/>
-                                    <field name="allow_late_submission"/>
-                                    <field name="late_submission_penalty"
-                                           invisible="not allow_late_submission"/>
-                                    <field name="attachment_ids" widget="many2many_binary"/>
-                                </group>
-                            </group>
-                        </page>
-                    </notebook>
-                </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids"/>
-                    <field name="activity_ids"/>
-                    <field name="message_ids"/>
+                                <field name="state" widget="statusbar"/>
+                            </header>
+                        </div>
+                    </div>
+    
+                    <div class="row justify-content-center w-100">
+                        <div class="col-12 col-lg-10" style="max-width: 1200px;">
+                            <sheet>
+                                <div class="oe_button_box" name="button_box">
+                                    <button name="action_view_read_status"
+                                            type="object"
+                                            class="oe_stat_button"
+                                            icon="fa-eye">
+                                        <div class="o_stat_info">
+                                            <field name="read_count" class="o_stat_value"/>
+                                            <span class="o_stat_text">Leído por</span>
+                                        </div>
+                                    </button>
+                                </div>
+    
+                                <div class="oe_title text-center">
+                                    <h1>
+                                        <field name="name"/>
+                                    </h1>
+                                </div>
+    
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <group>
+                                            <field name="reminder_type"/>
+                                            <field name="event_type"/>
+                                            <field name="start_date"/>
+                                            <field name="end_date"/>
+                                            <field name="priority" widget="priority"/>
+                                        </group>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <group>
+                                            <field name="responsible_id"/>
+                                            <field name="is_virtual"/>
+                                            <field name="virtual_url"
+                                                   invisible="not is_virtual"/>
+                                            <field name="location"
+                                                   invisible="is_virtual"/>
+                                        </group>
+                                    </div>
+                                </div>
+    
+                                <notebook>
+                                    <page string="Descripción" name="description">
+                                        <field name="description"/>
+                                    </page>
+                                    <page string="Participantes" name="participants">
+                                        <group>
+                                            <div class="oe_button_box" name="participants_buttons">
+                                                <button name="action_add_all_participants"
+                                                        string="Añadir Todos"
+                                                        type="object"
+                                                        class="btn btn-primary"
+                                                        icon="fa-users"/>
+                                            </div>
+                                            <field name="course_ids" widget="many2many_tags"/>
+                                            <field name="teacher_ids" widget="many2many_tags"/>
+                                            <field name="student_ids" widget="many2many_tags"/>
+                                        </group>
+                                    </page>
+                                    <page string="Estado de Lectura" name="read_status">
+                                        <field name="read_status_ids">
+                                            <list>
+                                                <field name="user_id"/>
+                                                <field name="read_status" widget="badge"
+                                                       decoration-success="read_status == 'read'"
+                                                       decoration-info="read_status == 'unread'"/>
+                                                <field name="read_date"/>
+                                            </list>
+                                        </field>
+                                    </page>
+                                    <page string="Configuración de Tarea" name="task_config"
+                                          invisible="reminder_type != 'task'">
+                                        <group>
+                                            <group>
+                                                <field name="subject_id"
+                                                       invisible="reminder_type != 'task'"
+                                                       required="1"/>
+                                                <field name="max_score"/>
+                                                <field name="weight"/>
+                                                <field name="submission_type"/>
+                                            </group>
+                                            <group>
+                                                <field name="task_id" readonly="1"
+                                                       invisible="not task_id"/>
+                                                <field name="allow_late_submission"/>
+                                                <field name="late_submission_penalty"
+                                                       invisible="not allow_late_submission"/>
+                                                <field name="attachment_ids" widget="many2many_binary"/>
+                                            </group>
+                                        </group>
+                                    </page>
+                                </notebook>
+                            </sheet>
+                        </div>
+                    </div>
+    
+                    <div class="row justify-content-center w-100 mt-4">
+                        <div class="col-12 col-lg-10" style="max-width: 1200px;">
+                            <div class="oe_chatter">
+                                <field name="message_follower_ids"/>
+                                <field name="activity_ids"/>
+                                <field name="message_ids"/>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </form>
         </field>
