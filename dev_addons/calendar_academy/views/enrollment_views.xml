@@ -1,74 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!-- Form View -->
-    <record id="view_academy_enrollment_form" model="ir.ui.view">
+ <record id="view_academy_enrollment_form" model="ir.ui.view">
         <field name="name">academy.enrollment.form</field>
         <field name="model">academy.enrollment</field>
         <field name="arch" type="xml">
             <form>
-                <header>
-                    <button name="action_submit"
-                            string="Enviar"
-                            type="object"
-                            class="oe_highlight"
-                            invisible="state != 'draft'"/>
-                    <button name="action_confirm"
-                            string="Confirmar"
-                            type="object"
-                            class="oe_highlight"
-                            invisible="state != 'submitted'"/>
-                    <button name="action_cancel"
-                            string="Cancelar"
-                            type="object"
-                            invisible="state == 'cancelled'"/>
-                    <field name="state" widget="statusbar"
-                           statusbar_visible="draft,submitted,confirmed"/>
-                </header>
-                <sheet>
-                    <div class="oe_button_box" name="button_box">
-                        <button name="toggle_active" type="object"
-                                class="oe_stat_button" icon="fa-archive">
-                            <field name="active" widget="boolean_button"/>
-                        </button>
+                <div class="container-fluid d-flex flex-column align-items-center">
+                    <div class="row w-100">
+                        <div class="col-12 d-flex justify-content-center">
+                            <header class="w-100 d-flex justify-content-between" style="max-width: 1200px;">
+                                <div>
+                                    <button name="action_submit"
+                                            string="Enviar"
+                                            type="object"
+                                            class="oe_highlight"
+                                            invisible="state != 'draft'"/>
+                                    <button name="action_confirm"
+                                            string="Confirmar"
+                                            type="object"
+                                            class="oe_highlight"
+                                            invisible="state != 'submitted'"/>
+                                    <button name="action_cancel"
+                                            string="Cancelar"
+                                            type="object"
+                                            invisible="state == 'cancelled'"/>
+                                </div>
+                                <field name="state" widget="statusbar"
+                                       statusbar_visible="draft,submitted,confirmed"/>
+                            </header>
+                        </div>
                     </div>
-                    <div class="oe_title">
-                        <h1>
-                            <field name="name" readonly="1"/>
-                        </h1>
+
+                    <div class="row justify-content-center w-100">
+                        <div class="col-12 col-lg-10" style="max-width: 1200px;">
+                            <sheet>
+                                <div class="oe_button_box" name="button_box">
+                                    <button name="toggle_active" type="object"
+                                            class="oe_stat_button" icon="fa-archive">
+                                        <field name="active" widget="boolean_button"/>
+                                    </button>
+                                </div>
+
+                                <div class="oe_title text-center">
+                                    <h1>
+                                        <field name="name" readonly="1"/>
+                                    </h1>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <group>
+                                            <field name="student_id"/>
+                                            <field name="course_id"/>
+                                            <field name="period_id"/>
+                                            <field name="enrollment_date"/>
+                                        </group>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <group>
+                                            <field name="parent_id"/>
+                                            <field name="parent_relationship"/>
+                                            <field name="documents_complete"/>
+                                        </group>
+                                    </div>
+                                </div>
+
+                                <notebook>
+                                    <page string="Documentos" name="documents">
+                                        <field name="document_ids">
+                                            <list editable="bottom">
+                                                <field name="name"/>
+                                                <field name="document_type"/>
+                                                <field name="is_required"/>
+                                                <field name="is_submitted"/>
+                                                <field name="submission_date"/>
+                                                <field name="notes"/>
+                                                <field name="attachment_ids" widget="many2many_binary"/>
+                                            </list>
+                                        </field>
+                                    </page>
+                                </notebook>
+                            </sheet>
+                        </div>
                     </div>
-                    <group>
-                        <group>
-                            <field name="student_id"/>
-                            <field name="course_id"/>
-                            <field name="period_id"/>
-                            <field name="enrollment_date"/>
-                        </group>
-                        <group>
-                            <field name="parent_id"/>
-                            <field name="parent_relationship"/>
-                            <field name="documents_complete"/>
-                        </group>
-                    </group>
-                    <notebook>
-                        <page string="Documentos" name="documents">
-                            <field name="document_ids">
-                                <list editable="bottom">
-                                    <field name="name"/>
-                                    <field name="document_type"/>
-                                    <field name="is_required"/>
-                                    <field name="is_submitted"/>
-                                    <field name="submission_date"/>
-                                    <field name="notes"/>
-                                    <field name="attachment_ids" widget="many2many_binary"/>
-                                </list>
-                            </field>
-                        </page>
-                    </notebook>
-                </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids"/>
-                    <field name="activity_ids"/>
-                    <field name="message_ids"/>
+
+                    <div class="row justify-content-center w-100 mt-4">
+                        <div class="col-12 col-lg-10" style="max-width: 1200px;">
+                            <div class="oe_chatter">
+                                <field name="message_follower_ids"/>
+                                <field name="activity_ids"/>
+                                <field name="message_ids"/>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </form>
         </field>
