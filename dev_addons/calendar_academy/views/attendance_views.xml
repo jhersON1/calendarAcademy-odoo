@@ -6,59 +6,77 @@
         <field name="model">academy.attendance</field>
         <field name="arch" type="xml">
             <form>
-                <header>
-                    <button name="action_generate_attendance_lines"
-                            string="Generar Lista"
-                            type="object"
-                            class="oe_highlight"
-                            invisible="state != 'draft'"/>
-                    <button name="action_confirm"
-                            string="Confirmar"
-                            type="object"
-                            class="oe_highlight"
-                            invisible="state != 'taken'"/>
-                    <button name="action_draft"
-                            string="Volver a Borrador"
-                            type="object"
-                            invisible="state == 'confirmed'"/>
-                    <field name="state" widget="statusbar" statusbar_visible="draft,taken,confirmed"/>
-                </header>
-                <sheet>
-                    <div class="oe_title">
-                        <h1>
-                            <field name="name"/>
-                        </h1>
+                <div class="container-fluid d-flex flex-column align-items-center">
+                    <div class="row w-100">
+                        <div class="col-12 d-flex justify-content-center">
+                            <header class="w-100 d-flex justify-content-between" style="max-width: 1200px;">
+                                <div>
+                                    <button name="action_generate_attendance_lines"
+                                            string="Generar Lista"
+                                            type="object"
+                                            class="oe_highlight"
+                                            invisible="state != 'draft'"/>
+                                    <button name="action_confirm"
+                                            string="Confirmar"
+                                            type="object"
+                                            class="oe_highlight"
+                                            invisible="state != 'taken'"/>
+                                    <button name="action_draft"
+                                            string="Volver a Borrador"
+                                            type="object"
+                                            invisible="state == 'confirmed'"/>
+                                </div>
+                                <field name="state" widget="statusbar" statusbar_visible="draft,taken,confirmed"/>
+                            </header>
+                        </div>
                     </div>
-                    <group>
-                        <group>
-                            <field name="date"/>
-                            <field name="course_id"/>
-                            <field name="subject_id"/>
-                        </group>
-                        <group>
-                            <field name="teacher_id"/>
-                            <field name="total_present"/>
-                            <field name="total_absent"/>
-                            <field name="total_late"/>
-                        </group>
-                    </group>
-                    <notebook>
-                        <page string="Asistencia" name="attendance_lines">
-                            <field name="attendance_line_ids">
-                                <list editable="bottom">
-                                    <field name="student_id"/>
-                                    <field name="attendance_status"/>
-                                    <field name="arrival_time" widget="float_time"/>
-                                    <field name="justification"/>
-                                </list>
-                            </field>
-                        </page>
-                    </notebook>
-                </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids"/>
-                    <field name="activity_ids"/>
-                    <field name="message_ids"/>
+
+                    <div class="row justify-content-center w-100">
+                        <div class="col-12 col-lg-10" style="max-width: 1200px;">
+                            <sheet>
+                                <div class="oe_title text-center">
+                                    <h1>
+                                        <field name="name"/>
+                                    </h1>
+                                </div>
+                                <group>
+                                    <group>
+                                        <field name="date"/>
+                                        <field name="course_id"/>
+                                        <field name="subject_id"/>
+                                    </group>
+                                    <group>
+                                        <field name="teacher_id"/>
+                                        <field name="total_present"/>
+                                        <field name="total_absent"/>
+                                        <field name="total_late"/>
+                                    </group>
+                                </group>
+                                <notebook>
+                                    <page string="Asistencia" name="attendance_lines">
+                                        <field name="attendance_line_ids">
+                                            <list editable="bottom">
+                                                <field name="student_id"/>
+                                                <field name="attendance_status"/>
+                                                <field name="arrival_time" widget="float_time"/>
+                                                <field name="justification"/>
+                                            </list>
+                                        </field>
+                                    </page>
+                                </notebook>
+                            </sheet>
+                        </div>
+                    </div>
+
+                    <div class="row justify-content-center w-100 mt-4">
+                        <div class="col-12 col-lg-10" style="max-width: 1200px;">
+                            <div class="oe_chatter">
+                                <field name="message_follower_ids"/>
+                                <field name="activity_ids"/>
+                                <field name="message_ids"/>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </form>
         </field>
