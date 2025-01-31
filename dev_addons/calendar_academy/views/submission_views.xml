@@ -6,73 +6,97 @@
         <field name="model">academy.task.submission</field>
         <field name="arch" type="xml">
             <form>
-                <header>
-                    <button name="action_submit"
-                            string="Entregar"
-                            type="object"
-                            class="oe_highlight"
-                            invisible="state not in ['pending', 'late']"/>
-                    <button name="action_grade"
-                            string="Calificar"
-                            type="object"
-                            class="oe_highlight"
-                            invisible="state not in ['submitted', 'late']"/>
-                    <button name="action_reset"
-                            string="Reiniciar"
-                            type="object"
-                            invisible="state == 'pending'"/>
-                    <!-- Nuevo botón de análisis IA -->
-                    <button name="action_analyze_with_ai"
-                            string="Analizar con IA"
-                            type="object"
-                            class="oe_highlight"
-                            invisible="state not in ['submitted', 'late']"
-                            groups="calendar_academy.group_academy_teacher"/>
-                    <field name="state" widget="statusbar"/>
-                </header>
-                <sheet>
-                    <div class="oe_title">
-                        <h1>
-                            <field name="task_id" readonly="1"/>
-                        </h1>
+                <div class="container-fluid d-flex flex-column align-items-center">
+                    <div class="row w-100">
+                        <div class="col-12 d-flex justify-content-center">
+                            <header class="w-100 d-flex justify-content-between" style="max-width: 1200px;">
+                                <div>
+                                    <button name="action_submit"
+                                            string="Entregar"
+                                            type="object"
+                                            class="oe_highlight"
+                                            invisible="state not in ['pending', 'late']"/>
+                                    <button name="action_grade"
+                                            string="Calificar"
+                                            type="object"
+                                            class="oe_highlight"
+                                            invisible="state not in ['submitted', 'late']"/>
+                                    <button name="action_reset"
+                                            string="Reiniciar"
+                                            type="object"
+                                            invisible="state == 'pending'"/>
+                                    <!-- Nuevo botón de análisis IA -->
+                                    <button name="action_analyze_with_ai"
+                                            string="Analizar con IA"
+                                            type="object"
+                                            class="oe_highlight"
+                                            invisible="state not in ['submitted', 'late']"
+                                            groups="calendar_academy.group_academy_teacher"/>
+                                </div>
+                                <field name="state" widget="statusbar"/>
+                            </header>
+                        </div>
                     </div>
-                    <group>
-                        <group>
-                            <field name="student_id" readonly="1"/>
-                            <field name="deadline" readonly="1"/>
-                            <field name="submission_date" readonly="1"/>
-                            <field name="is_late" readonly="1"/>
-                        </group>
-                        <group>
-                            <field name="score"/>
-                            <field name="max_score" readonly="1"/>
-                        </group>
-                    </group>
-                    <notebook>
-                        <page string="Contenido" name="content">
-                            <field name="content" widget="html"/>
-                        </page>
-                        <page string="Archivos" name="attachments">
-                            <field name="attachment_ids" widget="many2many_binary"/>
-                        </page>
-                        <page string="Retroalimentación" name="feedback">
-                            <field name="feedback"/>
-                        </page>
-                        <!-- Nueva página para análisis IA -->
-                        <page string="Análisis IA" name="ai_analysis"
-                              groups="calendar_academy.group_academy_teacher">
-                            <group>
-                                <field name="ai_analysis_state" widget="statusbar"/>
-                                <field name="ai_suggested_score"/>
-                            </group>
-                            <field name="ai_feedback" widget="html"/>
-                        </page>
-                    </notebook>
-                </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids"/>
-                    <field name="activity_ids"/>
-                    <field name="message_ids"/>
+
+                    <div class="row justify-content-center w-100">
+                        <div class="col-12 col-lg-10" style="max-width: 1200px;">
+                            <sheet>
+                                <div class="oe_title">
+                                    <h1>
+                                        <field name="task_id" readonly="1"/>
+                                    </h1>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <group>
+                                            <field name="student_id" readonly="1"/>
+                                            <field name="deadline" readonly="1"/>
+                                            <field name="submission_date" readonly="1"/>
+                                            <field name="is_late" readonly="1"/>
+                                        </group>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <group>
+                                            <field name="score"/>
+                                            <field name="max_score" readonly="1"/>
+                                        </group>
+                                    </div>
+                                </div>
+
+                                <notebook>
+                                    <page string="Contenido" name="content">
+                                        <field name="content" widget="html"/>
+                                    </page>
+                                    <page string="Archivos" name="attachments">
+                                        <field name="attachment_ids" widget="many2many_binary"/>
+                                    </page>
+                                    <page string="Retroalimentación" name="feedback">
+                                        <field name="feedback"/>
+                                    </page>
+                                    <!-- Nueva página para análisis IA -->
+                                    <page string="Análisis IA" name="ai_analysis"
+                                          groups="calendar_academy.group_academy_teacher">
+                                        <group>
+                                            <field name="ai_analysis_state" widget="statusbar"/>
+                                            <field name="ai_suggested_score"/>
+                                        </group>
+                                        <field name="ai_feedback" widget="html"/>
+                                    </page>
+                                </notebook>
+                            </sheet>
+                        </div>
+                    </div>
+
+                    <div class="row justify-content-center w-100 mt-4">
+                        <div class="col-12 col-lg-10" style="max-width: 1200px;">
+                            <div class="oe_chatter">
+                                <field name="message_follower_ids"/>
+                                <field name="activity_ids"/>
+                                <field name="message_ids"/>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </form>
         </field>
