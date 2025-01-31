@@ -6,109 +6,127 @@
         <field name="model">academy.task</field>
         <field name="arch" type="xml">
             <form>
-                <header>
-                    <button name="action_publish"
-                            string="Publicar"
-                            type="object"
-                            class="oe_highlight"
-                            invisible="state != 'draft'"/>
-                    <button name="action_close"
-                            string="Cerrar"
-                            type="object"
-                            invisible="state != 'published'"/>
-                    <button name="action_reopen"
-                            string="Reabrir"
-                            type="object"
-                            invisible="state != 'closed'"/>
-                    <button name="action_archive"
-                            string="Archivar"
-                            type="object"
-                            invisible="state == 'draft'"/>
-                    <field name="state" widget="statusbar"/>
-                </header>
-                <sheet>
-                    <div class="oe_button_box" name="button_box">
-                        <!-- Existente -->
-                        <button name="action_view_submissions"
-                                type="object"
-                                class="oe_stat_button"
-                                icon="fa-tasks">
-                            <field name="submission_count" widget="statinfo" string="Entregas"/>
-                        </button>
-                        <!-- Nuevo: Botón para ver evento relacionado si existe -->
-                        <button name="action_view_event"
-                                type="object"
-                                class="oe_stat_button"
-                                icon="fa-calendar"
-                                invisible="not event_id">
-                            <div class="o_stat_info">
-                                <span class="o_stat_text">Evento</span>
+                <div class="container-fluid d-flex flex-column align-items-center">
+                    <div class="row w-100">
+                        <div class="col-12 d-flex justify-content-center">
+                            <header class="w-100 d-flex justify-content-between" style="max-width: 1200px;">
+                                <div>
+                                    <button name="action_publish"
+                                            string="Publicar"
+                                            type="object"
+                                            class="oe_highlight"
+                                            invisible="state != 'draft'"/>
+                                    <button name="action_close"
+                                            string="Cerrar"
+                                            type="object"
+                                            invisible="state != 'published'"/>
+                                    <button name="action_reopen"
+                                            string="Reabrir"
+                                            type="object"
+                                            invisible="state != 'closed'"/>
+                                    <button name="action_archive"
+                                            string="Archivar"
+                                            type="object"
+                                            invisible="state == 'draft'"/>
+                                </div>
+                                <field name="state" widget="statusbar"/>
+                            </header>
+                        </div>
+                    </div>
+    
+                    <div class="row justify-content-center w-100">
+                        <div class="col-12 col-lg-10" style="max-width: 1200px;">
+                            <sheet>
+                                <div class="oe_button_box" name="button_box">
+                                    <button name="action_view_submissions"
+                                            type="object"
+                                            class="oe_stat_button"
+                                            icon="fa-tasks">
+                                        <field name="submission_count" widget="statinfo" string="Entregas"/>
+                                    </button>
+                                    <button name="action_view_event"
+                                            type="object"
+                                            class="oe_stat_button"
+                                            icon="fa-calendar"
+                                            invisible="not event_id">
+                                        <div class="o_stat_info">
+                                            <span class="o_stat_text">Evento</span>
+                                        </div>
+                                    </button>
+                                </div>
+    
+                                <div class="oe_title">
+                                    <h1>
+                                        <field name="name" placeholder="Título de la Tarea"/>
+                                    </h1>
+                                    <h3 invisible="not event_id">
+                                        <field name="event_id" readonly="1"/>
+                                    </h3>
+                                </div>
+    
+                                <group>
+                                    <group>
+                                        <field name="course_id"/>
+                                        <field name="subject_id"/>
+                                        <field name="teacher_id"/>
+                                        <field name="submission_type"/>
+                                    </group>
+                                    <group>
+                                        <field name="assign_date"/>
+                                        <field name="available_from"/>
+                                        <field name="deadline"/>
+                                        <field name="reference" readonly="1"/>
+                                    </group>
+                                </group>
+    
+                                <notebook>
+                                    <page string="Descripción" name="description">
+                                        <field name="description" widget="html"/>
+                                    </page>
+                                    <page string="Configuración" name="settings">
+                                        <group>
+                                            <group>
+                                                <field name="max_score"/>
+                                                <field name="weight"/>
+                                            </group>
+                                            <group>
+                                                <field name="allow_late_submission"/>
+                                                <field name="late_submission_penalty"
+                                                       invisible="not allow_late_submission"/>
+                                            </group>
+                                        </group>
+                                    </page>
+                                    <page string="Archivos" name="attachments">
+                                        <field name="attachment_ids" widget="many2many_binary"/>
+                                    </page>
+                                    <page string="Entregas" name="submissions">
+                                        <field name="submission_ids">
+                                            <list>
+                                                <field name="student_id"/>
+                                                <field name="submission_date"/>
+                                                <field name="is_late"/>
+                                                <field name="score"/>
+                                                <field name="state" widget="badge"
+                                                       decoration-info="state == 'submitted'"
+                                                       decoration-success="state == 'graded'"
+                                                       decoration-danger="state == 'late'"/>
+                                            </list>
+                                        </field>
+                                    </page>
+                                </notebook>
+                            </sheet>
+                        </div>
+                    </div>
+    
+                    <div class="row justify-content-center w-100 mt-4">
+                        <div class="col-12 col-lg-10" style="max-width: 1200px;">
+                            <div class="oe_chatter">
+                                <field name="message_follower_ids"/>
+                                <field name="activity_ids"/>
+                                <field name="message_ids"/>
                             </div>
-                        </button>
+                        </div>
                     </div>
-                    <div class="oe_title">
-                        <h1>
-                            <field name="name" placeholder="Título de la Tarea"/>
-                        </h1>
-                        <!-- Nuevo: Mostrar referencia del evento si existe -->
-                        <h3 invisible="not event_id">
-                            <field name="event_id" readonly="1"/>
-                        </h3>
-                    </div>
-                    <group>
-                        <group>
-                            <field name="course_id"/>
-                            <field name="subject_id"/>
-                            <field name="teacher_id"/>
-                            <field name="submission_type"/>
-                        </group>
-                        <group>
-                            <field name="assign_date"/>
-                            <field name="available_from"/>
-                            <field name="deadline"/>
-                            <field name="reference" readonly="1"/>
-                        </group>
-                    </group>
-                    <notebook>
-                        <page string="Descripción" name="description">
-                            <field name="description" widget="html"/>
-                        </page>
-                        <page string="Configuración" name="settings">
-                            <group>
-                                <group>
-                                    <field name="max_score"/>
-                                    <field name="weight"/>
-                                </group>
-                                <group>
-                                    <field name="allow_late_submission"/>
-                                    <field name="late_submission_penalty"
-                                           invisible="not allow_late_submission"/>
-                                </group>
-                            </group>
-                        </page>
-                        <page string="Archivos" name="attachments">
-                            <field name="attachment_ids" widget="many2many_binary"/>
-                        </page>
-                        <page string="Entregas" name="submissions">
-                            <field name="submission_ids">
-                                <list>
-                                    <field name="student_id"/>
-                                    <field name="submission_date"/>
-                                    <field name="is_late"/>
-                                    <field name="score"/>
-                                    <field name="state" widget="badge"
-                                           decoration-info="state == 'submitted'"
-                                           decoration-success="state == 'graded'"
-                                           decoration-danger="state == 'late'"/>
-                                </list>
-                            </field>
-                        </page>
-                    </notebook>
-                </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids"/>
-                    <field name="activity_ids"/>
-                    <field name="message_ids"/>
                 </div>
             </form>
         </field>
