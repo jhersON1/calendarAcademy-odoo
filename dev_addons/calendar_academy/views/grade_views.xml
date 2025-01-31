@@ -6,66 +6,90 @@
         <field name="model">academy.grade</field>
         <field name="arch" type="xml">
             <form>
-                <header>
-                    <button name="action_generate_grade_lines"
-                            string="Generar Líneas"
-                            type="object"
-                            class="oe_highlight"
-                            invisible="state != 'draft'"/>
-                    <button name="action_submit"
-                            string="Ingresar"
-                            type="object"
-                            class="oe_highlight"
-                            invisible="state != 'draft'"/>
-                    <button name="action_publish"
-                            string="Publicar"
-                            type="object"
-                            class="oe_highlight"
-                            invisible="state != 'submitted'"/>
-                    <button name="action_draft"
-                            string="Volver a Borrador"
-                            type="object"
-                            invisible="state == 'published'"/>
-                    <field name="state" widget="statusbar"
-                           statusbar_visible="draft,submitted,published"/>
-                </header>
-                <sheet>
-                    <div class="oe_title">
-                        <h1>
-                            <field name="name"/>
-                        </h1>
+                <div class="container-fluid d-flex flex-column align-items-center">
+                    <div class="row w-100">
+                        <div class="col-12 d-flex justify-content-center">
+                            <header class="w-100 d-flex justify-content-between" style="max-width: 1200px;">
+                                <div>
+                                    <button name="action_generate_grade_lines"
+                                            string="Generar Líneas"
+                                            type="object"
+                                            class="oe_highlight"
+                                            invisible="state != 'draft'"/>
+                                    <button name="action_submit"
+                                            string="Ingresar"
+                                            type="object"
+                                            class="oe_highlight"
+                                            invisible="state != 'draft'"/>
+                                    <button name="action_publish"
+                                            string="Publicar"
+                                            type="object"
+                                            class="oe_highlight"
+                                            invisible="state != 'submitted'"/>
+                                    <button name="action_draft"
+                                            string="Volver a Borrador"
+                                            type="object"
+                                            invisible="state == 'published'"/>
+                                </div>
+                                <field name="state" widget="statusbar"
+                                       statusbar_visible="draft,submitted,published"/>
+                            </header>
+                        </div>
                     </div>
-                    <group>
-                        <group>
-                            <field name="course_id"/>
-                            <field name="subject_id"/>
-                            <field name="teacher_id"/>
-                            <field name="evaluation_type"/>
-                        </group>
-                        <group>
-                            <field name="evaluation_date"/>
-                            <field name="max_grade"/>
-                            <field name="weight"/>
-                            <field name="average_grade"/>
-                        </group>
-                    </group>
-                    <notebook>
-                        <page string="Calificaciones" name="grades">
-                            <field name="grade_line_ids">
-                                <list editable="bottom">
-                                    <field name="student_id"/>
-                                    <field name="grade"/>
-                                    <field name="max_grade" readonly="1"/>
-                                    <field name="comment"/>
-                                </list>
-                            </field>
-                        </page>
-                    </notebook>
-                </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids"/>
-                    <field name="activity_ids"/>
-                    <field name="message_ids"/>
+
+                    <div class="row justify-content-center w-100">
+                        <div class="col-12 col-lg-10" style="max-width: 1200px;">
+                            <sheet>
+                                <div class="oe_title">
+                                    <h1>
+                                        <field name="name"/>
+                                    </h1>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <group>
+                                            <field name="course_id"/>
+                                            <field name="subject_id"/>
+                                            <field name="teacher_id"/>
+                                            <field name="evaluation_type"/>
+                                        </group>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <group>
+                                            <field name="evaluation_date"/>
+                                            <field name="max_grade"/>
+                                            <field name="weight"/>
+                                            <field name="average_grade"/>
+                                        </group>
+                                    </div>
+                                </div>
+
+                                <notebook>
+                                    <page string="Calificaciones" name="grades">
+                                        <field name="grade_line_ids">
+                                            <list editable="bottom">
+                                                <field name="student_id"/>
+                                                <field name="grade"/>
+                                                <field name="max_grade" readonly="1"/>
+                                                <field name="comment"/>
+                                            </list>
+                                        </field>
+                                    </page>
+                                </notebook>
+                            </sheet>
+                        </div>
+                    </div>
+
+                    <div class="row justify-content-center w-100 mt-4">
+                        <div class="col-12 col-lg-10" style="max-width: 1200px;">
+                            <div class="oe_chatter">
+                                <field name="message_follower_ids"/>
+                                <field name="activity_ids"/>
+                                <field name="message_ids"/>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </form>
         </field>
