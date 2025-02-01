@@ -230,14 +230,14 @@
             <field name="name">Estudiantes: Solo sus recordatorios y eventos de curso</field>
             <field name="model_id" ref="model_academy_event"/>
             <field name="domain_force">['|', '|',
-                                        ('student_creator_id.user_id', '=', user.id),
-                                        '&amp;',
-                                        ('course_ids.student_ids.user_id', '=', user.id),
-                                        ('creator_type', 'in', ['teacher', 'admin']),
-                                        '&amp;',
-                                        ('student_ids.user_id', '=', user.id),
-                                        ('creator_type', '!=', 'student')
-                                        ]</field>
+                ('student_creator_id.user_id', '=', user.id),
+                '&amp;',
+                ('course_ids.student_ids.user_id', '=', user.id),
+                ('state', '=', 'confirmed'),
+                '&amp;',
+                ('student_ids.user_id', '=', user.id),
+                ('state', '=', 'confirmed')
+            ]</field>
             <field name="groups" eval="[(4, ref('calendar_academy.group_academy_student'))]"/>
             <field name="perm_read" eval="True"/>
             <field name="perm_write" eval="True"/>
@@ -249,11 +249,13 @@
             <field name="name">Profesor: Sus eventos y administrativos</field>
             <field name="model_id" ref="model_academy_event"/>
             <field name="domain_force">['|', '|', '|',
-                                        ('responsible_id', '=', user.id),
-                                        ('teacher_ids.user_id', '=', user.id),
-                                        ('course_ids.teacher_ids.user_id', '=', user.id),
-                                        ('creator_type', '=', 'admin')
-                                        ]</field>
+                ('responsible_id', '=', user.id),
+                ('teacher_ids.user_id', '=', user.id),
+                ('course_ids.teacher_ids.user_id', '=', user.id),
+                '&amp;',
+                ('creator_type', '=', 'admin'),
+                ('state', '=', 'confirmed')
+            ]</field>
             <field name="groups" eval="[(4, ref('calendar_academy.group_academy_teacher'))]"/>
             <field name="perm_read" eval="True"/>
             <field name="perm_write" eval="True"/>
