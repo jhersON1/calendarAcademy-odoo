@@ -611,9 +611,10 @@ class AcademyEvent(models.Model):
             current_student = self.env['academy.student'].search([('user_id', '=', self.env.user.id)], limit=1)
             if current_student:
                 defaults.update({
-                    'event_type': 'academic',  # Forzar tipo académico
-                    'responsible_id': self.env.user.id,
-                    'student_ids': [(4, current_student.id)],
+                    'student_creator_id': current_student.id,  # Falta este campo
+                    'creator_type': 'student',
+                    'event_type': 'academic',
+                    'student_ids': [(4, current_student.id)]
                 })
         # Si el usuario actual es un profesor
         elif self.env.user.has_group('calendar_academy.group_academy_teacher'):
