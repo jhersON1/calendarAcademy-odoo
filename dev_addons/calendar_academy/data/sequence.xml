@@ -112,7 +112,13 @@
         <record id="rule_event_coordinator_all" model="ir.rule">
             <field name="name">Coordinadores: Acceso total a eventos</field>
             <field name="model_id" ref="model_academy_event"/>
-            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="domain_force">[
+        '|',
+            ('creator_type', '=', 'admin'),
+            '&amp;', 
+                ('teacher_ids.user_id', '=', user.id),
+                ('creator_type', '=', 'admin')
+            ]</field>
             <field name="groups" eval="[(4, ref('group_academy_coordinator'))]"/>
             <field name="perm_read" eval="True"/>
             <field name="perm_write" eval="True"/>
