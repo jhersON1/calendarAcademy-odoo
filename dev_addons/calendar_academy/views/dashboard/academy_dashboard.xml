@@ -95,7 +95,9 @@
         <field name="view_mode">calendar,list,kanban</field>
         <field name="domain">[
             ('start_date', '>=', context_today().strftime('%Y-%m-%d')),
-            ('is_admin_event', '=', True)
+            '|',
+            ('responsible_id', '=', uid),
+            ('state', '=', 'confirmed')
         ]</field>
         <field name="context">{
             'search_default_upcoming': 1,

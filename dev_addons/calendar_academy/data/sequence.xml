@@ -94,6 +94,16 @@
         </record>
 
         <!-- Regla de registro para eventos -->
+        <record id="access_academy_event_student" model="ir.model.access">
+            <field name="name">academy.event.student</field>
+            <field name="model_id" ref="model_academy_event"/>
+            <field name="group_id" ref="calendar_academy.group_academy_student"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="1"/> 
+            <field name="perm_create" eval="1"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+
         <record id="rule_event_parent_view" model="ir.rule">
             <field name="name">Padres: Ver eventos de sus hijos</field>
             <field name="model_id" ref="model_academy_event"/>
@@ -112,7 +122,13 @@
         <record id="rule_event_coordinator_all" model="ir.rule">
             <field name="name">Coordinadores: Acceso total a eventos</field>
             <field name="model_id" ref="model_academy_event"/>
-            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="domain_force">[
+        '|',
+            ('creator_type', '=', 'admin'),
+            '&amp;', 
+                ('teacher_ids.user_id', '=', user.id),
+                ('creator_type', '=', 'admin')
+            ]</field>
             <field name="groups" eval="[(4, ref('group_academy_coordinator'))]"/>
             <field name="perm_read" eval="True"/>
             <field name="perm_write" eval="True"/>
