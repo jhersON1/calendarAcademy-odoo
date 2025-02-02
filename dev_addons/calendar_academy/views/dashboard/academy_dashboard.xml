@@ -21,8 +21,12 @@
                                             record.reminder_type.raw_value == 'deadline' ? 'bg-info' : 'bg-secondary'}">
                                             <field name="reminder_type"/>
                                         </span>
-                                        <strong class="me-auto"><field name="name"/></strong>
-                                        <small class="text-muted"><field name="start_date"/></small>
+                                        <strong class="me-auto">
+                                            <field name="name"/>
+                                        </strong>
+                                        <small class="text-muted">
+                                            <field name="start_date"/>
+                                        </small>
                                     </div>
                                 </div>
                             </div>
@@ -31,28 +35,16 @@
                             <div class="mb-4">
                                 <h5 class="mb-3">Acciones Rápidas</h5>
                                 <div class="btn-group-vertical w-100">
-                                    <button name="%(action_academy_event)d"
-                                            type="action"
-                                            class="btn btn-primary mb-2"
-                                            context="{'default_reminder_type': 'event', 'default_event_type': 'administrative'}">
+                                    <button name="%(action_academy_event)d" type="action" class="btn btn-primary mb-2" context="{'default_reminder_type': 'event', 'default_event_type': 'administrative'}">
                                         Nuevo Evento
                                     </button>
-                                    <button name="%(action_academy_event)d"
-                                            type="action"
-                                            class="btn btn-warning mb-2"
-                                            context="{'default_reminder_type': 'meeting', 'default_event_type': 'administrative'}">
+                                    <button name="%(action_academy_event)d" type="action" class="btn btn-warning mb-2" context="{'default_reminder_type': 'meeting', 'default_event_type': 'administrative'}">
                                         Nueva Reunión
                                     </button>
-                                    <button name="%(action_academy_event)d"
-                                            type="action"
-                                            class="btn btn-success mb-2"
-                                            context="{'default_reminder_type': 'note', 'default_event_type': 'administrative'}">
+                                    <button name="%(action_academy_event)d" type="action" class="btn btn-success mb-2" context="{'default_reminder_type': 'note', 'default_event_type': 'administrative'}">
                                         Nueva Nota
                                     </button>
-                                    <button name="%(action_academy_event)d"
-                                            type="action"
-                                            class="btn btn-info mb-2"
-                                            context="{'default_reminder_type': 'task', 'default_event_type': 'administrative'}">
+                                    <button name="%(action_academy_event)d" type="action" class="btn btn-info mb-2" context="{'default_reminder_type': 'task', 'default_event_type': 'administrative'}">
                                         Nueva Tarea
                                     </button>
                                 </div>
@@ -71,19 +63,12 @@
         <field name="arch" type="xml">
             <list string="Recordatorios y Eventos" default_order="start_date desc">
                 <field name="name"/>
-                <field name="reminder_type" decoration-info="reminder_type == 'event'"
-                       decoration-success="reminder_type == 'note'"
-                       decoration-warning="reminder_type == 'meeting'"
-                       decoration-danger="reminder_type == 'task'"/>
+                <field name="reminder_type" decoration-info="reminder_type == 'event'" decoration-success="reminder_type == 'note'" decoration-warning="reminder_type == 'meeting'" decoration-danger="reminder_type == 'task'"/>
                 <field name="start_date"/>
                 <field name="end_date"/>
                 <field name="responsible_id"/>
                 <field name="priority" widget="priority"/>
-                <field name="state" widget="badge"
-                       decoration-info="state == 'draft'"
-                       decoration-success="state == 'confirmed'"
-                       decoration-warning="state == 'done'"
-                       decoration-danger="state == 'cancelled'"/>
+                <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-success="state == 'confirmed'" decoration-warning="state == 'done'" decoration-danger="state == 'cancelled'"/>
             </list>
         </field>
     </record>
@@ -95,7 +80,9 @@
         <field name="view_mode">calendar,list,kanban</field>
         <field name="domain">[
             ('start_date', '>=', context_today().strftime('%Y-%m-%d')),
-            ('is_admin_event', '=', True)
+            '|',
+            ('responsible_id', '=', uid),
+            ('state', '=', 'confirmed')
         ]</field>
         <field name="context">{
             'search_default_upcoming': 1,

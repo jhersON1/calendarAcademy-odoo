@@ -75,6 +75,8 @@ class AcademyEvent(models.Model):
 
     student_ids = fields.Many2many("academy.student", string="Estudiantes")
 
+    parent_ids = fields.Many2many("academy.parent", string="Padres")
+
     state = fields.Selection(
         [
             ("draft", "Borrador"),
@@ -161,7 +163,7 @@ class AcademyEvent(models.Model):
 
             # Si es tipo tarea, creamos la tarea asociada
             if record.is_task and not record.task_id:
-                # [El código existente para crear tareas se mantiene igual]
+                # Validar campos requeridos
                 if not record.subject_id:
                     raise ValidationError(
                         _("Debe seleccionar una materia para la tarea")
@@ -169,7 +171,39 @@ class AcademyEvent(models.Model):
                 if not record.course_ids:
                     raise ValidationError(_("Debe seleccionar al menos un curso"))
 
-                # [... resto del código de creación de tareas ...]
+                # Obtener profesor
+                teacher = record.env["academy.teacher"].search(
+                    [("user_id", "=", record.responsible_id.id)], limit=1
+                )
+                if not teacher:
+                    raise ValidationError(_("El responsable debe ser un profesor"))
+
+                # Crear la tarea
+                task_vals = {
+                    "name": record.name,
+                    "course_id": record.course_ids[0].id,
+                    "subject_id": record.subject_id.id,
+                    "teacher_id": teacher.id,
+                    "description": record.description,
+                    "deadline": record.end_date,
+                    "available_from": record.start_date,
+                    "max_score": record.max_score,
+                    "weight": record.weight,
+                    "submission_type": record.submission_type,
+                    "allow_late_submission": record.allow_late_submission,
+                    "late_submission_penalty": record.late_submission_penalty,
+                    "attachment_ids": [(6, 0, record.attachment_ids.ids)],
+                    "event_id": record.id,
+                    "state": "draft",
+                }
+
+                task = record.env["academy.task"].create(task_vals)
+                record.task_id = task.id
+
+                # Registrar en el chatter
+                record.message_post(
+                    body=_("Tarea creada: %s") % task.name, message_type="notification"
+                )
 
             # Enviar notificación FCM
             try:
@@ -180,26 +214,101 @@ class AcademyEvent(models.Model):
 
                 # Obtener los user_ids de los participantes
                 participant_user_ids = []
+
+                # Depuración de representantes
+                _logger.info(f"Representantes directos del evento: {record.parent_ids}")
+
+                # Añadir representantes directos del evento
+                if record.parent_ids:
+                    parent_user_ids = record.parent_ids.mapped("user_id.id")
+                    _logger.info(
+                        f"User IDs de representantes directos: {parent_user_ids}"
+                    )
+                    participant_user_ids.extend([uid for uid in parent_user_ids if uid])
+
+                # Añadir profesores directamente asignados
                 if record.teacher_ids:
-                    participant_user_ids.extend(record.teacher_ids.mapped("user_id.id"))
-                if record.student_ids:
-                    participant_user_ids.extend(record.student_ids.mapped("user_id.id"))
-                if record.course_ids:
+                    teacher_user_ids = record.teacher_ids.mapped("user_id.id")
                     participant_user_ids.extend(
-                        record.course_ids.mapped("student_ids.user_id.id")
+                        [uid for uid in teacher_user_ids if uid]
+                    )
+
+                # Añadir estudiantes directamente asignados y sus representantes
+                if record.student_ids:
+                    # Añadir usuarios de estudiantes
+                    student_user_ids = record.student_ids.mapped("user_id.id")
+                    participant_user_ids.extend(
+                        [uid for uid in student_user_ids if uid]
+                    )
+
+                    # Obtener y añadir representantes de estudiantes
+                    parent_ids = (
+                        record.student_ids.mapped("parent_id").ids
+                        + record.student_ids.mapped("secondary_parent_id").ids
+                    )
+                    _logger.info(
+                        f"IDs de representantes de estudiantes directos: {parent_ids}"
+                    )
+
+                    if parent_ids:
+                        parents = record.env["academy.parent"].browse(parent_ids)
+                        parent_user_ids = parents.mapped("user_id.id")
+                        _logger.info(
+                            f"User IDs de representantes de estudiantes: {parent_user_ids}"
+                        )
+                        participant_user_ids.extend(
+                            [uid for uid in parent_user_ids if uid]
+                        )
+
+                # Procesar participantes de los cursos
+                if record.course_ids:
+                    # Obtener estudiantes de los cursos
+                    course_students = record.course_ids.mapped("student_ids")
+
+                    # Añadir usuarios de estudiantes de cursos
+                    course_student_user_ids = course_students.mapped("user_id.id")
+                    participant_user_ids.extend(
+                        [uid for uid in course_student_user_ids if uid]
+                    )
+
+                    # Obtener y añadir representantes de estudiantes de cursos
+                    course_parent_ids = (
+                        course_students.mapped("parent_id").ids
+                        + course_students.mapped("secondary_parent_id").ids
+                    )
+                    _logger.info(
+                        f"IDs de representantes de estudiantes de cursos: {course_parent_ids}"
+                    )
+
+                    if course_parent_ids:
+                        course_parents = record.env["academy.parent"].browse(
+                            course_parent_ids
+                        )
+                        course_parent_user_ids = course_parents.mapped("user_id.id")
+                        _logger.info(
+                            f"User IDs de representantes de estudiantes de cursos: {course_parent_user_ids}"
+                        )
+                        participant_user_ids.extend(
+                            [uid for uid in course_parent_user_ids if uid]
+                        )
+
+                    # Obtener profesores de los cursos
+                    course_teacher_user_ids = record.course_ids.mapped(
+                        "teacher_ids.user_id.id"
                     )
                     participant_user_ids.extend(
-                        record.course_ids.mapped("teacher_ids.user_id.id")
+                        [uid for uid in course_teacher_user_ids if uid]
                     )
 
                 # Eliminar duplicados y valores False
                 participant_user_ids = list(set(filter(None, participant_user_ids)))
 
                 _logger.info(
-                    f"Participant user IDs for confirmation: {participant_user_ids}"
+                    f"Total de participantes a notificar: {len(participant_user_ids)}"
                 )
+                _logger.info(f"IDs de participantes: {participant_user_ids}")
 
-                # Obtener los tokens de los dispositivos de los participantes
+                # Obtener los tokens de los dispositivos
                 devices = record.env["fcm.device"].search(
                     [("user_id", "in", participant_user_ids), ("active", "=", True)]
                 )
@@ -222,7 +331,14 @@ class AcademyEvent(models.Model):
                     body = f"{record.name}\nFecha: {record.start_date.strftime('%d/%m/%Y %H:%M')}"
 
                     # Enviar notificación
-                    notification.send_notification(title, body, data)
+                    for user_id in participant_user_ids:
+                        user_devices = devices.filtered(
+                            lambda d: d.user_id.id == user_id
+                        )
+                        if user_devices:
+                            notification.send_notification(
+                                title, body, data, user_id=user_id
+                            )
                     _logger.info(
                         f"Confirmation notification sent successfully for event ID: {record.id}"
                     )
@@ -474,7 +590,7 @@ class AcademyEvent(models.Model):
 
             # Si es tipo tarea, creamos la tarea asociada
             if record.is_task and not record.task_id:
-                # [El código existente para crear tareas se mantiene igual]
+                # Validar campos requeridos
                 if not record.subject_id:
                     raise ValidationError(
                         _("Debe seleccionar una materia para la tarea")
@@ -482,7 +598,39 @@ class AcademyEvent(models.Model):
                 if not record.course_ids:
                     raise ValidationError(_("Debe seleccionar al menos un curso"))
 
-                # [... resto del código de creación de tareas ...]
+                # Obtener profesor
+                teacher = record.env["academy.teacher"].search(
+                    [("user_id", "=", record.responsible_id.id)], limit=1
+                )
+                if not teacher:
+                    raise ValidationError(_("El responsable debe ser un profesor"))
+
+                # Crear la tarea
+                task_vals = {
+                    "name": record.name,
+                    "course_id": record.course_ids[0].id,
+                    "subject_id": record.subject_id.id,
+                    "teacher_id": teacher.id,
+                    "description": record.description,
+                    "deadline": record.end_date,
+                    "available_from": record.start_date,
+                    "max_score": record.max_score,
+                    "weight": record.weight,
+                    "submission_type": record.submission_type,
+                    "allow_late_submission": record.allow_late_submission,
+                    "late_submission_penalty": record.late_submission_penalty,
+                    "attachment_ids": [(6, 0, record.attachment_ids.ids)],
+                    "event_id": record.id,
+                    "state": "draft",
+                }
+
+                task = record.env["academy.task"].create(task_vals)
+                record.task_id = task.id
+
+                # Registrar en el chatter
+                record.message_post(
+                    body=_("Tarea creada: %s") % task.name, message_type="notification"
+                )
 
             # Enviar notificación FCM
             try:
@@ -498,7 +646,6 @@ class AcademyEvent(models.Model):
                 if record.student_ids:
                     participant_user_ids.extend(record.student_ids.mapped("user_id.id"))
                 if record.course_ids:
-                    # Añadir usuarios de estudiantes y profesores de los cursos
                     participant_user_ids.extend(
                         record.course_ids.mapped("student_ids.user_id.id")
                     )
@@ -595,7 +742,7 @@ class AcademyEvent(models.Model):
         return True
 
     def action_add_all_participants(self):
-        """Añade todos los participantes activos"""
+        """Añade todos los participantes activos sin crear comunicado"""
         self.ensure_one()
 
         try:
@@ -613,10 +760,29 @@ class AcademyEvent(models.Model):
                     }
                 )
 
-            # Obtener participantes
+            # Obtener todos los participantes activos
             teachers = self.env["academy.teacher"].search([("active", "=", True)])
             students = self.env["academy.student"].search([("active", "=", True)])
-            parents = self.env["academy.parent"].search([("active", "=", True)])
+
+            # Obtener todos los representantes de los estudiantes
+            parent_ids = []
+            for student in students:
+                if student.parent_id:
+                    parent_ids.append(student.parent_id.id)
+                if student.secondary_parent_id:
+                    parent_ids.append(student.secondary_parent_id.id)
+
+            # Eliminar duplicados de la lista de representantes
+            parent_ids = list(set(parent_ids))
+
+            # Obtener los objetos parent usando los IDs recolectados
+            parents = self.env["academy.parent"].browse(parent_ids)
+
+            # Obtener padres adicionales activos en el sistema
+            additional_parents = self.env["academy.parent"].search(
+                [("active", "=", True)]
+            )
+            parents |= additional_parents
 
             # Filtrar participantes con usuario válido y activo
             valid_teachers = teachers.filtered(lambda t: t.user_id and t.user_id.active)
@@ -633,18 +799,12 @@ class AcademyEvent(models.Model):
                     [("period_id", "=", active_period.id), ("state", "=", "active")]
                 )
 
-            # Preparar valores
+            # Preparar valores para la actualización
             vals = {
-                "teacher_ids": [
-                    (6, 0, valid_teachers.ids)
-                ],  # Solo profesores con usuario válido
-                "student_ids": [
-                    (6, 0, valid_students.ids)
-                ],  # Solo estudiantes con usuario válido
+                "teacher_ids": [(6, 0, valid_teachers.ids)],
+                "student_ids": [(6, 0, valid_students.ids)],
+                "parent_ids": [(6, 0, valid_parents.ids)],
             }
-
-            # Si quieres incluir padres, descomenta esta línea
-            # vals['parent_ids'] = [(6, 0, valid_parents.ids)]
 
             if active_courses:
                 vals["course_ids"] = [(6, 0, active_courses.ids)]
@@ -652,17 +812,18 @@ class AcademyEvent(models.Model):
             # Actualizar el registro
             self.write(vals)
 
-            return {
-                "type": "ir.actions.act_window",
-                "res_model": "academy.event",
-                "res_id": self.id,
-                "view_mode": "form",
-                "view_type": "form",
-                "target": "current",
-                "flags": {"form": {"action_buttons": True}},
-            }
+            # Log para debugging
+            _logger.info(f"Added {len(valid_teachers)} teachers")
+            _logger.info(f"Added {len(valid_students)} students")
+            _logger.info(f"Added {len(valid_parents)} parents")
+            if active_courses:
+                _logger.info(f"Added {len(active_courses)} courses")
+
+            # Retornar un diccionario vacío para evitar la recarga de página
+            return {}
 
         except Exception as e:
+            _logger.error(f"Error in action_add_all_participants: {str(e)}")
             return {
                 "type": "ir.actions.client",
                 "tag": "display_notification",
@@ -775,7 +936,6 @@ class AcademyEvent(models.Model):
 
     @api.model
     def _get_teacher_domain(self):
-        """Dominio para eventos visibles para profesores"""
         teacher = self.env["academy.teacher"].search(
             [("user_id", "=", self.env.user.id)], limit=1
         )
@@ -789,6 +949,22 @@ class AcademyEvent(models.Model):
             "|",
             ("teacher_ids", "=", teacher.id),
             ("course_ids.teacher_ids", "=", teacher.id),
+        ]
+
+    @api.model
+    def _get_parent_domain(self):
+        parent = self.env["academy.parent"].search(
+            [("user_id", "=", self.env.user.id)], limit=1
+        )
+        return [
+            "|",
+            ("parent_ids", "=", parent.id),
+            "&",
+            ("creator_type", "!=", "student"),
+            "|",
+            ("student_ids", "in", parent.student_ids.ids),
+            ("course_ids.student_ids", "in", parent.student_ids.ids),
+            ("creator_type", "in", ["teacher", "admin"]),
         ]
 
     def check_user_has_read(self, user_id):
@@ -924,22 +1100,69 @@ class AcademyEvent(models.Model):
 
             # Obtener los user_ids de los participantes
             participant_user_ids = []
-            if self.teacher_ids:
-                participant_user_ids.extend(self.teacher_ids.mapped("user_id.id"))
+
+            # Recolectar todos los estudiantes y sus representantes
+            students_to_notify = self.env["academy.student"]
+
+            # 1. Añadir estudiantes directos
             if self.student_ids:
-                participant_user_ids.extend(self.student_ids.mapped("user_id.id"))
+                students_to_notify |= self.student_ids
+                _logger.info(f"Added direct students: {len(self.student_ids)}")
+
+            # 2. Añadir estudiantes de cursos
             if self.course_ids:
-                participant_user_ids.extend(
-                    self.course_ids.mapped("student_ids.user_id.id")
-                )
-                participant_user_ids.extend(
-                    self.course_ids.mapped("teacher_ids.user_id.id")
-                )
+                course_students = self.course_ids.mapped("student_ids")
+                students_to_notify |= course_students
+                _logger.info(f"Added course students: {len(course_students)}")
+
+                # Añadir profesores de los cursos
+                teacher_user_ids = self.course_ids.mapped("teacher_ids.user_id.id")
+                participant_user_ids.extend([tid for tid in teacher_user_ids if tid])
+                _logger.info(f"Added course teachers: {len(teacher_user_ids)}")
+
+            # 3. Procesar estudiantes y obtener sus representantes
+            if students_to_notify:
+                # Añadir IDs de usuarios de estudiantes
+                student_user_ids = students_to_notify.mapped("user_id.id")
+                participant_user_ids.extend([uid for uid in student_user_ids if uid])
+                _logger.info(f"Processing {len(students_to_notify)} students")
+
+                # Obtener y añadir representantes principales
+                primary_parents = students_to_notify.mapped("parent_id")
+                if primary_parents:
+                    parent_user_ids = primary_parents.mapped("user_id.id")
+                    participant_user_ids.extend([uid for uid in parent_user_ids if uid])
+                    _logger.info(f"Added primary parents: {len(primary_parents)}")
+
+                # Obtener y añadir representantes secundarios
+                secondary_parents = students_to_notify.mapped("secondary_parent_id")
+                if secondary_parents:
+                    secondary_user_ids = secondary_parents.mapped("user_id.id")
+                    participant_user_ids.extend(
+                        [uid for uid in secondary_user_ids if uid]
+                    )
+                    _logger.info(f"Added secondary parents: {len(secondary_parents)}")
+
+            # 4. Añadir profesores directamente asignados
+            if self.teacher_ids:
+                teacher_user_ids = self.teacher_ids.mapped("user_id.id")
+                participant_user_ids.extend([tid for tid in teacher_user_ids if tid])
+                _logger.info(f"Added direct teachers: {len(self.teacher_ids)}")
+
+            # 5. Añadir padres/representantes directamente asignados
+            if self.parent_ids:
+                parent_user_ids = self.parent_ids.mapped("user_id.id")
+                participant_user_ids.extend([pid for pid in parent_user_ids if pid])
+                _logger.info(f"Added direct parents: {len(self.parent_ids)}")
 
             # Eliminar duplicados y valores False
             participant_user_ids = list(set(filter(None, participant_user_ids)))
-
+            _logger.info(f"Final unique participants: {len(participant_user_ids)}")
             _logger.info(f"Participant user IDs: {participant_user_ids}")
+
+            if not participant_user_ids:
+                _logger.warning("No participants found to notify")
+                return False
 
             # Obtener los tokens de los dispositivos de los participantes
             devices = self.env["fcm.device"].search(
@@ -950,7 +1173,7 @@ class AcademyEvent(models.Model):
                 _logger.info("No active devices found for participants")
                 return False
 
-            _logger.info(f"Found {len(devices)} active devices for participants")
+            _logger.info(f"Found {len(devices)} active devices")
 
             # Prepare notification data
             data = {
@@ -964,12 +1187,23 @@ class AcademyEvent(models.Model):
             title = f"Nuevo {dict(self._fields['reminder_type'].selection).get(self.reminder_type, '')}"
             body = f"{self.name}\nFecha: {self.start_date.strftime('%d/%m/%Y %H:%M') if self.start_date else ''}"
 
-            # Send notification only to participant devices
-            result = notification.send_notification(title, body, data)
-            return result
+            # Enviar notificación
+            notification.send_notification(title, body, data)
+            _logger.info(
+                f"Event creation notification sent successfully for event ID: {self.id}"
+            )
+            return True
 
         except Exception as e:
             _logger.error(f"Error in _notify_event_creation: {str(e)}")
+            _logger.error(f"Exception type: {type(e)}")
+            _logger.error(f"Exception args: {e.args}")
+            if hasattr(e, "__traceback__"):
+                import traceback
+
+                _logger.error(
+                    f"Traceback: {''.join(traceback.format_tb(e.__traceback__))}"
+                )
             return False
 
     @api.model_create_multi
